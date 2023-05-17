@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+    html {
+        font-family: 'Poppins', sans-serif;
+    }
+}
+
+
+@layer components {
+    .btn-light {
+        @apply rounded-full bg-white py-4 px-8 border-none outline-none transition-all text-primary hover:bg-white/80;
+    }
+
+    .btn-primary {
+        @apply rounded-full bg-primary py-4 px-8 border-none outline-none transition-all text-white hover:bg-primary/90;
+    }
+
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+}
