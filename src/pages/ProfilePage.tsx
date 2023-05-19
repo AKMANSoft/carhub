@@ -1,14 +1,16 @@
+import React from "react";
 
 
 export default function ProfilePage() {
+    const [activeTab, setActiveTab] = React.useState(1);
+
     return (
-        <div className="max-w-screen-xl mx-auto py-20 px-5 md:px-20">
-            <div className="w-full shadow-lg shadow-primary/30 rounded-lg p-20">
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-4 items-center">
-                        <img src="/images/car9.jpg" width={175} height={175}
-                            className="w-44 h-auto aspect-square object-cover object-center rounded-full border-4" alt="" />
-                        <div>
+        <div className="max-w-screen-xl mx-auto py-10 md:py-20 px-4 md:px-10 lg:px-20">
+            <div className="w-full shadow-lg shadow-primary/30 rounded-lg p-10 lg:p-20">
+                <div className="flex flex-col md:flex-row gap-16 md:gap-2 justify-between items-center">
+                    <div className="flex flex-col md:flex-row gap-4 items-center">
+                        <img src="/images/car9.jpg" width={175} height={175} className="w-44 h-auto aspect-square object-cover object-center rounded-full border-4" alt="" />
+                        <div className="text-center md:text-left">
                             <h3 className="text-lg font-semibold text-gray-800">Ali Hussnain</h3>
                             <p className="text-base font-normal text-gray-600">
                                 Islamabad | Pakistan
@@ -28,10 +30,14 @@ export default function ProfilePage() {
                         </a>
                     </div>
                 </div>
-                <div className="mt-10">
-                    <div className="flex items-center justify-center gap-40">
-                        <button type="button" className="text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 border-transparent rounded">Offers</button>
-                        <button type="button" className="text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 border-primary rounded">Reviews</button>
+                <div className="mt-20 md:mt-10">
+                    <div className="flex items-center justify-center gap-10 md:gap-20 lg:gap-40">
+                        <button type="button" onClick={() => setActiveTab(0)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 0 ? "border-primary" : "border-transparent")}>
+                            Offers
+                        </button>
+                        <button type="button" onClick={() => setActiveTab(1)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 1 ? "border-primary" : "border-transparent")}>
+                            Reviews
+                        </button>
                     </div>
                     <div className="py-8 space-y-6">
                         <div className="border-b py-2">
@@ -70,7 +76,7 @@ export default function ProfilePage() {
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt aspernatur odio corporis fugit quasi. Quidem amet similique cum accusamus alias id unde, vel nam itaque, soluta dolorum maiores sapiente eos.
                             </p>
                         </div>
-                       
+
                     </div>
                 </div>
             </div>

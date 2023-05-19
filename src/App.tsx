@@ -1,10 +1,10 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import HomePage from "./pages/HomePage"
-import SigninPage from "./pages/auth/SigninPage"
-import SignupPage from "./pages/auth/SignupPage"
+import SigninPage from "./popups/SigninPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import Header from "./components/Header"
 import ProfilePage from "./pages/ProfilePage"
+import SignupPage from "./popups/SignupPage"
 
 function App() {
   const router = createBrowserRouter([
