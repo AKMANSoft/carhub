@@ -1,3 +1,3 @@
 # carhub
 
-https://carhub@mi6.global
+https://carhub.mi6.global
