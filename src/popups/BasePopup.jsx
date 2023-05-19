@@ -1,12 +1,9 @@
-import React, { HtmlHTMLAttributes } from "react";
+import React from "react";
 import Popup from "reactjs-popup";
 
 
-type Props = HtmlHTMLAttributes<Element> & {
-    popupRef: React.Ref<any>
-}
 
-export default function BasePopup({ children, popupRef }: Props) {
+export default function BasePopup({ children, popupRef }) {
     const childs = React.Children.toArray(children);
     const trigger = childs.filter((child) => child?.props?.id === "trigger")[0];
     return (

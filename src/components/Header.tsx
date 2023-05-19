@@ -26,7 +26,7 @@ export default function Header() {
                     <button type="button" onClick={() => setHeaderActive(true)} className="text-sm md:text-base lg:hidden inline-flex items-center justify-center py-1.5 px-2.5 rounded border text-gray-800 bg-transparent border-gray-100 transition-all hover:text-white hover:bg-primary hover:border-transparent">
                         <i className="fa-solid fa-bars"></i>
                     </button>
-                    <h3 className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</h3>
+                    <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                     <div className="hidden lg:block" >
                         <HeaderSearchComponent />
                     </div>

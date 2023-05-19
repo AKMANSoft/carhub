@@ -15,7 +15,7 @@ export default function SiderBar({ onSidebarClose }: Props) {
                 onSidebarClose()
             }
         })
-    }, [])
+    })
 
     return (
         <div className="fixed top-0 left-0 w-full h-screen bg-white shadow-lg z-50 px-4 md:px-10">
@@ -24,7 +24,7 @@ export default function SiderBar({ onSidebarClose }: Props) {
                     <button type="button" onClick={onSidebarClose} className="text-sm md:text-base lg:hidden inline-flex items-center justify-center py-1.5 px-2.5 rounded text-gray-800 bg-transparent border border-gray-100 transition-all hover:text-white hover:bg-primary hover:border-transparent">
                         <i className="fa-solid fa-xmark"></i>
                     </button>
-                    <h3 className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</h3>
+                    <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                 </div>
                 <a href="#" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                     Post Car
