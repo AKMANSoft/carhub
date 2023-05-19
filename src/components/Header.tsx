@@ -22,8 +22,8 @@ export default function Header() {
     return (
         <header className="w-full py-5 px-4 md:px-10 shadow-md fixed top-0 left-0 bg-white">
             <div className="flex items-center justify-between">
-                <div className='flex items-center gap-2 md:gap-3 lg:gap-10'>
-                    <button type="button" onClick={() => setHeaderActive(true)} className="text-sm md:text-base lg:hidden inline-flex items-center justify-center py-1.5 px-2.5 rounded border text-gray-800 bg-transparent border-gray-100 transition-all hover:text-white hover:bg-primary hover:border-transparent">
+                <div className='flex items-center gap-4 lg:gap-10'>
+                    <button type="button" onClick={() => setHeaderActive(true)} className="text-2xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
                         <i className="fa-solid fa-bars"></i>
                     </button>
                     <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>

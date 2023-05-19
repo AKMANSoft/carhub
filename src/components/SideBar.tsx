@@ -20,8 +20,8 @@ export default function SiderBar({ onSidebarClose }: Props) {
     return (
         <div className="fixed top-0 left-0 w-full h-screen bg-white shadow-lg z-50 px-4 md:px-10">
             <div className="flex items-center justify-between py-5">
-                <div className="inline-flex items-center gap-3">
-                    <button type="button" onClick={onSidebarClose} className="text-sm md:text-base lg:hidden inline-flex items-center justify-center py-1.5 px-2.5 rounded text-gray-800 bg-transparent border border-gray-100 transition-all hover:text-white hover:bg-primary hover:border-transparent">
+                <div className="inline-flex items-center gap-4">
+                    <button type="button" onClick={onSidebarClose} className="text-3xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
                         <i className="fa-solid fa-xmark"></i>
                     </button>
                     <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
