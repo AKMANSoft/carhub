@@ -3,6 +3,8 @@ import HomePage from "./pages/HomePage"
 import SigninPage from "./pages/auth/SigninPage"
 import SignupPage from "./pages/auth/SignupPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
+import Header from "./components/Header"
+import ProfilePage from "./pages/ProfilePage"
 
 function App() {
   const router = createBrowserRouter([
@@ -21,11 +23,20 @@ function App() {
     {
       path: "/forgot-password",
       element: <ForgotPasswordPage />
+    },
+    {
+      path: "/profile",
+      element: <ProfilePage />
     }
   ])
 
   return (
-    <RouterProvider router={router} />
+    <div>
+      <Header />
+      <main className="mt-[140px]">
+        <RouterProvider router={router} />
+      </main>
+    </div>
   )
 }
 
