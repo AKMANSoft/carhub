@@ -1,8 +1,5 @@
-import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
-import ThemeInput from '../components/ThemeInput';
 import BasePopup from './BasePopup';
 import React from 'react';
-import { categories } from '../components/Header';
 
 // type Props = {}
 

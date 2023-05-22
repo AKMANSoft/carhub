@@ -99,7 +99,7 @@ export default function SearchPage() {
                 <div className="flex flex-col items-center">
                     <div className="w-full mb-10">
                         <div className="flex items-center justify-between gap-5">
-                            <h3 className="text-5xl font-bold text-gray-900 py-3 capitalize">{category}</h3>
+                            <h3 className="text-5xl lg:text-4xl xl:text-5xl font-bold text-gray-900 py-3 capitalize">{category}</h3>
                             <div className="hidden lg:block text-base text-gray-900 font-normal">
                                 <label htmlFor="sortby" className="font-medium">Sort by: </label>
                                 <select name="sort" id="sortby" className="no-decor">
