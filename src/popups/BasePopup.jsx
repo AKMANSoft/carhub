@@ -9,7 +9,7 @@ export default function BasePopup({ children, popupRef }) {
     return (
         <Popup ref={popupRef} trigger={trigger} modal nested contentStyle={{
             width: "100%", maxWidth: "700px", padding: "50px 0", maxHeight: "100%", overflowY: "auto",
-            background: "transparent", border: 0, display: "flex", justifyContent: "center"
+            background: "transparent", border: 0, display: "flex", justifyContent: "center", overflowX: "hidden"
         }}>
             <div>{childs.filter((child) => child.props.id !== "trigger")}</div>
         </Popup>

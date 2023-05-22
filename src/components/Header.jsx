@@ -104,7 +104,7 @@ function HeaderSearchComponent({ className }) {
                     ))
                 }
             </select>
-            <a href='#' className="text-base md:text-lg min-w-max bg-primary text-white rounded-full m-1 ms-3 aspect-square transition-all duration-300 px-3 flex items-center hover:bg-primary/90">
+            <a href='/search' className="text-base md:text-lg min-w-max bg-primary text-white rounded-full m-1 ms-3 aspect-square transition-all duration-300 px-3 flex items-center hover:bg-primary/90">
                 <i className="fa-solid fa-magnifying-glass"></i>
             </a>
         </div>

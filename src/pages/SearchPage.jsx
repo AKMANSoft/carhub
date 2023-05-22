@@ -1,9 +1,12 @@
 
 // type Props = {}
 
+import { useSearchParams } from "react-router-dom"
 import CarGridItem from "../components/CarGridItem"
 import { categories } from "../components/Header"
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS"
+import React from "react"
+import FiltersPopup from "../popups/FiltersPopup"
 
 const cars = [
     "/images/car1.jpg",
@@ -27,15 +30,22 @@ const cars = [
 ]
 
 export default function SearchPage() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [category, setCategory] = React.useState(searchParams.get("category") ?? "All Categories");
+    // const [category, setCategory] = React.useState();
+
+    console.log(category)
+
+
     return (
         <div className={"py-10" + MAIN_HORIZONTAL_PADDING}>
             <div className="flex items-start gap-0 md:gap-5">
                 <div className="min-w-[300px] rounded border px-4 py-5 hidden lg:block">
                     <ul className="border-b pb-5 space-y-2 border-gray-100">
                         {
-                            categories.map((ctgry) => (
+                            ["All Categories", ...categories].map((ctgry) => (
                                 <li key={ctgry}>
-                                    <a href="#" className={"text-base text-gray-800 transition-all hover:font-semibold " + (ctgry === "Sedan" ? "font-semibold" : "font-normal")}>
+                                    <a href={"/search?" + "category=" + ctgry} className={"text-base text-gray-800 transition-all hover:font-semibold " + (category.toLowerCase() === ctgry.toLowerCase() ? "font-semibold" : "font-normal")}>
                                         {ctgry}
                                     </a>
                                 </li>
@@ -87,24 +97,35 @@ export default function SearchPage() {
                     </div>
                 </div>
                 <div className="flex flex-col items-center">
-                    <div className="w-full">
-                        <h3 className="text-5xl font-bold text-gray-900 py-2">Sedan</h3>
+                    <div className="w-full mb-10">
                         <div className="flex items-center justify-between gap-5">
-                            <div className="flex items-center flex-wrap gap-5 mt-4 mb-8">
-                                <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
-                                    Sub Category 1
-                                </a>
-                                <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
-                                    Sub Category 2
-                                </a>
-                                <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
-                                    Sub Category 3
-                                </a>
-                            </div>
-                            <div>
-                                <label htmlFor="sortby">Sort by: </label>
+                            <h3 className="text-5xl font-bold text-gray-900 py-3 capitalize">{category}</h3>
+                            <div className="hidden lg:block text-base text-gray-900 font-normal">
+                                <label htmlFor="sortby" className="font-medium">Sort by: </label>
                                 <select name="sort" id="sortby" className="no-decor">
                                     <option value="">Recent first</option>
+                                    <option value="">Older first</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex items-center flex-wrap gap-5 mt-4 mb-5">
+                            <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
+                                Sub Category 1
+                            </a>
+                            <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
+                                Sub Category 2
+                            </a>
+                            <a href="#" className="text-sm text-gray-900 font-normal py-2 px-4 rounded-full border border-gray-200 transition-all hover:bg-gray-100">
+                                Sub Category 3
+                            </a>
+                        </div>
+                        <div className="flex lg:hidden items-center gap-4 flex-wrap">
+                            <FiltersPopup category={category} />
+                            <div className="text-base text-gray-900 font-normal rounded-full bg-gray-100 transition-all hover:bg-gray-200 pl-5 pr-2">
+                                <label htmlFor="sortby" className="font-medium">Sort by: </label>
+                                <select name="sort" id="sortby" className="no-decor bg-transparent">
+                                    <option value="">Recent first</option>
+                                    <option value="">Older first</option>
                                 </select>
                             </div>
                         </div>
@@ -118,6 +139,6 @@ export default function SearchPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }

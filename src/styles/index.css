@@ -23,7 +23,7 @@
 
 
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 0;
     background-color: white;
 }
 
@@ -35,6 +35,7 @@
 
 .bg-primary-image::-webkit-scrollbar,
 .bg-primary-image *::-webkit-scrollbar {
+    width: 5px;
     background-color: transparent;
 }
 
