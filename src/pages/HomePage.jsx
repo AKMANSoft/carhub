@@ -1,6 +1,9 @@
 
 // type Props = {}
 
+import CarGridItem from "../components/CarGridItem"
+import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS"
+
 const cars = [
     "/images/car1.jpg",
     "/images/car2.jpg",
@@ -24,17 +27,11 @@ const cars = [
 
 export default function HomePage() {
     return (
-        <div className="flex justify-center py-10 px-4 md:px-20">
+        <div className={"flex justify-center py-10"+ MAIN_HORIZONTAL_PADDING}>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 md:gap-8">
                 {
                     cars.map((img) => (
-                        <div key={img} className="w-full">
-                            <img src={img} width={250} height={250}
-                                className="w-full h-auto object-cover aspect-square overflow-hidden object-center rounded-md" alt="" />
-                            <h3 className="text-lg font-semibold mt-2">New Jeep Wrangler</h3>
-                            <p className="text-base font-normal text-gray-900">$2000</p>
-                            <p className="text-base font-normal text-gray-600">Kennewick, WA</p>
-                        </div>
+                        <CarGridItem key={img} img={img} />
                     ))
                 }
 

@@ -1,11 +1,12 @@
 import React from "react";
+import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 
 
 export default function ProfilePage() {
     const [activeTab, setActiveTab] = React.useState(1);
 
     return (
-        <div className="max-w-screen-xl mx-auto py-10 md:py-20 px-4 md:px-10 lg:px-20">
+        <div className={"max-w-screen-xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
             <div className="w-full shadow-lg shadow-primary/30 rounded-lg p-10 lg:p-20">
                 <div className="flex flex-col md:flex-row gap-16 md:gap-2 justify-between items-center">
                     <div className="flex flex-col md:flex-row gap-4 items-center">

@@ -3,11 +3,7 @@ import { categories } from "./Header";
 
 
 
-type Props = {
-    onSidebarClose: () => void
-}
-
-export default function SiderBar({ onSidebarClose }: Props) {
+export default function SiderBar({ onSidebarClose }) {
 
     React.useEffect(() => {
         window.addEventListener("resize", () => {

@@ -22,9 +22,27 @@
 }
 
 
-::-webkit-scrollbar{
-    display: none;
+::-webkit-scrollbar {
+    width: 5px;
+    background-color: white;
 }
+
+::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 20px;
+}
+
+
+.bg-primary-image::-webkit-scrollbar,
+.bg-primary-image *::-webkit-scrollbar {
+    background-color: transparent;
+}
+
+.bg-primary-image::-webkit-scrollbar-thumb,
+.bg-primary-image *::-webkit-scrollbar-thumb {
+    background-color: white;
+}
+
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -35,4 +53,13 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
+}
+
+
+@layer base {
+    input.no-decor, select.no-decor {
+        border: none;
+        outline: none;
+        box-shadow: none !important;
+    }
 }

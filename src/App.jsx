@@ -5,6 +5,7 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import Header from "./components/Header"
 import ProfilePage from "./pages/ProfilePage"
 import SignupPage from "./popups/SignupPage"
+import SearchPage from "./pages/SearchPage"
 
 function App() {
   const router = createBrowserRouter([
@@ -27,6 +28,10 @@ function App() {
     {
       path: "/profile",
       element: <ProfilePage />
+    },
+    {
+      path: "/search",
+      element: <SearchPage />
     }
   ])
 
