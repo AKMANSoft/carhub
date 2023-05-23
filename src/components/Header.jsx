@@ -72,7 +72,7 @@ export default function Header() {
                     <div className="flex lg:ms-5 xl:ms-10 gap-x-1 items-center flex-wrap">
                         {
                             categories.map((ctgry) => (
-                                <a key={ctgry} href="#" className="text-base font-normal text-gray-800 px-4 py-1 rounded-lg transition-all hover:bg-gray-100 hover:text-primary">
+                                <a key={ctgry} href={"/search?category=" + ctgry} className="text-base font-normal text-gray-800 px-4 py-1 rounded-lg transition-all hover:bg-gray-100 hover:text-primary">
                                     {ctgry}
                                 </a>
                             ))

@@ -1,5 +1,6 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
+import EditPofilePopup from "../popups/EditPofilePopup";
 
 
 export default function ProfilePage() {
@@ -29,9 +30,7 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div>
-                        <a href="#" className='text-base font-medium bg-primary text-white px-8 py-2.5 hover:bg-primary/95 rounded-full'>
-                            Edit Profile
-                        </a>
+                        <EditPofilePopup />
                     </div>
                 </div>
                 {/* Reviews and Offers Section  */}

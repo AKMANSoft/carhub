@@ -52,15 +52,28 @@ input::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
+    appearance: textfield;
     -moz-appearance: textfield;
     -webkit-appearance: textfield;
 }
 
 
 @layer base {
-    input.no-decor, select.no-decor {
+
+    input.no-decor,
+    select.no-decor {
         border: none;
         outline: none;
         box-shadow: none !important;
     }
+}
+
+
+body::after {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: -1;
+    content: url(/images/auth_bg_image.svg);
 }
