@@ -2,7 +2,6 @@ import ThemeInput from '../components/ThemeInput';
 import BasePopup from './BasePopup';
 import React from 'react';
 import ThemeTextArea from '../components/ThemeTextArea';
-import authBgImage from '../assets/auth_bg_image.svg'
 
 // type Props = {}
 
@@ -11,7 +10,6 @@ export default function EditPofilePopup() {
     const popupRef = React.useRef(null);
     const imageInputRef = React.useRef(null);
 
-    console.log(authBgImage)
     return (
         <BasePopup popupRef={popupRef}>
             {/* Trigger Button  */}
