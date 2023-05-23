@@ -38,7 +38,7 @@ export default function MessagesPage() {
                 </div>
                 {/* Messages Section  */}
                 <div className={"w-full lg:flex flex-col bg-gray-100 " + (selectedChat === null ? "hidden" : "flex")}>
-                    <ChatHeader />
+                    <ChatHeader onBackPressed={() => setSelectedChat(null)} />
                     <div className="max-h-full h-full min-h-[60vh] lg:min-h-0 overflow-y-auto p-4 space-y-4 flex flex-col justify-end">
                         <MessageItem />
                         <MessageItem primary={false} />
@@ -60,9 +60,12 @@ export default function MessagesPage() {
 }
 
 
-function ChatHeader() {
+function ChatHeader({ onBackPressed }) {
     return (
-        <div className="bg-white flex items-center border-b last:border-none border-gray-100/90 cursor-pointer gap-5 py-4 px-4 transition-all">
+        <div className="bg-white flex items-center border-b last:border-none border-gray-100/90 gap-5 py-4 px-4">
+            <button type='button' onClick={onBackPressed} className='lg:hidden text-gray-800 text-xl rounded-full py-1 px-3 aspect-square bg-transparent transition-all hover:bg-gray-200'>
+                <i className='fa-solid fa-arrow-left'></i>
+            </button>
             <div>
                 <img src="/images/car1.jpg" width={60} height={60} className="min-w-[60px] aspect-square rounded-full border-2 border-gray-200" alt="" />
             </div>
