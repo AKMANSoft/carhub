@@ -36,15 +36,15 @@ export default function Header() {
                         {
                             isLoggedin &&
                             <div className='flex items-center gap-5'>
-                                <button type='button' className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
+                                <a href="/messages" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-message"></i>
-                                </button>
-                                <button type='button' className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
+                                </a>
+                                <a href="/notifications" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-bell"></i>
-                                </button>
-                                <button type='button' className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
+                                </a>
+                                <a href="/profile" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-user"></i>
-                                </button>
+                                </a>
                             </div>
                         }
                         {

@@ -30,13 +30,13 @@ export default function SiderBar({ onSidebarClose }) {
             <div className="mt-10">
                 <ul className="py-2">
                     <li>
-                        <a href="#" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href="/messagees" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-message text-base text-gray-700 mr-4"></i>
                             Messages
                         </a>
                     </li>
                     <li>
-                        <a href="#" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href="/notifications" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-bell text-base text-gray-700 mr-4"></i>
                             Notifications
                         </a>
