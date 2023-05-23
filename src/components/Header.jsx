@@ -17,7 +17,7 @@ export const categories = [
 ]
 
 export default function Header() {
-    const isLoggedin = false;
+    const isLoggedin = true;
     const [headerActive, setHeaderActive] = React.useState(false);
     return (
         <header className={"w-full fixed top-0 left-0 bg-white" + MAIN_HORIZONTAL_PADDING}>
@@ -47,20 +47,20 @@ export default function Header() {
                                 </button>
                             </div>
                         }
-                        <div>
-                            {
-                                isLoggedin ?
-                                    <a href="#" className='text-base font-medium border border-primary text-gray-800 px-8 py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
+                        {
+                            isLoggedin ?
+                                <div>
+                                    <a href="#" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                                         Post Car
-                                        <i className='fa-solid fa-plus ms-5'></i>
+                                        <i className='fa-solid fa-plus ms-3 lg:ms-5'></i>
                                     </a>
-                                    :
-                                    <>
-                                        <SignupPopup />
-                                        <SigninPopup />
-                                    </>
-                            }
-                        </div>
+                                </div>
+                                :
+                                <div>
+                                    <SignupPopup />
+                                    <SigninPopup />
+                                </div>
+                        }
                     </div>
                 </div>
                 <div className="mt-5 lg:hidden">
