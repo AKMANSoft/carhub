@@ -3,6 +3,8 @@ import SignupPopup from "../popups/SignupPage";
 import SigninPopup from "../popups/SigninPage";
 import SiderBar from "./SideBar";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
+import Popup from "reactjs-popup";
+import InboxDropdown from "../dropdowns/InboxDropdown";
 
 
 export const categories = [
@@ -20,7 +22,7 @@ export default function Header() {
     const isLoggedin = true;
     const [headerActive, setHeaderActive] = React.useState(false);
     return (
-        <header className={"w-full fixed top-0 left-0 bg-white" + MAIN_HORIZONTAL_PADDING}>
+        <header className={"w-full fixed top-0 left-0 bg-white z-50" + MAIN_HORIZONTAL_PADDING}>
             <div className="py-5 border-b border-b-gray-300">
                 <div className="flex items-center justify-between">
                     <div className='flex items-center gap-4 lg:gap-10'>
@@ -36,12 +38,7 @@ export default function Header() {
                         {
                             isLoggedin &&
                             <div className='flex items-center gap-5'>
-                                <a href="/messages" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
-                                    <i className="fa-solid fa-message"></i>
-                                </a>
-                                <a href="/notifications" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
-                                    <i className="fa-solid fa-bell"></i>
-                                </a>
+                                <InboxDropdown />
                                 <a href="/profile" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-user"></i>
                                 </a>
@@ -50,7 +47,7 @@ export default function Header() {
                         {
                             isLoggedin ?
                                 <div>
-                                    <a href="#" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
+                                    <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                                         Post Car
                                         <i className='fa-solid fa-plus ms-3 lg:ms-5'></i>
                                     </a>

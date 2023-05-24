@@ -6,8 +6,9 @@ import Header from "./components/Header"
 import ProfilePage from "./pages/ProfilePage"
 import SignupPage from "./popups/SignupPage"
 import SearchPage from "./pages/SearchPage"
-import NotificationsPage from "./pages/NotificationsPage"
+import InboxPage from "./pages/InboxPage"
 import MessagesPage from "./pages/MessagesPage"
+import PostCarPage from "./pages/PostCarPage"
 
 function App() {
   const router = createBrowserRouter([
@@ -36,12 +37,12 @@ function App() {
       element: <SearchPage />
     },
     {
-      path: "/notifications",
-      element: <NotificationsPage />
+      path: "/inbox",
+      element: <InboxPage />
     },
     {
-      path: "/messages",
-      element: <MessagesPage />
+      path: "/post-car",
+      element: <PostCarPage />
     }
   ])
 
