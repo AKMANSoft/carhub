@@ -9,6 +9,7 @@ import SearchPage from "./pages/SearchPage"
 import InboxPage from "./pages/InboxPage"
 import MessagesPage from "./pages/MessagesPage"
 import PostCarPage from "./pages/PostCarPage"
+import FindMeBuyerPage from "./pages/FindMeBuyerPage"
 
 function App() {
   const router = createBrowserRouter([
@@ -43,13 +44,17 @@ function App() {
     {
       path: "/post-car",
       element: <PostCarPage />
+    },
+    {
+      path: "/find-me-buyer",
+      element: <FindMeBuyerPage />
     }
   ])
 
   return (
     <div>
       <Header />
-      <main className="mt-[140px]">
+      <main className="mt-[220px] md:mt-[200px] lg:mt-[240px] xl:mt-[140px]">
         <RouterProvider router={router} />
       </main>
     </div>

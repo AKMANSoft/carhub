@@ -9,7 +9,8 @@ export default {
       colors: {
         primary: "#24388A",
         "page-bg": "#00358b"
-      }
+      },
+
     },
     backgroundImage: {
       'primary-image': "url('/images/auth_bg_image.svg')"
@@ -26,6 +27,6 @@ export default {
   },
   plugins: [
     require("@tailwindcss/forms")
-  ],
+  ]
 }
 

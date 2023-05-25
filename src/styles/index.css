@@ -16,7 +16,7 @@
     }
 
     .btn-primary {
-        @apply rounded-full bg-primary py-4 px-8 border-none outline-none transition-all text-white hover:bg-primary/90;
+        @apply px-8 md:px-16 py-3 bg-primary text-white text-lg rounded transition-all hover:bg-primary/90;
     }
 
 }

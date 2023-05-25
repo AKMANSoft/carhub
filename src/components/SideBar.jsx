@@ -22,7 +22,7 @@ export default function SiderBar({ onSidebarClose }) {
                     </button>
                     <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                 </div>
-                <a href="#" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
+                <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                     Post Car
                     <i className='fa-solid fa-plus ms-3 lg:ms-5'></i>
                 </a>
@@ -30,13 +30,19 @@ export default function SiderBar({ onSidebarClose }) {
             <div className="mt-10">
                 <ul className="py-2">
                     <li>
-                        <a href="/messagees" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href="/profile" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                            <i className="fa-solid fa-user text-base text-gray-700 mr-4"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/inbox?active=messages" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-message text-base text-gray-700 mr-4"></i>
                             Messages
                         </a>
                     </li>
                     <li>
-                        <a href="/notifications" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href="/inbox?active=notifications" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-bell text-base text-gray-700 mr-4"></i>
                             Notifications
                         </a>

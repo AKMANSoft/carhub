@@ -8,8 +8,12 @@ export default function ImageDragDropInput({
 }) {
     const [images, setImages] = React.useState([]);
     const onDrop = React.useCallback(acceptedFiles => {
-        console.log(acceptedFiles)
-        setImages(acceptedFiles)
+        setImages(acceptedFiles.map((img) => {
+            return {
+                src: img,
+                id: (new Date().getTime() * Math.random())
+            }
+        }))
         onImagesChanged(acceptedFiles);
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -19,6 +23,12 @@ export default function ImageDragDropInput({
         },
         multiple: true
     })
+
+
+    const removeImage = (id) => {
+        setImages(images.filter((img) => img.id !== id));
+    }
+
     return (
         <>
             <div {...getRootProps()} className={"w-full flex justify-center py-20 px-10 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 outline-none " + className}>
@@ -43,14 +53,22 @@ export default function ImageDragDropInput({
                 }
             </div>
             {
-                withPreview &&
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-5">
-                    {
-                        images.map((img) => (
-                            <img src={window.URL.createObjectURL(img)} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
-                        ))
-                    }
-                </div>
+                withPreview ?
+                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-5">
+                        {
+                            images.map((img) => (
+                                <span key={img.id} className='relative group rounded overflow-hidden'>
+                                    <img src={window.URL.createObjectURL(img.src)} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
+                                    <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
+                                        <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
+                                            <i className='fa-solid fa-xmark'></i>
+                                        </button>
+                                    </span>
+                                </span>
+                            ))
+                        }
+                    </div>
+                    : <></>
             }
         </>
     )

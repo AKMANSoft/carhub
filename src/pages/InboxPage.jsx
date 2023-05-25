@@ -1,6 +1,7 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import { useSearchParams } from "react-router-dom";
+import TabbedView from "../components/TabbedView";
 
 
 export default function InboxPage() {
@@ -15,14 +16,39 @@ export default function InboxPage() {
     return (
         <div className={"max-w-screen-2xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
             <div className="mb-12">
-                <h2 className="text-4xl text-gray-900 font-bold">
+                <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
                     <a href="/" className="text-lg text-gray-600">Home</a>
                     <i className="mx-3 text-sm text-gray-500 fa-solid fa-chevron-right"></i>
-                    <a href="/notifications">Inbox</a>
+                    <a href="/notifications" className="text-lg text-gray-900">Inbox</a>
                 </h2>
             </div>
 
-            <div className="w-full border-4 border-gray-100 rounded-lg">
+            <TabbedView
+                tabs={[
+                    {
+                        tabName: "Messages",
+                        content: () => (
+                            <div className="py-4">
+                                <NotificationItem title="Message Title" />
+                                <NotificationItem title="Message Title" />
+                                <NotificationItem title="Message Title" />
+                            </div>
+                        )
+                    },
+                    {
+                        tabName: "Notifications",
+                        content: () => (
+                            <div className="py-4">
+                                <NotificationItem />
+                                <NotificationItem />
+                                <NotificationItem />
+                            </div>
+                        )
+                    }
+                ]}
+            />
+
+            {/* <div className="w-full border-4 border-gray-100 rounded-lg">
                 <div className="mb-3 flex items-center border-b border-gray-100">
                     <button type="button" onClick={() => setTab("messages")} className={"text-xl font-semibold px-8 py-4 border-b-4 " + (activeTab === "messages" ? "border-primary text-primary bg-gray-50" : "border-transparent text-gray-800")}>
                         Messages
@@ -45,7 +71,7 @@ export default function InboxPage() {
                             <NotificationItem />
                         </div>
                 }
-            </div>
+            </div> */}
         </div>
     );
 }
