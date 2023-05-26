@@ -1,16 +1,17 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import EditPofilePopup from "../popups/EditPofilePopup";
+import CarGridItem from "../components/CarGridItem";
 
 
-export default function ProfilePage() {
+export default function PublicProfilePage() {
     const [activeTab, setActiveTab] = React.useState(1);
 
     return (
         <div className={"max-w-screen-2xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
             {/* <div className="w-full shadow-lg shadow-primary/30 rounded-lg p-10 lg:p-20"> */}
             {/* <div className="w-full shadow-none md:shadow-lg shadow-primary/30 rounded-lg p-0 md:p-8 lg:py-20"> */}
-            <div className="w-full border-4 border-gray-100 rounded-lg">
+            <div className="w-full shadow border rounded-md bg-white">
                 {/* Profile Section */}
                 <div className="flex flex-col md:flex-row gap-16 md:gap-2 justify-between items-center p-10">
                     <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
@@ -30,24 +31,22 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div>
-                        <EditPofilePopup />
+                        <button type='button' className='text-base font-medium bg-primary text-white px-8 py-2.5 hover:bg-primary/95 rounded-full'>
+                            Contact Seller
+                        </button>
                     </div>
                 </div>
                 {/* Reviews and Offers Section  */}
-                <div className="mt-10">
-                    <div className="flex items-center justify-center gap-10 md:gap-20 lg:gap-40">
-                        <button type="button" onClick={() => setActiveTab(0)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 0 ? "border-primary" : "border-transparent")}>
-                            Offers
-                        </button>
-                        <button type="button" onClick={() => setActiveTab(1)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 1 ? "border-primary" : "border-transparent")}>
-                            Reviews
-                        </button>
-                    </div>
-                    <div className="mt-8">
-                        <ReviewItem />
-                        <ReviewItem />
-                        <ReviewItem />
-                        <ReviewItem />
+                <div className="p-10 flex flex-col justify-center">
+                    <h2 className="text-4xl text-gray-900 font-bold mb-12 text-center">Cars from Seller</h2>
+                    <div className="flex flex-wrap justify-center gap-5 md:gap-8">
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car1.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car2.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car3.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car3.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car3.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car3.jpg" />
+                        <CarGridItem className="max-w-[calc(50%_-_10px)] md:max-w-[calc(50%_-_16px)] lg:max-w-[180px] xl:max-w-[220px]" img="/images/car3.jpg" />
                     </div>
                 </div>
             </div>

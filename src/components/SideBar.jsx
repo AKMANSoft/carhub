@@ -30,7 +30,7 @@ export default function SiderBar({ onSidebarClose }) {
             <div className="mt-10">
                 <ul className="py-2">
                     <li>
-                        <a href="/profile" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href="/account" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-user text-base text-gray-700 mr-4"></i>
                             Profile
                         </a>

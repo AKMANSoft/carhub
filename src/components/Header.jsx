@@ -41,7 +41,7 @@ export default function Header() {
                             isLoggedin &&
                             <div className='hidden md:flex items-center gap-5'>
                                 <InboxDropdown />
-                                <a href="/profile" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
+                                <a href="/account" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-user"></i>
                                 </a>
                             </div>

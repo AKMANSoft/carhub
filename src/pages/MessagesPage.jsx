@@ -5,57 +5,57 @@ import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 export default function MessagesPage() {
     const [selectedChat, setSelectedChat] = React.useState(null);
     return (
-        <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
-            <div className="mb-12">
-                <h2 className="text-4xl text-gray-900 font-bold">
-                    <a href="/" className="text-gray-400">Home</a>
-                    <i className="mx-4 text-[70%] text-gray-500 fa-solid fa-chevron-right"></i>
-                    <a href="/notifications">Messages</a>
-                </h2>
-            </div>
-            <div className="flex w-full border-4 overflow-hidden max-h-[90vh] lg:max-h-[800px] border-gray-200 rounded-lg">
-                {/* Chats Sidebar */}
-                <div className={"min-w-[400px] w-full lg:max-w-[400px] border-r-4 border-gray-200 " + (selectedChat === null ? "" : "hidden")}>
-                    <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
-                        <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Search..." />
-                        <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white">
-                            <i className="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </div>
-                    <div className="max-h-full overflow-y-auto">
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                        <ChatItem onClick={() => setSelectedChat("hello")} />
-                    </div>
+        // <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
+        //     <div className="mb-12">
+        //         <h2 className="text-4xl text-gray-900 font-bold">
+        //             <a href="/" className="text-gray-400">Home</a>
+        //             <i className="mx-4 text-[70%] text-gray-500 fa-solid fa-chevron-right"></i>
+        //             <a href="/notifications">Messages</a>
+        //         </h2>
+        //     </div>
+        <div className="flex w-full border-t-2 overflow-hidden max-h-[90vh] lg:max-h-[800px] border-gray-200">
+            {/* Chats Sidebar */}
+            <div className={"min-w-[400px] w-full lg:max-w-[400px] border-r-2 border-gray-200 " + (selectedChat !== null && window.innerWidth < 1020 ? "hidden" : "")}>
+                <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
+                    <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Search..." />
+                    <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white">
+                        <i className="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
-                {/* Messages Section  */}
-                <div className={"w-full lg:flex flex-col bg-gray-100 " + (selectedChat === null ? "hidden" : "flex")}>
-                    <ChatHeader onBackPressed={() => setSelectedChat(null)} />
-                    <div className="max-h-full h-full min-h-[60vh] lg:min-h-0 overflow-y-auto p-4 space-y-4 flex flex-col justify-end">
-                        <MessageItem />
-                        <MessageItem primary={false} />
-                        <MessageItem />
-                        <MessageItem primary={false} />
-                    </div>
-                    <div className="bg-white">
-                        <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
-                            <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Type..." />
-                            <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white transition-all hover:bg-primary/90">
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </button>
-                        </div>
+                <div className="max-h-full overflow-y-auto">
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                    <ChatItem onClick={() => setSelectedChat("hello")} />
+                </div>
+            </div>
+            {/* Messages Section  */}
+            <div className={"w-full lg:flex flex-col bg-gray-100 " + (selectedChat === null ? "hidden" : "flex")}>
+                <ChatHeader onBackPressed={() => setSelectedChat(null)} />
+                <div className="max-h-full h-full min-h-[60vh] lg:min-h-0 overflow-y-auto p-4 space-y-4 flex flex-col justify-end">
+                    <MessageItem />
+                    <MessageItem primary={false} />
+                    <MessageItem />
+                    <MessageItem primary={false} />
+                </div>
+                <div className="bg-white">
+                    <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
+                        <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Type..." />
+                        <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white transition-all hover:bg-primary/90">
+                            <i className="fa-solid fa-paper-plane"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+        // </div>
     );
 }
 
