@@ -1,5 +1,6 @@
 import React from "react";
 import { categories } from "./Header";
+import { accountPageTabs } from "../pages/AccountPage";
 
 
 
@@ -30,12 +31,6 @@ export default function SiderBar({ onSidebarClose }) {
             <div className="mt-10">
                 <ul className="py-2">
                     <li>
-                        <a href="/account" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
-                            <i className="fa-solid fa-user text-base text-gray-700 mr-4"></i>
-                            Profile
-                        </a>
-                    </li>
-                    <li>
                         <a href="/inbox?active=messages" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <i className="fa-solid fa-message text-base text-gray-700 mr-4"></i>
                             Messages
@@ -47,6 +42,16 @@ export default function SiderBar({ onSidebarClose }) {
                             Notifications
                         </a>
                     </li>
+                    {
+                        accountPageTabs.map((tab) => (
+                            <li>
+                                <a href={"/account?active=" + tab.id} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                                    <i className={"fa-solid text-base text-gray-700 mr-4 " + tab.icon}></i>
+                                    {tab.name}
+                                </a>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
             <div className="mt-8 border-t pt-8">
@@ -54,7 +59,7 @@ export default function SiderBar({ onSidebarClose }) {
                 <ul className="py-2">
                     {
                         categories.map((ctgry) => (
-                            <li>
+                            <li key={ctgry}>
                                 <a href="#" key={ctgry} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                                     {ctgry}
                                     <i className="fa-solid fa-arrow-right text-sm text-gray-700"></i>

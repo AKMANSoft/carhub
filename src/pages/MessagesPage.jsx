@@ -15,7 +15,7 @@ export default function MessagesPage() {
         //     </div>
         <div className="flex w-full border-t-2 overflow-hidden max-h-[90vh] lg:max-h-[800px] border-gray-200">
             {/* Chats Sidebar */}
-            <div className={"min-w-[400px] w-full lg:max-w-[400px] border-r-2 border-gray-200 " + (selectedChat !== null && window.innerWidth < 1020 ? "hidden" : "")}>
+            <div className={"md:min-w-[400px] w-full lg:max-w-[400px] border-r-2 border-gray-200 " + (selectedChat !== null && window.innerWidth < 1020 ? "hidden" : "")}>
                 <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
                     <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Search..." />
                     <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white">
@@ -62,7 +62,7 @@ export default function MessagesPage() {
 
 function ChatHeader({ onBackPressed }) {
     return (
-        <div className="bg-white flex items-center border-b last:border-none border-gray-100/90 gap-5 py-4 px-4">
+        <div className="bg-white flex items-center border-b last:border-none border-gray-100/90 gap-2 md:gap-5 py-4 px-4">
             <button type='button' onClick={onBackPressed} className='lg:hidden text-gray-800 text-xl rounded-full py-1 px-3 aspect-square bg-transparent transition-all hover:bg-gray-200'>
                 <i className='fa-solid fa-arrow-left'></i>
             </button>
@@ -84,7 +84,7 @@ function ChatHeader({ onBackPressed }) {
 function MessageItem({ primary = true }) {
     return (
         <div className={"flex " + (primary ? "justify-end" : "justify-start")}>
-            <div className={"rounded-3xl py-3 px-4 max-w-[400px] " + (primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none")}>
+            <div className={"rounded-3xl py-3 px-4 max-w-[80%] md:max-w-[400px] " + (primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none")}>
                 <p className={"text-sm font-light " + (primary ? "text-white" : "text-gray-900")}>
                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque nisi excepturi necessitatibus sit maxime. Dicta quo laboriosam iusto, voluptates veritatis quos rerum sint inventore necessitatibus, dolorem illo reprehenderit optio eligendi.
                 </p>

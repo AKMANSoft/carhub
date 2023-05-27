@@ -3,23 +3,25 @@ import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import EditPofilePopup from "../popups/EditPofilePopup";
 import { useSearchParams } from "react-router-dom";
 import TabbedView from "../components/TabbedView";
-import CarGridItem from "../components/CarGridItem";
 
 
-const tabs = [
+export const accountPageTabs = [
     {
         id: "payments-and-deposit-methods",
         name: "Payment & Deposit methods",
+        icon: "fa-credit-card",
         content: () => <PaymentAndDepositMethodsSection />
     },
     {
         id: "my-cars",
         name: "My Cars",
+        icon: "fa-car",
         content: () => <MyCarsSection />
     },
     {
         id: "account-settings",
         name: "Account Settings",
+        icon: "fa-user",
         content: () => <ProfileSection />
     }
 ]
@@ -27,8 +29,8 @@ const tabs = [
 export default function AccountPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = React.useState(() => {
-        let queryTab = tabs.find((tb) => tb.id === searchParams.get("active")?.toLowerCase())
-        if (queryTab === undefined || queryTab === null) return tabs[tabs.length - 1]
+        let queryTab = accountPageTabs.find((tb) => tb.id === searchParams.get("active")?.toLowerCase())
+        if (queryTab === undefined || queryTab === null) return accountPageTabs[accountPageTabs.length - 1]
         else return queryTab
     });
 
@@ -41,10 +43,10 @@ export default function AccountPage() {
     return (
         <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
             <div className="w-full flex min-h-[600px] shadow border rounded-md bg-white">
-                <div className="w-1/4 min-w-[300px] max-w-[300px] border-r pb-5">
+                <div className="w-1/4 hidden lg:block min-w-[300px] max-w-[300px] border-r pb-5">
                     <div className="">
                         {
-                            tabs.map((tab) => (
+                            accountPageTabs.map((tab) => (
                                 <button type="button" key={tab.id} onClick={() => setTab(tab)} className={
                                     "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all "
                                     + (activeTab.id === tab.id ? "text-primary bg-gray-100 font-semibold" : "hover:text-primary hover:bg-gray-100 hover:font-semibold")
@@ -81,7 +83,7 @@ export default function AccountPage() {
 
 function PaymentAndDepositMethodsSection() {
     return (
-        <div className="p-10 max-w-[900px]">
+        <div className="px-5 py-10 md:p-10 max-w-[900px]">
             <TabbedView
                 tabs={[
                     {
