@@ -1,6 +1,5 @@
 
 
-
 export default function CarGridItem({ img, className = "" }) {
     return (
         <a href="/cars/1">

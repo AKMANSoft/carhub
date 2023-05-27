@@ -55,12 +55,12 @@ export default function SiderBar({ onSidebarClose }) {
                 </ul>
             </div>
             <div className="mt-8 border-t pt-8">
-                <h4 className="text-2xl font-bold text-gray-900">All Categories</h4>
+                <h4 className="text-2xl font-bold text-gray-900">Categories</h4>
                 <ul className="py-2">
                     {
-                        categories.map((ctgry) => (
+                        ["All Categories", ...categories].map((ctgry) => (
                             <li key={ctgry}>
-                                <a href="#" key={ctgry} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                                <a href={"search?category=" + ctgry} key={ctgry} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                                     {ctgry}
                                     <i className="fa-solid fa-arrow-right text-sm text-gray-700"></i>
                                 </a>
