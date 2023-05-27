@@ -10,6 +10,7 @@
 }
 
 
+
 @layer components {
     .btn-light {
         @apply rounded-full bg-white py-4 px-8 border-none outline-none transition-all text-primary hover:bg-white/80;
@@ -76,4 +77,20 @@ body::after {
     overflow: hidden;
     z-index: -1;
     content: url(/images/auth_bg_image.svg);
+}
+
+
+.slick-arrow::before {
+    display: none;
+}
+
+.slick-arrow.slick-next {
+    position: absolute;
+    right: 20px;
+    z-index: 2;
+}
+.slick-arrow.slick-prev {
+    position: absolute;
+    left: 10px;
+    z-index: 2;
 }

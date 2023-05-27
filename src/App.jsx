@@ -9,6 +9,7 @@ import FindMeBuyerPage from "./pages/FindMeBuyerPage"
 import AccountPage from "./pages/AccountPage"
 import Footer from "./components/Footer"
 import PublicProfilePage from "./pages/PublicProfilePage"
+import CarDetailsPage from "./pages/CarDetailsPage"
 
 function App() {
   const router = createBrowserRouter([
@@ -23,6 +24,10 @@ function App() {
     {
       path: "/profiles/:id",
       element: <PublicProfilePage />
+    },
+    {
+      path: "/cars/:id",
+      element: <CarDetailsPage />
     },
     {
       path: "/search",
