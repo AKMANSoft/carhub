@@ -52,6 +52,25 @@ export default function SiderBar({ onSidebarClose }) {
                             </li>
                         ))
                     }
+                    <li className="border-t mt-6 pt-4"></li>
+                    <li>
+                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                            <i className="fa-solid fa-circle-info text-base text-gray-700 mr-4"></i>
+                            About
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                            <i className="fa-solid fa-list text-base text-gray-700 mr-4"></i>
+                            Terms of Services
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                            <i className="fa-solid fa-lock text-base text-gray-700 mr-4"></i>
+                            Privacy
+                        </a>
+                    </li>
                 </ul>
             </div>
             <div className="mt-8 border-t pt-8">

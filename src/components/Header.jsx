@@ -4,6 +4,7 @@ import SigninPopup from "../popups/SigninPage";
 import SiderBar from "./SideBar";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
+import Popup from "reactjs-popup";
 
 
 export const categories = [
@@ -40,6 +41,7 @@ export default function Header() {
                         {
                             isLoggedin &&
                             <div className='hidden md:flex items-center gap-5'>
+                                <AboutDropdown />
                                 <InboxDropdown />
                                 <a href="/account" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <i className="fa-solid fa-user"></i>
@@ -92,6 +94,40 @@ export default function Header() {
 
 
 
+
+
+function AboutDropdown() {
+    return (
+        <Popup
+            trigger={
+                <button className='text-lg font-medium text-gray-700 transition-all hover:text-primary'>
+                    About
+                    <i className="fa-solid fa-chevron-down ml-3"></i>
+                </button>
+            }
+            position={['bottom right']}
+            contentStyle={{ border: "none", width: 250, padding: "0" }}
+            closeOnDocumentClick
+            nested
+        >
+            <div>
+                <a href="https://www.gocarhub.app/" className="text-base font-medium text-black block py-2 border-b border-gray-100 px-5 transition-all hover:text-primary hover:bg-gray-100">
+                    About
+                </a>
+                <a href="https://www.gocarhub.app/" className="text-base font-medium text-black block py-2 border-b border-gray-100 px-5 transition-all hover:text-primary hover:bg-gray-100">
+                    Terms of Services
+                </a>
+                <a href="https://www.gocarhub.app/" className="text-base font-medium text-black block py-2 border-b border-gray-100 px-5 transition-all hover:text-primary hover:bg-gray-100">
+                    Privacy
+                </a>
+            </div>
+        </Popup>
+    );
+}
+
+
+
+
 function HeaderLocationEl() {
     return (
         <a href="#" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
@@ -107,7 +143,7 @@ function HeaderLocationEl() {
 
 function HeaderSearchComponent({ className }) {
     return (
-        <div className={"relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
+        <div className={"w-full lg:w-96 xl:w-full relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
             <input className="ps-5 text-sm w-full min-h-full no-decor text-gray-600 appearance-none bg-transparent"
                 type="search" name="search" placeholder="Search" />
             <span className="block w-0 min-h-full my-2 border-l border-gray-300"></span>
