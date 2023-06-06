@@ -1,32 +1,37 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import EditPofilePopup from "../popups/EditPofilePopup";
-import { useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import TabbedView from "../components/TabbedView";
+import { faArrowUpRightFromSquare, faCar, faCreditCard, faStar, faUser } from "@fortawesome/free-solid-svg-icons";
+import MainLayout from "../components/layout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAuthUser from "../components/hooks/useAuthUser";
 
 
 export const accountPageTabs = [
     {
         id: "payments-and-deposit-methods",
         name: "Payment & Deposit methods",
-        icon: "fa-credit-card",
-        content: () => <PaymentAndDepositMethodsSection />
+        icon: faCreditCard,
+        content: (authUser) => <PaymentAndDepositMethodsSection />
     },
     {
         id: "my-cars",
         name: "My Cars",
-        icon: "fa-car",
-        content: () => <MyCarsSection />
+        icon: faCar,
+        content: (authUser) => <MyCarsSection />
     },
     {
         id: "account-settings",
         name: "Account Settings",
-        icon: "fa-user",
-        content: () => <ProfileSection />
+        icon: faUser,
+        content: (authUser) => <ProfileSection authUser={authUser} />
     }
 ]
 
 export default function AccountPage() {
+    const authUser = useAuthUser();
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = React.useState(() => {
         let queryTab = accountPageTabs.find((tb) => tb.id === searchParams.get("active")?.toLowerCase())
@@ -41,39 +46,46 @@ export default function AccountPage() {
     }
 
     return (
-        <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
-            <div className="w-full flex min-h-[600px] shadow border rounded-md bg-white">
-                <div className="w-1/4 hidden lg:block min-w-[300px] max-w-[300px] border-r pb-5">
-                    <div className="">
-                        {
-                            accountPageTabs.map((tab) => (
-                                <button type="button" key={tab.id} onClick={() => setTab(tab)} className={
-                                    "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all "
-                                    + (activeTab.id === tab.id ? "text-primary bg-gray-100 font-semibold" : "hover:text-primary hover:bg-gray-100 hover:font-semibold")
-                                }>
-                                    {tab.name}
-                                </button>
-                            ))
-                        }
+        <MainLayout>
+            {
+                authUser.accessToken === undefined || authUser.accessToken === null || authUser.accessToken === "" ?
+                    <Navigate to={"/?p=signin"} replace />
+                    :
+                    <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
+                        <div className="w-full flex min-h-[600px] shadow border rounded-md bg-white">
+                            <div className="w-1/4 hidden lg:block min-w-[300px] max-w-[300px] border-r pb-5">
+                                <div className="">
+                                    {
+                                        accountPageTabs.map((tab) => (
+                                            <button type="button" key={tab.id} onClick={() => setTab(tab)} className={
+                                                "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all "
+                                                + (activeTab.id === tab.id ? "text-primary bg-gray-100 font-semibold" : "hover:text-primary hover:bg-gray-100 hover:font-semibold")
+                                            }>
+                                                {tab.name}
+                                            </button>
+                                        ))
+                                    }
 
+                                </div>
+                                <div className="px-4 mt-10">
+                                    <a href="/profiles/1" className={"text-base font-normal border-b border-transparent border-gray-100 transition-all text-primary hover:border-primary"}>
+                                        View public profile
+                                        <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm ml-2" />
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="w-full relative pt-5">
+                                <div className="mx-8 my-6 absolute -top-[41px] bg-white px-2">
+                                    <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
+                                        {activeTab?.name}
+                                    </h2>
+                                </div>
+                                {activeTab?.content(authUser)}
+                            </div>
+                        </div>
                     </div>
-                    <div className="px-4 mt-10">
-                        <a href="/profiles/1" className={"text-base font-normal border-b border-transparent border-gray-100 transition-all text-primary hover:border-primary"}>
-                            View public profile
-                            <i className="fa-solid fa-arrow-up-right-from-square text-sm ml-2"></i>
-                        </a>
-                    </div>
-                </div>
-                <div className="w-full relative pt-5">
-                    <div className="mx-8 my-6 absolute -top-[41px] bg-white px-2">
-                        <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                            {activeTab?.name}
-                        </h2>
-                    </div>
-                    {activeTab?.content()}
-                </div>
-            </div>
-        </div>
+            }
+        </MainLayout>
     );
 }
 
@@ -149,61 +161,84 @@ function MyCarGridItem({ img }) {
 
 
 
-function ProfileSection() {
+function ProfileSection({ authUser = null }) {
     const [activeTab, setActiveTab] = React.useState(1);
 
     return (
-        <div className="w-full">
-            {/* Profile Section */}
-            <div className="flex flex-col md:flex-row gap-16 md:gap-2 justify-between items-center p-10">
-                <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
-                    <img src="/images/car9.jpg" width={175} height={175} className="w-44 h-auto aspect-square object-cover object-center rounded-full border-4" alt="" />
-                    <div className="text-center md:text-left">
-                        <h3 className="text-2xl font-semibold text-gray-800">Ali Hussnain</h3>
-                        <p className="text-base font-normal text-gray-600">
-                            Islamabad | Pakistan
-                        </p>
-                        <div className="mt-5 inline-flex items-center gap-4">
-                            <span className="text-sm font-normal text-white rounded-full px-2 py-0.5 bg-primary">
-                                <i className="fa-solid fa-star text-xs mr-2"></i>
-                                4.9
-                            </span>
-                            <p className="text-base font-normal text-gray-600">2 Reviews</p>
+        authUser?.userProfile === null ?
+            <div className="flex items-center justify-center w-full h-96">
+                <div class="animate-spin inline-block w-20 h-20 border-[3px] border-gray-800 border-t-transparent text-yellow-1000 rounded-full" role="status" aria-label="loading">
+                    <span className="sr-only">Loading...</span>
+                </div>
+            </div>
+            :
+            <div className="w-full">
+                {/* Profile Section */}
+                <div className="flex flex-col md:flex-row gap-16 md:gap-2 justify-between items-center p-10">
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center">
+                        {
+                            <img src={authUser.userProfile.image} width={175} height={175} className="w-44 h-auto aspect-square object-cover object-center rounded-full border-4" alt="" />
+                        }
+                        <div className="text-center md:text-left">
+                            <h3 className="text-2xl font-semibold text-gray-800">
+                                {authUser?.userProfile?.name ?? ""}
+                            </h3>
+                            <p className="text-base font-normal text-gray-600">
+                                {
+                                    authUser?.userProfile?.user_address === null ?
+                                        <span>
+                                            Address not set.
+                                        </span>
+                                        :
+                                        <span>
+                                            {`${authUser?.userProfile?.user_address?.city ?? ""} | ${authUser?.userProfile?.user_address?.country ?? ""}`}
+                                        </span>
+
+                                }
+                            </p>
+                            <div className="mt-5 inline-flex items-center gap-4">
+                                <span className="text-sm font-normal text-white rounded-full px-2 py-0.5 bg-primary inline-flex items-center">
+                                    <FontAwesomeIcon icon={faStar} className="text-xs mr-2" />
+                                    {authUser?.userProfile?.average_rating ?? 0.0}
+                                </span>
+                                <p className="text-base font-normal text-gray-600">
+                                    {authUser?.userProfile?.ratings_count ?? 0} Reviews
+                                </p>
+                            </div>
                         </div>
                     </div>
+                    <div>
+                        <EditPofilePopup />
+                    </div>
                 </div>
-                <div>
-                    <EditPofilePopup />
+                {/* Reviews and Offers Section  */}
+                <div className="mt-10">
+                    <div className="flex items-center justify-center gap-10 md:gap-20 lg:gap-40">
+                        <button type="button" onClick={() => setActiveTab(0)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 0 ? "border-primary" : "border-transparent")}>
+                            Offers
+                        </button>
+                        <button type="button" onClick={() => setActiveTab(1)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 1 ? "border-primary" : "border-transparent")}>
+                            Reviews
+                        </button>
+                    </div>
+                    {
+                        activeTab === 0 ?
+                            <div className="mt-8">
+                                <OfferItem />
+                                <OfferItem />
+                                <OfferItem />
+                                <OfferItem />
+                            </div>
+                            :
+                            <div className="mt-8">
+                                <ReviewItem />
+                                <ReviewItem />
+                                <ReviewItem />
+                                <ReviewItem />
+                            </div>
+                    }
                 </div>
             </div>
-            {/* Reviews and Offers Section  */}
-            <div className="mt-10">
-                <div className="flex items-center justify-center gap-10 md:gap-20 lg:gap-40">
-                    <button type="button" onClick={() => setActiveTab(0)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 0 ? "border-primary" : "border-transparent")}>
-                        Offers
-                    </button>
-                    <button type="button" onClick={() => setActiveTab(1)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 1 ? "border-primary" : "border-transparent")}>
-                        Reviews
-                    </button>
-                </div>
-                {
-                    activeTab === 0 ?
-                        <div className="mt-8">
-                            <OfferItem />
-                            <OfferItem />
-                            <OfferItem />
-                            <OfferItem />
-                        </div>
-                        :
-                        <div className="mt-8">
-                            <ReviewItem />
-                            <ReviewItem />
-                            <ReviewItem />
-                            <ReviewItem />
-                        </div>
-                }
-            </div>
-        </div>
     );
 }
 

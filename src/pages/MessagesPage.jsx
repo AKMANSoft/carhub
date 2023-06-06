@@ -1,5 +1,7 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function MessagesPage() {
@@ -19,7 +21,7 @@ export default function MessagesPage() {
                 <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
                     <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Search..." />
                     <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white">
-                        <i className="fa-solid fa-magnifying-glass"></i>
+                        <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
                 <div className="max-h-full overflow-y-auto">

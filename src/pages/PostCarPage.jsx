@@ -2,8 +2,9 @@ import React from "react";
 import TabbedView from "../components/TabbedView";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import ImageDragDropInput from "../components/ImageDragDropInput";
-import { BlockPicker, CirclePicker, HuePicker, SketchPicker } from "react-color";
+import { CirclePicker } from "react-color";
 import Popup from "reactjs-popup";
+import MainLayout from "../components/layout";
 
 
 
@@ -159,21 +160,23 @@ function DetailsSection({ onValidated }) {
 
 function FeaturesSection({ onValidated }) {
     return (
-        <div className="pt-5 w-full shadow border rounded-md bg-white">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center p-5 pb-8 gap-7" >
-                <CheckBoxEl label="Massage seats" />
-                <CheckBoxEl label="Night vision" />
-                <CheckBoxEl label="Parking assist" />
-                <CheckBoxEl label="Lane keep assist" />
-                <CheckBoxEl label="Heads up display" />
-                <CheckBoxEl label="Navigation system" />
-                <div className="col-span-1 md:col-span-2 w-full">
-                    <button type="button" onClick={onValidated} className="btn-primary">
-                        Continue
-                    </button>
+        <MainLayout>
+            <div className="pt-5 w-full shadow border rounded-md bg-white">
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center p-5 pb-8 gap-7" >
+                    <CheckBoxEl label="Massage seats" />
+                    <CheckBoxEl label="Night vision" />
+                    <CheckBoxEl label="Parking assist" />
+                    <CheckBoxEl label="Lane keep assist" />
+                    <CheckBoxEl label="Heads up display" />
+                    <CheckBoxEl label="Navigation system" />
+                    <div className="col-span-1 md:col-span-2 w-full">
+                        <button type="button" onClick={onValidated} className="btn-primary">
+                            Continue
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </div >
+            </div >
+        </MainLayout>
     );
 }
 

@@ -2,73 +2,48 @@ import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import TabbedView from "../components/TabbedView";
 import MessagesPage from "./MessagesPage";
+import MainLayout from "../components/layout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function InboxPage() {
 
     return (
-        <div className={"max-w-screen-2xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
-            <div className="mb-12">
-                <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                    <a href="/" className="text-lg text-gray-600">Home</a>
-                    <i className="mx-3 text-sm text-gray-500 fa-solid fa-chevron-right"></i>
-                    <a href="/inbox" className="text-lg text-gray-900">Inbox</a>
-                </h2>
-            </div>
-
-            <TabbedView
-                checkFromParam={true}
-                paramName="active"
-                tabs={[
-                    {
-                        tabName: "Messages",
-                        content: () => (
-                            <MessagesPage />
-                            // <div className="py-4">
-                            //     <NotificationItem title="Message Title" />
-                            //     <NotificationItem title="Message Title" />
-                            //     <NotificationItem title="Message Title" />
-                            // </div>
-                        )
-                    },
-                    {
-                        tabName: "Notifications",
-                        content: () => (
-                            <div className="py-4">
-                                <NotificationItem />
-                                <NotificationItem />
-                                <NotificationItem />
-                            </div>
-                        )
-                    }
-                ]}
-            />
-
-            {/* <div className="w-full border-4 border-gray-100 rounded-lg">
-                <div className="mb-3 flex items-center border-b border-gray-100">
-                    <button type="button" onClick={() => setTab("messages")} className={"text-xl font-semibold px-8 py-4 border-b-4 " + (activeTab === "messages" ? "border-primary text-primary bg-gray-50" : "border-transparent text-gray-800")}>
-                        Messages
-                    </button>
-                    <button type="button" onClick={() => setTab("notifications")} className={"text-xl font-semibold px-8 py-4 border-b-4 " + (activeTab === "notifications" ? "border-primary text-primary bg-gray-50" : "border-transparent text-gray-800")}>
-                        Notifications
-                    </button>
+        <MainLayout>
+            <div className={"max-w-screen-2xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
+                <div className="mb-12">
+                    <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
+                        <a href="/" className="text-lg text-gray-600">Home</a>
+                        <FontAwesomeIcon icon={faChevronRight} className="mx-3 text-sm text-gray-500" />
+                        <a href="/inbox" className="text-lg text-gray-900">Inbox</a>
+                    </h2>
                 </div>
-                {
-                    activeTab === "messages" ?
-                        <div className="py-4">
-                            <NotificationItem title="Message Title" />
-                            <NotificationItem title="Message Title" />
-                            <NotificationItem title="Message Title" />
-                        </div>
-                        :
-                        <div className="py-4">
-                            <NotificationItem />
-                            <NotificationItem />
-                            <NotificationItem />
-                        </div>
-                }
-            </div> */}
-        </div>
+
+                <TabbedView
+                    checkFromParam={true}
+                    paramName="active"
+                    tabs={[
+                        {
+                            tabName: "Messages",
+                            content: () => (
+                                <MessagesPage />
+                            )
+                        },
+                        {
+                            tabName: "Notifications",
+                            content: () => (
+                                <div className="py-4">
+                                    <NotificationItem />
+                                    <NotificationItem />
+                                    <NotificationItem />
+                                </div>
+                            )
+                        }
+                    ]}
+                />
+            </div>
+        </MainLayout>
     );
 }
 
