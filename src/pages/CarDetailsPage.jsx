@@ -1,6 +1,9 @@
 import Slider from "react-slick";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import React from "react";
+import MainLayout from "../components/layout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft, faArrowRight, faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function CarDetailsPage() {
@@ -14,42 +17,44 @@ export default function CarDetailsPage() {
     console.log(windowWidth)
 
     return (
-        <div className={"mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
-            <div className="flex gap-5">
-                <div className="w-full xl:w-[70%]">
-                    <CarsSliderEl />
-                    <CarDetailsSection className="xl:hidden w-full py-5 mt-10" />
-                    <div className="mt-10 pb-10 border-b">
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold text-gray-900 uppercase">
-                                Features
-                            </h2>
+        <MainLayout>
+            <div className={"mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
+                <div className="flex gap-5">
+                    <div className="w-full xl:w-[70%]">
+                        <CarsSliderEl />
+                        <CarDetailsSection className="xl:hidden w-full py-5 mt-10" />
+                        <div className="mt-10 pb-10 border-b">
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-xl font-bold text-gray-900 uppercase">
+                                    Features
+                                </h2>
+                            </div>
+                            <div className="mt-5 grid-cols-1 md:grid-cols-2 grid lg:grid-cols-3 gap-2">
+                                <li className="list-disc text-base text-gray-800 font-medium"> Massage seats </li>
+                                <li className="list-disc text-base text-gray-800 font-medium"> Night vision </li>
+                                <li className="list-disc text-base text-gray-800 font-medium"> Parking assist </li>
+                                <li className="list-disc text-base text-gray-800 font-medium"> Lane keep assist </li>
+                                <li className="list-disc text-base text-gray-800 font-medium"> Heads up display </li>
+                                <li className="list-disc text-base text-gray-800 font-medium"> Navigation system </li>
+                            </div>
                         </div>
-                        <div className="mt-5 grid-cols-1 md:grid-cols-2 grid lg:grid-cols-3 gap-2">
-                            <li className="list-disc text-base text-gray-800 font-medium"> Massage seats </li>
-                            <li className="list-disc text-base text-gray-800 font-medium"> Night vision </li>
-                            <li className="list-disc text-base text-gray-800 font-medium"> Parking assist </li>
-                            <li className="list-disc text-base text-gray-800 font-medium"> Lane keep assist </li>
-                            <li className="list-disc text-base text-gray-800 font-medium"> Heads up display </li>
-                            <li className="list-disc text-base text-gray-800 font-medium"> Navigation system </li>
+                        <div className="mt-10">
+                            <div className="flex items-center gap-3">
+                                <h2 className="text-xl font-bold text-gray-900 uppercase">
+                                    Description
+                                </h2>
+                            </div>
+                            <div className="mt-3">
+                                <p className="text-base text-gray-700 font-normal">
+                                    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus at accusantium odit labore, libero perspiciatis, deleniti rerum quaerat sit nostrum repudiandae quas a dolorum dicta soluta! Nulla, debitis distinctio aspernatur, consequatur dicta sed incidunt fugiat unde veniam quos est libero.
+                                </p>
+                            </div>
                         </div>
                     </div>
-                    <div className="mt-10">
-                        <div className="flex items-center gap-3">
-                            <h2 className="text-xl font-bold text-gray-900 uppercase">
-                                Description
-                            </h2>
-                        </div>
-                        <div className="mt-3">
-                            <p className="text-base text-gray-700 font-normal">
-                                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Necessitatibus at accusantium odit labore, libero perspiciatis, deleniti rerum quaerat sit nostrum repudiandae quas a dolorum dicta soluta! Nulla, debitis distinctio aspernatur, consequatur dicta sed incidunt fugiat unde veniam quos est libero.
-                            </p>
-                        </div>
-                    </div>
+                    {<CarDetailsSection className="hidden xl:block w-[30%] py-5" />}
                 </div>
-                {<CarDetailsSection className="hidden xl:block w-[30%] py-5" />}
             </div>
-        </div>
+        </MainLayout>
     );
 }
 
@@ -153,14 +158,14 @@ function CarsSliderEl({ className }) {
             nextArrow={
                 <button type="button">
                     <span className="text-lg text-white bg-gray-900/40 inline-flex items-center justify-center w-auto px-2 aspect-square rounded-full transition-all hover:bg-gray-900/80">
-                        <i className="fa-solid fa-arrow-right"></i>
+                        <FontAwesomeIcon icon={faArrowRight} />
                     </span>
                 </button>
             }
             prevArrow={
                 <button type="button">
                     <span className="text-lg text-white bg-gray-900/40 inline-flex items-center justify-center w-auto px-2 aspect-square rounded-full transition-all hover:bg-gray-900/80">
-                        <i className="fa-solid fa-arrow-left"></i>
+                        <FontAwesomeIcon icon={faChevronLeft} />
                     </span>
                 </button>
             }

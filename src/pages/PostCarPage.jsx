@@ -2,9 +2,9 @@ import React from "react";
 import TabbedView from "../components/TabbedView";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import ImageDragDropInput from "../components/ImageDragDropInput";
-import { CirclePicker } from "react-color";
-import Popup from "reactjs-popup";
 import MainLayout from "../components/layout";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -37,50 +37,52 @@ export default function PostCarPage() {
     const [expandedSection, setExpandedSection] = React.useState(expandableSections[0].name)
     const [validatedSections, setValidatedSections] = React.useState([]);
     return (
-        <div className={"max-w-screen-xl mx-auto py-10 md:py-20 " + MAIN_HORIZONTAL_PADDING}>
-            <div className="mb-12">
-                <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                    <a href="/" className="text-lg text-gray-600">Home</a>
-                    <i className="mx-3 text-sm text-gray-500 fa-solid fa-chevron-right"></i>
-                    <a href="/post-car" className="text-lg text-gray-900">Post Car</a>
-                </h2>
-            </div>
-            <div className="space-y-6 relative">
-                <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
-                {
-                    expandableSections.map(({ name, content }, index) => {
-                        if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
-                            return (
-                                <div key={name}>
-                                    <div onClick={() => setExpandedSection(name)}
-                                        className="flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer">
-                                        {
-                                            validatedSections.includes(name) && expandedSection !== name ?
-                                                <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
-                                                    <i className="fa-solid fa-check"></i>
-                                                </span>
-                                                :
-                                                <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
-                                                    {index + 1}
-                                                </span>
-                                        }
-                                        <h3 className="text-primary text-xl font-semibold">{name}</h3>
-                                    </div>
-                                    {
-                                        expandedSection === name && content(() => {
-                                            setValidatedSections([...validatedSections, name]);
-                                            if (!(index >= expandableSections.length)) {
-                                                setExpandedSection(expandableSections[index + 1].name);
+        <MainLayout>
+            <div className={"max-w-screen-xl mx-auto py-10 md:py-20 " + MAIN_HORIZONTAL_PADDING}>
+                <div className="mb-12">
+                    <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
+                        <a href="/" className="text-lg text-gray-600">Home</a>
+                        <FontAwesomeIcon icon={faChevronRight} className="mx-3 text-sm text-gray-500" />
+                        <a href="/post-car" className="text-lg text-gray-900">Post Car</a>
+                    </h2>
+                </div>
+                <div className="space-y-6 relative">
+                    <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
+                    {
+                        expandableSections.map(({ name, content }, index) => {
+                            if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
+                                return (
+                                    <div key={name}>
+                                        <div onClick={() => setExpandedSection(name)}
+                                            className="flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer">
+                                            {
+                                                validatedSections.includes(name) && expandedSection !== name ?
+                                                    <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
+                                                        <FontAwesomeIcon icon={faCheck} />
+                                                    </span>
+                                                    :
+                                                    <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
+                                                        {index + 1}
+                                                    </span>
                                             }
-                                        })
-                                    }
-                                </div>
-                            );
-                        }
-                    })
-                }
+                                            <h3 className="text-primary text-xl font-semibold">{name}</h3>
+                                        </div>
+                                        {
+                                            expandedSection === name && content(() => {
+                                                setValidatedSections([...validatedSections, name]);
+                                                if (!(index >= expandableSections.length)) {
+                                                    setExpandedSection(expandableSections[index + 1].name);
+                                                }
+                                            })
+                                        }
+                                    </div>
+                                );
+                            }
+                        })
+                    }
+                </div>
             </div>
-        </div>
+        </MainLayout>
     );
 }
 
@@ -160,23 +162,21 @@ function DetailsSection({ onValidated }) {
 
 function FeaturesSection({ onValidated }) {
     return (
-        <MainLayout>
-            <div className="pt-5 w-full shadow border rounded-md bg-white">
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center p-5 pb-8 gap-7" >
-                    <CheckBoxEl label="Massage seats" />
-                    <CheckBoxEl label="Night vision" />
-                    <CheckBoxEl label="Parking assist" />
-                    <CheckBoxEl label="Lane keep assist" />
-                    <CheckBoxEl label="Heads up display" />
-                    <CheckBoxEl label="Navigation system" />
-                    <div className="col-span-1 md:col-span-2 w-full">
-                        <button type="button" onClick={onValidated} className="btn-primary">
-                            Continue
-                        </button>
-                    </div>
+        <div className="pt-5 w-full shadow border rounded-md bg-white">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center p-5 pb-8 gap-7" >
+                <CheckBoxEl label="Massage seats" />
+                <CheckBoxEl label="Night vision" />
+                <CheckBoxEl label="Parking assist" />
+                <CheckBoxEl label="Lane keep assist" />
+                <CheckBoxEl label="Heads up display" />
+                <CheckBoxEl label="Navigation system" />
+                <div className="col-span-1 md:col-span-2 w-full">
+                    <button type="button" onClick={onValidated} className="btn-primary">
+                        Continue
+                    </button>
                 </div>
-            </div >
-        </MainLayout>
+            </div>
+        </div >
     );
 }
 
@@ -295,7 +295,7 @@ function ColorPickerEl({ label = "" }) {
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
                 {label}
             </label>
-            <Popup
+            {/* <Popup
                 trigger={
                     <div role="button"
                         name={label.toLowerCase().replace(" ", "_")}
@@ -310,7 +310,7 @@ function ColorPickerEl({ label = "" }) {
                 nested
             >
                 <CirclePicker onChangeComplete={(color) => setPickedColor(color.hex)} />
-            </Popup>
+            </Popup> */}
         </div>
     );
 }

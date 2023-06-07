@@ -4,7 +4,6 @@ import SigninPopup from "../popups/Signin";
 import SiderBar from "./SideBar";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
-import Popup from "reactjs-popup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faChevronDown, faLocationDot, faMagnifyingGlass, faPlus, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
 import { Menu, Transition } from "@headlessui/react";

@@ -1,18 +1,18 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import HomePage from "./pages/HomePage"
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
-import SearchPage from "./pages/SearchPage"
-import InboxPage from "./pages/InboxPage"
-import PostCarPage from "./pages/PostCarPage"
-import FindMeBuyerPage from "./pages/FindMeBuyerPage"
-import AccountPage from "./pages/AccountPage"
-import PublicProfilePage from "./pages/PublicProfilePage"
-import CarDetailsPage from "./pages/CarDetailsPage"
-import { createContext, useEffect, useState } from "react"
+import React, { createContext, Suspense, useEffect, useState } from "react"
 import { useCookies } from 'react-cookie'
 import axios from "axios"
 import { apiConfig } from "./config/api"
 
+const CarDetailsPage = React.lazy(() => import("./pages/CarDetailsPage"))
+const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
+const AccountPage = React.lazy(() => import("./pages/AccountPage"))
+const FindMeBuyerPage = React.lazy(() => import("./pages/FindMeBuyerPage"))
+const PostCarPage = React.lazy(() => import("./pages/PostCarPage"))
+const InboxPage = React.lazy(() => import("./pages/InboxPage"))
+const SearchPage = React.lazy(() => import("./pages/SearchPage"))
+const ForgotPasswordPage = React.lazy(() => import("./pages/auth/ForgotPasswordPage"))
 
 export const AuthUserContext = createContext({
   accessToken: "",
@@ -30,35 +30,67 @@ function App() {
     },
     {
       path: "/forgot-password",
-      element: <ForgotPasswordPage />
+      element: (
+        <Suspense>
+          <ForgotPasswordPage />
+        </Suspense>
+      )
     },
     {
       path: "/profiles/:id",
-      element: <PublicProfilePage />
+      element: (
+        <Suspense>
+          <PublicProfilePage />
+        </Suspense>
+      )
     },
     {
       path: "/cars/:id",
-      element: <CarDetailsPage />
+      element: (
+        <Suspense>
+          <CarDetailsPage />
+        </Suspense>
+      )
     },
     {
       path: "/search",
-      element: <SearchPage />
+      element: (
+        <Suspense>
+          <SearchPage />
+        </Suspense>
+      )
     },
     {
       path: "/inbox",
-      element: <InboxPage />
+      element: (
+        <Suspense>
+          <InboxPage />
+        </Suspense>
+      )
     },
     {
       path: "/post-car",
-      element: <PostCarPage />
+      element: (
+        <Suspense>
+          <PostCarPage />
+        </Suspense>
+      )
     },
     {
       path: "/find-me-buyer",
-      element: <FindMeBuyerPage />
+      element: (
+        <Suspense>
+          <FindMeBuyerPage />
+        </Suspense>
+      )
     },
     {
       path: "/account",
-      element: <AccountPage />
+      element: (
+        <Suspense>
+          <AccountPage />
+        </Suspense>
+      )
     }
   ])
   const [cookies, setCookies, removeCookie] = useCookies(["accessToken"]);

@@ -1,4 +1,3 @@
-import { FaGoogle, FaFacebook, FaApple } from 'react-icons/fa';
 import ThemeInput, { CountryCodeDropdown } from '../components/ThemeInput';
 import React, { Fragment, useEffect, useState } from 'react';
 import ThemeTextArea from '../components/ThemeTextArea';
@@ -11,6 +10,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
 import AlertMessage from '../components/alertmessage';
 import { useCookies } from 'react-cookie'
+import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
 
 
@@ -314,15 +314,15 @@ export default function SignupPopup() {
                                                     </div>
                                                     <div className="mt-16 space-y-3 w-full">
                                                         <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
-                                                            <FaGoogle className="text-2xl" />
+                                                            <FontAwesomeIcon icon={faGoogle} className="text-2xl" />
                                                             <span>Continue with Google</span>
                                                         </button>
                                                         <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
-                                                            <FaFacebook className="text-2xl" />
+                                                            <FontAwesomeIcon icon={faFacebook} className="text-2xl" />
                                                             <span>Continue with Google</span>
                                                         </button>
                                                         <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
-                                                            <FaApple className="text-2xl" />
+                                                            <FontAwesomeIcon icon={faApple} className="text-2xl" />
                                                             <span>Continue with Google</span>
                                                         </button>
                                                     </div>
