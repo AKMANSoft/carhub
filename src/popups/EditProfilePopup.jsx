@@ -22,7 +22,7 @@ export default function EditProfilePopup({ authUser }) {
     const [email, setEmail] = useState(authUser.userProfile?.email ?? "");
     const [phoneNumber, setPhoneNumber] = useState(authUser.userProfile?.mobile ?? "");
     const [countryCode, setCountryCode] = useState(authUser.userProfile?.country_code ?? "");
-    const [bio, setBio] = useState(authUser.userProfile?.bio ?? "");
+    const [bio, setBio] = useState(authUser.userProfile?.description ?? "");
     const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
 
     const [taskState, setTaskState] = useState("idle");
@@ -93,7 +93,7 @@ export default function EditProfilePopup({ authUser }) {
                 setTimeout(() => {
                     onPopupClose();
                     window.location.reload();
-                },)
+                }, 500)
             }
         }
         setTaskState("idle");
