@@ -9,7 +9,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
 import LoaderEl from '../components/loader';
 import doUpdateProfile from '../api/update-profile';
-import AlertMessage from '../components/AlertMessage';
+import AlertMessage from '../components/ThemeAlert';
 
 
 
