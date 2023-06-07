@@ -12,7 +12,6 @@ const FindMeBuyerPage = React.lazy(() => import("./pages/FindMeBuyerPage"))
 const PostCarPage = React.lazy(() => import("./pages/PostCarPage"))
 const InboxPage = React.lazy(() => import("./pages/InboxPage"))
 const SearchPage = React.lazy(() => import("./pages/SearchPage"))
-const ForgotPasswordPage = React.lazy(() => import("./pages/auth/ForgotPasswordPage"))
 
 export const AuthUserContext = createContext({
   accessToken: "",
@@ -27,14 +26,6 @@ function App() {
     {
       path: "/",
       element: <HomePage />
-    },
-    {
-      path: "/forgot-password",
-      element: (
-        <Suspense>
-          <ForgotPasswordPage />
-        </Suspense>
-      )
     },
     {
       path: "/profiles/:id",
