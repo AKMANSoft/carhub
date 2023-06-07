@@ -8,7 +8,7 @@ import { faPenToSquare, faPlus, faUser, faXmark } from '@fortawesome/free-solid-
 import doSignUp from '../api/signup';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
-import AlertMessage from '../components/alertmessage';
+import AlertMessage from '../components/AlertMessage';
 import { useCookies } from 'react-cookie'
 import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
@@ -25,6 +25,7 @@ export default function SignupPopup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confPassword, setConfPassword] = useState("");
+    const [countryCode, setCountryCode] = useState(userProfile?.country_code ?? "");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [currentStep, setCurrentStep] = useState("first");
     const [bio, setBio] = useState("");
@@ -43,6 +44,7 @@ export default function SignupPopup() {
         password: "idle",
         confPassword: "idle",
         phoneNumber: "idle",
+        countryCode: "idle",
         bio: "idle",
         city: "idle",
         state: "idle",
@@ -83,6 +85,7 @@ export default function SignupPopup() {
         setEmail("");
         setPassword("");
         setConfPassword("");
+        setCountryCode("");
         setPhoneNumber("");
         setBio("");
         setState("");
@@ -102,6 +105,7 @@ export default function SignupPopup() {
             confPassword: confPassword,
             phoneNumber: phoneNumber,
             profileImage: profileImage,
+            countryCode: countryCode
         })
         if (response === null) {
             setAlertMessage({
@@ -136,7 +140,8 @@ export default function SignupPopup() {
                 if (
                     email.match(siteConfig.emailPattern) && password !== "" &&
                     confPassword !== "" && password === confPassword &&
-                    firstName !== "" && lastName !== "" && phoneNumber !== ""
+                    firstName !== "" && lastName !== "" && countryCode !== ""
+                    && phoneNumber !== ""
                 ) {
                     setCurrentStep("second");
                 }
@@ -215,18 +220,18 @@ export default function SignupPopup() {
                                                     <div className='flex gap-5'>
                                                         <ThemeInput type='text' placeholder='State'
                                                             className={cn(
-                                                                inputsStatus.bio === "invalid" && "border-2 !border-red-500",
+                                                                inputsStatus.state === "invalid" && "border-2 !border-red-500",
                                                             )}
                                                             value={state} onChange={(val) => setState(val)} />
                                                         <ThemeInput type='text' placeholder='City'
                                                             className={cn(
-                                                                inputsStatus.bio === "invalid" && "border-2 !border-red-500",
+                                                                inputsStatus.city === "invalid" && "border-2 !border-red-500",
                                                             )}
                                                             value={city} onChange={(val) => setCity(val)} />
                                                     </div>
                                                     <ThemeInput type='text' placeholder='Address'
                                                         className={cn(
-                                                            inputsStatus.bio === "invalid" && "border-2 !border-red-500",
+                                                            inputsStatus.address === "invalid" && "border-2 !border-red-500",
                                                         )}
                                                         value={address} onChange={(val) => setAddress(val)} />
                                                     <div className='pt-10'>
@@ -299,8 +304,10 @@ export default function SignupPopup() {
                                                             placeholder='Confirm Password'
                                                             value={confPassword} onChange={(val) => setConfPassword(val)} />
                                                         <div className='flex items-center gap-3 mb-5'>
-                                                            <CountryCodeDropdown />
-                                                            <ThemeInput
+                                                            <CountryCodeDropdown
+                                                                value={countryCode}
+                                                                onChange={(val) => setCountryCode(val)}
+                                                            />                                                            <ThemeInput
                                                                 type='number'
                                                                 className={cn(
                                                                     inputsStatus.phoneNumber === "invalid" && "border-2 !border-red-500",

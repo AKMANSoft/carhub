@@ -1,6 +1,4 @@
-import React, { Fragment, useEffect } from "react";
-import SignupPopup from "../popups/Signup";
-import SigninPopup from "../popups/Signin";
+import React, { Fragment, Suspense, useEffect } from "react";
 import SiderBar from "./SideBar";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
@@ -9,6 +7,10 @@ import { faBars, faChevronDown, faLocationDot, faMagnifyingGlass, faPlus, faRigh
 import { Menu, Transition } from "@headlessui/react";
 import { cn } from "../lib/utils";
 import { accountPageTabs } from "../pages/AccountPage";
+
+const SignupPopup = React.lazy(() => import("../popups/Signup"));
+const SigninPopup = React.lazy(() => import("../popups/Signin"));
+const ForgotPasswordPopup = React.lazy(() => import("../popups/ForgotPassword"));
 
 
 export const categories = [
@@ -66,8 +68,6 @@ export default function Header({ isLoggedin = false, onLogout }) {
                                 </div>
                                 :
                                 <div>
-                                    <SignupPopup />
-                                    <SigninPopup />
                                     <a href="?p=signin" id='trigger' className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-3 hover:text-primary py-2 md:py-3 rounded-full'>
                                         Sign In
                                     </a>
@@ -104,6 +104,14 @@ export default function Header({ isLoggedin = false, onLogout }) {
             {
                 window.innerWidth < 1024 && headerActive &&
                 <SiderBar onSidebarClose={() => setHeaderActive(false)} />
+            }
+            {
+                !isLoggedin &&
+                <Suspense>
+                    <SignupPopup />
+                    <SigninPopup />
+                    <ForgotPasswordPopup />
+                </Suspense>
             }
         </header>
     );

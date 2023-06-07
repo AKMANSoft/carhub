@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
 import useAuthUser from "./hooks/useAuthUser";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export default function MainLayout({ children }) {
@@ -18,7 +18,7 @@ export default function MainLayout({ children }) {
     return (
         <div>
             <Header isLoggedin={isLoggedin} onLogout={onLogout} />
-            <main className="mt-[220px] md:mt-[200px] lg:mt-[240px] xl:mt-[140px]">
+            <main className="mt-[220px] min-h-screen md:mt-[200px] lg:mt-[240px] xl:mt-[140px]">
                 {children}
             </main>
             <Footer />

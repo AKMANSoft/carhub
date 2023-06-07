@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
-import AlertMessage from '../components/alertmessage';
+import AlertMessage from '../components/AlertMessage';
 import doSignIn from '../api/signin';
 import { useCookies } from 'react-cookie'
 import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
@@ -144,7 +144,7 @@ export default function SigninPopup() {
                                                 )}
                                                 placeholder='Password'
                                                 value={password} onChange={(val) => setPassword(val)} />
-                                            <a href="#" className="ms-5 hover:underline transition-all">Forgot Password?</a>
+                                            <a href="?p=forgotpassword" className="ms-5 hover:underline transition-all">Forgot Password?</a>
                                             <div className='mt-10'>
                                                 {
                                                     taskState === "processing" ?

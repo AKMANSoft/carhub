@@ -1,12 +1,14 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
-import EditPofilePopup from "../popups/EditPofilePopup";
+import EditPofilePopup from "../popups/EditProfilePopup";
 import { Navigate, useSearchParams } from "react-router-dom";
 import TabbedView from "../components/TabbedView";
 import { faArrowUpRightFromSquare, faCar, faCreditCard, faStar, faUser } from "@fortawesome/free-solid-svg-icons";
 import MainLayout from "../components/layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuthUser from "../components/hooks/useAuthUser";
+import EditProfilePopup from "../popups/EditProfilePopup";
+import LoaderEl from "../components/loader";
 
 
 export const accountPageTabs = [
@@ -166,11 +168,7 @@ function ProfileSection({ authUser = null }) {
 
     return (
         authUser?.userProfile === null ?
-            <div className="flex items-center justify-center w-full h-96">
-                <div class="animate-spin inline-block w-20 h-20 border-[3px] border-gray-800 border-t-transparent text-yellow-1000 rounded-full" role="status" aria-label="loading">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </div>
+            <LoaderEl dark />
             :
             <div className="w-full">
                 {/* Profile Section */}
@@ -183,6 +181,12 @@ function ProfileSection({ authUser = null }) {
                             <h3 className="text-2xl font-semibold text-gray-800">
                                 {authUser?.userProfile?.name ?? ""}
                             </h3>
+                            {
+                                authUser?.userProfile?.description && authUser?.userProfile?.description !== "" &&
+                                <p className="text-base font-normal text-gray-600">
+                                    {authUser?.userProfile?.description}
+                                </p>
+                            }
                             <p className="text-base font-normal text-gray-600">
                                 {
                                     authUser?.userProfile?.user_address === null ?
@@ -191,7 +195,12 @@ function ProfileSection({ authUser = null }) {
                                         </span>
                                         :
                                         <span>
-                                            {`${authUser?.userProfile?.user_address?.city ?? ""} | ${authUser?.userProfile?.user_address?.country ?? ""}`}
+                                            {
+                                                (authUser?.userProfile?.user_address?.city !== null
+                                                    && authUser?.userProfile?.user_address?.country !== nulll
+                                                ) &&
+                                                `${authUser?.userProfile?.user_address?.city ?? ""} | ${authUser?.userProfile?.user_address?.country ?? ""}`
+                                            }
                                         </span>
 
                                 }
@@ -208,7 +217,7 @@ function ProfileSection({ authUser = null }) {
                         </div>
                     </div>
                     <div>
-                        <EditPofilePopup />
+                        <EditProfilePopup authUser={authUser} />
                     </div>
                 </div>
                 {/* Reviews and Offers Section  */}
