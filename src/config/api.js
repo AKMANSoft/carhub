@@ -18,6 +18,7 @@ export const apiConfig = {
         blockedUsersList: "",
         blockedUsersList: "",
         //Cars Related Endpoints
+        getAllCars: "/get-car-old",
         appBasicDetail: "",
         getNotification: "",
         addOrUpdateReview: "",

@@ -4,6 +4,7 @@ import React, { createContext, Suspense, useEffect, useState } from "react"
 import { useCookies } from 'react-cookie'
 import axios from "axios"
 import { apiConfig } from "./config/api"
+import { SWRConfig } from "swr"
 
 const CarDetailsPage = React.lazy(() => import("./pages/CarDetailsPage"))
 const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
