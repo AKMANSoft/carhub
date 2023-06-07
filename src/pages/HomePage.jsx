@@ -20,7 +20,7 @@ export default function HomePage() {
             <div className={"flex justify-center py-10" + MAIN_HORIZONTAL_PADDING}>
                 {
                     isLoading || error ?
-                        <LoaderEl containerClassName="w-full h-[200px]" />
+                        <LoaderEl containerClassName="w-full h-[400px]" />
                         :
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5 md:gap-8">
                             {

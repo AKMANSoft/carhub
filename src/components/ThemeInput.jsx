@@ -22,13 +22,15 @@ export default function ThemeInput({
 
 export function CountryCodeDropdown({ className, value, onChange }) {
 
-    const cValue = countriesList.filter((cntry) => cntry.dial_code === value)
+    const cValues = countriesList.filter((cntry) => cntry.dial_code === value);
+    if (cValues.length <= 0) {
+        onChange(countriesList[0].dial_code)
+    }
 
     return (
         <select name="country_code" value={value} onChange={(e) => onChange(e.target.value)} className={"rounded-full max-w-[130px] backdrop-blur appearance-none bg-transparent border text-white border-white/50 w-full py-4 px-5 outline-none focus:border-white transition-all " + className}>
             {
                 countriesList.map((opt) => (
-
                     <option value={opt.dial_code} className='text-black checked:bg-primary checked:text-white'>{`${opt.code} (${opt.dial_code})`}</option>
                 ))
             }

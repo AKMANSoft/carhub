@@ -25,7 +25,7 @@ export default function SignupPopup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confPassword, setConfPassword] = useState("");
-    const [countryCode, setCountryCode] = useState(userProfile?.country_code ?? "");
+    const [countryCode, setCountryCode] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [currentStep, setCurrentStep] = useState("first");
     const [bio, setBio] = useState("");
