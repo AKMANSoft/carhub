@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
-import AlertMessage from '../components/AlertMessage';
+import AlertMessage from '../components/ThemeAlert';
 import doSignIn from '../api/signin';
 import { useCookies } from 'react-cookie'
 import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';

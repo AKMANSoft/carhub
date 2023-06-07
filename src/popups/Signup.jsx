@@ -8,7 +8,7 @@ import { faPenToSquare, faPlus, faUser, faXmark } from '@fortawesome/free-solid-
 import doSignUp from '../api/signup';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
-import AlertMessage from '../components/AlertMessage';
+import AlertMessage from '../components/ThemeAlert';
 import { useCookies } from 'react-cookie'
 import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 
