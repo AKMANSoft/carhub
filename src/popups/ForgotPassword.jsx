@@ -3,8 +3,6 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { siteConfig } from '../config/site';
 import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
-import doSignIn from '../api/signin';
-import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { cn } from '../lib/utils';
 import doForgotPassword from '../api/forgotpassword';
 import AlertMessage from '../components/AlertMessage';
