@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useEffect } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import SiderBar from "./SideBar";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
@@ -7,25 +7,66 @@ import { faBars, faChevronDown, faLocationDot, faMagnifyingGlass, faPlus, faRigh
 import { Menu, Transition } from "@headlessui/react";
 import { cn } from "../lib/utils";
 import { accountPageTabs } from "../pages/AccountPage";
+import useSearchCategory from "./hooks/useSearchCategory";
+import { apiConfig } from "../config/api";
+import useAuthUser from "./hooks/useAuthUser";
+import useFiltersFetcher from "./hooks/filtersFetchers";
+import { useSearchParams } from "react-router-dom";
 
 const SignupPopup = React.lazy(() => import("../popups/Signup"));
 const SigninPopup = React.lazy(() => import("../popups/Signin"));
 const ForgotPasswordPopup = React.lazy(() => import("../popups/ForgotPassword"));
 
 
-export const categories = [
-    "Sedan",
-    "SUV",
-    "Truck",
-    "Coupe",
-    "Convertible",
-    "Wagon/Hatchback",
-    "Van/Minivian",
-    "Others"
-]
+
+// export const categories = [
+//     {
+//         id: "all",
+//         label: "All Categories"
+//     },
+//     {
+//         id: "sedan",
+//         label: "Sedan"
+//     },
+//     {
+//         id: "suv",
+//         label: "SUV"
+//     },
+//     {
+//         id: "truck",
+//         label: "Truck"
+//     },
+//     {
+//         id: "coupe",
+//         label: "Coupe"
+//     },
+//     {
+//         id: "convertible",
+//         label: "Convertible"
+//     },
+//     {
+//         id: "wagon_hatchback",
+//         label: "Wagon/Hatchback"
+//     },
+//     {
+//         id: "van_minivian",
+//         label: "Van/Minivian"
+//     },
+//     {
+//         id: "others",
+//         label: "Others"
+//     },
+// ]
+
+
 
 export default function Header({ isLoggedin = false, onLogout }) {
+    const authUser = useAuthUser();
     const [headerActive, setHeaderActive] = React.useState(false);
+    const [searchParams] = useSearchParams();
+    const category = parseInt(searchParams.get("category"));
+    const { data: categories } = useFiltersFetcher(authUser.accessToken, apiConfig.endpoints.getCategories, []);
+
 
     return (
         <header className={"w-full fixed top-0 left-0 bg-white z-50" + MAIN_HORIZONTAL_PADDING}>
@@ -37,7 +78,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         </button>
                         <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                         <div className="hidden lg:flex items-center gap-2" >
-                            <HeaderSearchComponent />
+                            <HeaderSearchComponent category={category} categories={categories} />
                             {
                                 isLoggedin &&
                                 <span className="hidden xl:block">
@@ -79,7 +120,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     </div>
                 </div>
                 <div className="mt-5 lg:hidden">
-                    <HeaderSearchComponent />
+                    <HeaderSearchComponent category={category} categories={categories} />
                 </div>
                 {
                     isLoggedin &&
@@ -92,9 +133,13 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     <h3 className="text-lg min-w-max text-gray-900 font-bold ps-1 lg:pr-5 xl:pr-10 border-r border-gray-500">Find A Car</h3>
                     <div className="flex lg:ms-5 xl:ms-10 gap-x-1 items-center flex-wrap">
                         {
+                            categories &&
                             categories.map((ctgry) => (
-                                <a key={ctgry} href={"/search?category=" + ctgry} className="text-base font-normal text-gray-800 px-4 py-1 rounded-lg transition-all hover:bg-gray-100 hover:text-primary">
-                                    {ctgry}
+                                <a key={ctgry.id} href={"/search?category=" + ctgry.id} className={cn(
+                                    "text-base font-normal text-gray-800 px-4 py-1 rounded-lg transition-all",
+                                    category === ctgry.id ? "bg-gray-100 text-primary" : "hover:bg-gray-100 hover:text-primary"
+                                )}>
+                                    {ctgry.title}
                                 </a>
                             ))
                         }
@@ -204,7 +249,7 @@ function AccountDropdown({ onLogout }) {
                     <div>
                         {
                             accountPageTabs.map((accTab) => (
-                                <Menu.Item>
+                                <Menu.Item key={accTab}>
                                     {({ active }) => (
                                         <a href={"/account?active=" + accTab.id} className={cn(
                                             "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
@@ -251,21 +296,23 @@ function HeaderLocationEl() {
 
 
 
-function HeaderSearchComponent({ className }) {
+function HeaderSearchComponent({ className, category, categories = [] }) {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [searchCategory, setSearchCategory] = useState(category);
     return (
         <div className={"w-full lg:w-96 xl:w-full relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
             <input className="ps-5 text-sm w-full min-h-full no-decor text-gray-600 appearance-none bg-transparent"
+                value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 type="search" name="search" placeholder="Search" />
             <span className="block w-0 min-h-full my-2 border-l border-gray-300"></span>
-            <select name="" id="" className="w-36 md:w-auto bg-transparent no-decor transition-all duration-300 px-2 md:px-4 py-2 my-1">
-                <option value="all">All Categories</option>
+            <select name="category" value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)} className="w-36 md:w-auto bg-transparent no-decor transition-all duration-300 px-2 md:px-4 py-2 my-1">
                 {
                     categories.map((ctgry) => (
-                        <option key={ctgry} value={ctgry}>{ctgry}</option>
+                        <option key={ctgry.id} value={ctgry.id}>{ctgry.title}</option>
                     ))
                 }
             </select>
-            <a href='/search' className="text-base md:text-lg min-w-max bg-primary text-white rounded-full m-1 ms-3 aspect-square transition-all duration-300 px-3 flex items-center hover:bg-primary/90">
+            <a href={`/search?category=${isNaN(searchCategory) ? -1 : searchCategory}&query=${searchTerm}`} aria-disabled="true" className="text-base md:text-lg min-w-max bg-primary text-white rounded-full m-1 ms-3 aspect-square transition-all duration-300 px-3 flex items-center hover:bg-primary/90">
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
             </a>
         </div>

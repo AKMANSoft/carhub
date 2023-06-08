@@ -7,7 +7,7 @@ export default function LoaderEl({ className, containerClassName, dark = true })
             "flex items-center justify-center w-full h-96",
             containerClassName
         )}>
-            <div class={cn(
+            <div className={cn(
                 "animate-spin inline-block w-20 h-20 border-[3px] !border-t-transparent text-yellow-1000 rounded-full",
                 dark ? "border-gray-800" : "border-white",
                 className

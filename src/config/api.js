@@ -18,6 +18,12 @@ export const apiConfig = {
         blockedUsersList: "",
         blockedUsersList: "",
         //Cars Related Endpoints
+        getCategories: "/car-category",
+        getYears: "/car-year",
+        getCarMakes: "/car-make",
+        getCarModels: "/car-model",
+        getCarTrim: "/car-trim",
+        getCarFeatures: "/car-featureslist",
         getAllCars: "/get-car-old",
         appBasicDetail: "",
         getNotification: "",

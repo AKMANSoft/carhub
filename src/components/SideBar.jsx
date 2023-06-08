@@ -1,12 +1,16 @@
 import React from "react";
-import { categories } from "./Header";
 import { accountPageTabs } from "../pages/AccountPage";
 import { faBell, faCircleInfo, faList, faLock, faMessage, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useAuthUser from "./hooks/useAuthUser";
+import useFiltersFetcher from "./hooks/filtersFetchers";
 
 
 
 export default function SiderBar({ onSidebarClose }) {
+    const authUser = useAuthUser();
+    const { data: categories } = useFiltersFetcher(authUser.accessToken, apiConfig.endpoints.getCategories, []);
+
 
     React.useEffect(() => {
         window.addEventListener("resize", () => {
@@ -79,7 +83,7 @@ export default function SiderBar({ onSidebarClose }) {
                 <h4 className="text-2xl font-bold text-gray-900">Categories</h4>
                 <ul className="py-2">
                     {
-                        ["All Categories", ...categories].map((ctgry) => (
+                        categories.map((ctgry) => (
                             <li key={ctgry}>
                                 <a href={"search?category=" + ctgry} key={ctgry} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                                     {ctgry}
