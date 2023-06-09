@@ -1,20 +1,22 @@
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { useDropzone } from 'react-dropzone'
 
 export default function ImageDragDropInput({
     className = "",
-    onImagesChanged = (images) => { },
+    images = [],
+    onImagesChange = (images) => { },
     withPreview = false
 }) {
-    const [images, setImages] = React.useState([]);
     const onDrop = React.useCallback(acceptedFiles => {
-        setImages(acceptedFiles.map((img) => {
+        onImagesChange(acceptedFiles.map((img) => {
             return {
-                src: img,
+                src: window.URL.createObjectURL(img),
+                blob: img,
                 id: (new Date().getTime() * Math.random())
             }
-        }))
-        onImagesChanged(acceptedFiles);
+        }));
     }, [])
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop: onDrop,
@@ -26,7 +28,7 @@ export default function ImageDragDropInput({
 
 
     const removeImage = (id) => {
-        setImages(images.filter((img) => img.id !== id));
+        onImagesChange(images.filter((img) => img.id !== id));
     }
 
     return (
@@ -58,10 +60,10 @@ export default function ImageDragDropInput({
                         {
                             images.map((img) => (
                                 <span key={img.id} className='relative group rounded overflow-hidden'>
-                                    <img src={window.URL.createObjectURL(img.src)} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
+                                    <img src={img.src} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
                                     <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
                                         <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
-                                            <i className='fa-solid fa-xmark'></i>
+                                            <FontAwesomeIcon icon={faXmark} />
                                         </button>
                                     </span>
                                 </span>

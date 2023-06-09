@@ -5,8 +5,10 @@ import { apiConfig } from "../config/api";
 
 export default async function doSignUp({
     name, email, password, bio,
-    phoneNumber, profileImage, countryCode
+    phoneNumber, profileImage, countryCode,
+    latitude, longitude
 }) {
+    console.log(latitude)
     const data = new FormData();
     data.set("first_name", name.firstName);
     data.set("last_name", name.lastName);
@@ -15,6 +17,8 @@ export default async function doSignUp({
     data.set("device_type", "web");
     data.set("country_code", countryCode);
     data.set("mobile", phoneNumber);
+    data.set("latitude", latitude);
+    data.set("longitude", longitude);
     if (profileImage !== undefined && profileImage !== null) {
         data.set("image", profileImage)
     }
@@ -25,7 +29,7 @@ export default async function doSignUp({
             data,
             {
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    // "Content-Type": "multipart/form-data",
                     Accept: "application/json"
                 }
             }
@@ -33,6 +37,7 @@ export default async function doSignUp({
         console.log(response.data)
         return response.data;
     } catch (error) {
+        console.log(error)
         return null;
     }
 }

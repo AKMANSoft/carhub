@@ -1,11 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import TabbedView from "../components/TabbedView";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import ImageDragDropInput from "../components/ImageDragDropInput";
 import MainLayout from "../components/layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faChevronRight, faDollar, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { CarConditionsList } from "./SearchPage";
+import { cn } from "../lib/utils";
+import { apiConfig } from "../config/api";
+import useFiltersFetcher from "../components/hooks/filtersFetchers";
+import useAuthUser from "../components/hooks/useAuthUser";
+import LoaderEl from "../components/loader";
+import { exteriorColorsList, interiorColorsList } from "../data/colors";
+import doPostCar from "../api/post-car";
 
+
+const CarPostSections = {
+    Photos: "Photos",
+    Details: "Details",
+    Colors: "Colors",
+    Features: "Features",
+    Post: "Post",
+    Finish: "Finish",
+}
 
 
 const expandableSections = [
@@ -15,6 +32,10 @@ const expandableSections = [
     },
     {
         name: "Details",
+        content: (onValidated) => <DetailsSection onValidated={onValidated} />
+    },
+    {
+        name: "Colors",
         content: (onValidated) => <DetailsSection onValidated={onValidated} />
     },
     {
@@ -34,8 +55,88 @@ const expandableSections = [
 
 
 export default function PostCarPage() {
+    const authUser = useAuthUser();
     const [expandedSection, setExpandedSection] = React.useState(expandableSections[0].name)
     const [validatedSections, setValidatedSections] = React.useState([]);
+    const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
+    const [taskState, setTaskState] = useState("idle");
+
+
+    const [carDetails, setCarDetails] = useState({
+        images: [],
+        details: {
+            category: 0,
+            condition: "",
+            year: "",
+            make: "",
+            model: "",
+            vehicleTrim: "",
+            mileage: "",
+            fuelType: "",
+            titleStatus: ""
+        },
+        colors: {
+            interior: "",
+            exterior: "",
+        },
+        features: [],
+        postDetails: {
+            price: "",
+            description: "",
+            findMeBuyer: false
+        },
+        carLocation: "",
+    });
+
+
+
+    const onImagesChange = (images) => {
+        setCarDetails({
+            ...carDetails,
+            images: images,
+        });
+    }
+    const onFeaturesChange = (features) => {
+        console.log(features)
+        setCarDetails({
+            ...carDetails,
+            features: features,
+        });
+    }
+    const onPostDetailsChange = (postDetails) => {
+        setCarDetails({
+            ...carDetails,
+            postDetails: postDetails,
+        });
+    }
+    const onDetailsChange = (details) => {
+        setCarDetails({
+            ...carDetails,
+            details: details,
+        });
+    }
+    const onColorsChange = (colors) => {
+        setCarDetails({
+            ...carDetails,
+            colors: colors,
+        });
+    }
+    const onCarLocationChange = (carLocation) => {
+        setCarDetails({
+            ...carDetails,
+            carLocation: carLocation,
+        });
+    }
+
+
+
+    const handlePostingCar = async () => {
+        setTaskState("processing");
+        const response = await doPostCar(carDetails, authUser.accessToken);
+        console.log(response);
+    }
+
+
     return (
         <MainLayout>
             <div className={"max-w-screen-xl mx-auto py-10 md:py-20 " + MAIN_HORIZONTAL_PADDING}>
@@ -46,41 +147,104 @@ export default function PostCarPage() {
                         <a href="/post-car" className="text-lg text-gray-900">Post Car</a>
                     </h2>
                 </div>
-                <div className="space-y-6 relative">
-                    <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
-                    {
-                        expandableSections.map(({ name, content }, index) => {
-                            if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
-                                return (
-                                    <div key={name}>
-                                        <div onClick={() => setExpandedSection(name)}
-                                            className="flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer">
-                                            {
-                                                validatedSections.includes(name) && expandedSection !== name ?
-                                                    <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
-                                                        <FontAwesomeIcon icon={faCheck} />
-                                                    </span>
-                                                    :
-                                                    <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
-                                                        {index + 1}
-                                                    </span>
-                                            }
-                                            <h3 className="text-primary text-xl font-semibold">{name}</h3>
-                                        </div>
-                                        {
-                                            expandedSection === name && content(() => {
-                                                setValidatedSections([...validatedSections, name]);
-                                                if (!(index >= expandableSections.length)) {
-                                                    setExpandedSection(expandableSections[index + 1].name);
-                                                }
-                                            })
+                {
+                    taskState === "processing" ?
+                        <LoaderEl className="" />
+                        :
+                        <div className="space-y-6 relative">
+                            <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
+                            <div>
+                                {
+                                    expandableSections.map(({ name, content }, index) => {
+                                        if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
+                                            return (
+                                                <div key={name} role="button" onClick={() => setExpandedSection(name)}
+                                                    className={cn(
+                                                        "flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer",
+                                                        !(expandedSection === name) && "mb-6"
+                                                    )}>
+                                                    {
+                                                        validatedSections.includes(name) && expandedSection !== name ?
+                                                            <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
+                                                                <FontAwesomeIcon icon={faCheck} />
+                                                            </span>
+                                                            :
+                                                            <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
+                                                                {index + 1}
+                                                            </span>
+                                                    }
+                                                    <h3 className="text-primary text-xl font-semibold">{name}</h3>
+                                                </div>
+
+                                            );
                                         }
-                                    </div>
-                                );
-                            }
-                        })
-                    }
-                </div>
+                                    })
+                                }
+                                {
+                                    expandedSection === CarPostSections.Photos &&
+                                    <PhotosSection
+                                        images={carDetails.images}
+                                        setImages={onImagesChange}
+                                        onValidated={() => {
+                                            if (carDetails.images.length <= 0) return;
+                                            setValidatedSections([...validatedSections, CarPostSections.Photos]);
+                                            setExpandedSection(CarPostSections.Details)
+                                        }} />
+                                }
+                                {
+                                    expandedSection === CarPostSections.Details &&
+                                    <DetailsSection
+                                        details={carDetails.details}
+                                        setDetails={onDetailsChange}
+                                        accessToken={authUser.accessToken}
+                                        onValidated={() => {
+                                            setValidatedSections([...validatedSections, CarPostSections.Details]);
+                                            setExpandedSection(CarPostSections.Colors)
+                                        }} />
+                                }
+                                {
+                                    expandedSection === CarPostSections.Colors &&
+                                    <ColorsSection
+                                        colors={carDetails.colors}
+                                        setColors={onColorsChange}
+                                        onValidated={() => {
+                                            setValidatedSections([...validatedSections, CarPostSections.Colors]);
+                                            setExpandedSection(CarPostSections.Features)
+                                        }} />
+                                }
+                                {
+                                    expandedSection === CarPostSections.Features &&
+                                    <FeaturesSection
+                                        features={carDetails.features}
+                                        setFeatures={onFeaturesChange}
+                                        accessToken={authUser.accessToken}
+                                        onValidated={() => {
+                                            setValidatedSections([...validatedSections, CarPostSections.Features]);
+                                            setExpandedSection(CarPostSections.Post)
+                                        }} />
+                                }
+                                {
+                                    expandedSection === CarPostSections.Post &&
+                                    <PostSection
+                                        postDetails={carDetails.postDetails}
+                                        setPostDetails={onPostDetailsChange}
+                                        onValidated={() => {
+                                            setValidatedSections([...validatedSections, CarPostSections.Post]);
+                                            setExpandedSection(CarPostSections.Finish)
+                                        }} />
+                                }
+                                {
+                                    expandedSection === CarPostSections.Finish &&
+                                    <FinishSection
+                                        carLocation={carDetails.carLocation}
+                                        setCarLocation={onCarLocationChange}
+                                        onValidated={() => {
+                                            handlePostingCar()
+                                        }} />
+                                }
+                            </div>
+                        </div>
+                }
             </div>
         </MainLayout>
     );
@@ -88,13 +252,16 @@ export default function PostCarPage() {
 
 
 
-function PhotosSection({ onValidated }) {
+function PhotosSection({ onValidated, setImages, images }) {
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full flex flex-wrap items-center p-5 pb-8 gap-6" >
-                <ImageDragDropInput withPreview />
+                <ImageDragDropInput images={images} withPreview onImagesChange={setImages} />
                 <div className="w-full mt-2">
-                    <button type="button" onClick={onValidated} className="btn-primary">
+                    <button
+                        type="button" onClick={onValidated}
+                        className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                        disabled={images?.length <= 0}>
                         Continue
                     </button>
                 </div>
@@ -104,52 +271,93 @@ function PhotosSection({ onValidated }) {
 }
 
 
-function DetailsSection({ onValidated }) {
+
+const FuelTypes = [
+    "Gas",
+    "Diesel",
+    "Hybrid",
+    "Electric",
+    "Flex"
+]
+
+function DetailsSection({ onValidated, details, setDetails, accessToken }) {
+    const { data: categories } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCategories);
+    const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears);
+    const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${details.year}`);
+    const { data: models } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarModels + `?year=${details.year}&make=${details.make}`);
+    const { data: vehicleTrims } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarTrims + `?year=${details.year}&make=${details.make}&model=${details.model}`);
+
+    const isValidated = () => {
+        return (details.category !== "" && details.condition !== "" &&
+            details.year !== "" && details.make !== "" &&
+            details.mdoel !== "" && details.fuelType !== "" &&
+            details.titleStatus !== "")
+    }
+
+    const validateAndContinue = () => {
+        if (isValidated()) onValidated();
+    }
+
+    console.log(vehicleTrims)
+
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center p-5 pb-8 gap-7" >
-                <SelectEl label="Category">
-                    <option>Sedan</option>
-                    <option>SUV</option>
-                    <option>Truck</option>
-                </SelectEl>
-                <SelectEl label="Condition">
-                    <option>New</option>
-                    <option>Excellent</option>
-                    <option>Very good</option>
-                </SelectEl>
+                <SelectEl
+                    items={categories ? categories.map((ctgry) => ({ value: ctgry.id, label: ctgry.title })) : []}
+                    label="Category" value={details.category}
+                    onChange={(value) => setDetails({ ...details, category: value })} />
+                <SelectEl
+                    items={
+                        CarConditionsList
+                            .filter((condition) => condition.id !== "all")
+                            .map((condition) =>
+                                ({ value: condition.id, label: condition.label })
+                            )}
+                    label="Condition" value={details.condition}
+                    onChange={(value) => setDetails({ ...details, condition: value })} />
                 {/* Year/Model/Make Start */}
-                <SelectEl label="Year">
-                    <option>2018</option>
-                    <option>2019</option>
-                    <option>2020</option>
-                </SelectEl>
-                <SelectEl label="Model">
-                    <option>Acura</option>
-
-                </SelectEl>
-                <SelectEl label="Make">
-                    <option>ILX</option>
-                    <option>MDX</option>
-                    <option>NSX</option>
-                    <option>RDX</option>
-                </SelectEl>
+                <SelectEl
+                    items={years ? years.map((yearObj) => ({ value: yearObj.year, label: yearObj.year })) : []}
+                    label="Year" value={details.year}
+                    onChange={(value) => setDetails({ ...details, year: value })} />
+                <SelectEl
+                    items={makes ? makes.map((makeObj) => ({ value: makeObj.make, label: makeObj.make })) : []}
+                    label="Make" value={details.make}
+                    onChange={(value) => setDetails({ ...details, make: value })} />
+                <SelectEl
+                    items={models ? models.map((modelObj) => ({ value: modelObj.model, label: modelObj.model })) : []}
+                    label="Model" value={details.model}
+                    onChange={(value) => setDetails({ ...details, model: value })} />
                 {/* Year/Model/Make End */}
-                <InputEl label="Vehicle Trim" />
-                <InputEl label="Mileage" />
 
-                <SelectEl label="Car Fuel Type">
-                    <option>Acura</option>
+                <SelectEl
+                    items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim, label: vTrim.vehicle_trim })) : []}
+                    label="Vehicle Trim" value={details.vehicleTrim}
+                    onChange={(value) => setDetails({ ...details, vehicleTrim: value })} />
+
+                <InputEl label="Mileage" type="number"
+                    value={details.mileage}
+                    onChange={(value) => setDetails({ ...details, mileage: value })} />
+
+                <SelectEl
+                    items={FuelTypes.map((fuel) => ({ value: fuel, label: fuel }))}
+                    label="Car Fuel Type" value={details.fuelType}
+                    onChange={(value) => setDetails({ ...details, fuelType: value })} />
+                <SelectEl label="Title Status" value={details.titleStatus}
+                    onChange={(value) => setDetails({ ...details, titleStatus: value })}>
+                    <option value="clean">Clean</option>
+                    <option value="rebuilt">Rebuilt</option>
+                    <option value="salvage">Salvage</option>
                 </SelectEl>
-                <SelectEl label="Title Status">
-                    <option>Clean</option>
-                    <option>Rebuilt</option>
-                    <option>Salvage</option>
-                </SelectEl>
-                <ColorPickerEl label="Interior Color" />
-                <ColorPickerEl label="Exterior Color" />
+
                 <div className="col-span-1 md:col-span-2 lg:col-span-3 w-full">
-                    <button type="button" onClick={onValidated} className="btn-primary">
+                    <button
+                        type="button"
+                        onClick={validateAndContinue}
+                        className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                        disabled={!isValidated()}
+                    >
                         Continue
                     </button>
                 </div>
@@ -160,21 +368,90 @@ function DetailsSection({ onValidated }) {
 
 
 
-function FeaturesSection({ onValidated }) {
+
+function ColorsSection({ onValidated, colors, setColors }) {
+
+    const onExteriorColorChange = (color) => {
+        setColors({
+            interior: colors.interior,
+            exterior: color.hex
+        })
+    }
+    const onInteriorColorChange = (color) => {
+        setColors({
+            interior: color.hex,
+            exterior: colors.exterior
+        })
+    }
+
+
     return (
-        <div className="pt-5 w-full shadow border rounded-md bg-white">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center p-5 pb-8 gap-7" >
-                <CheckBoxEl label="Massage seats" />
-                <CheckBoxEl label="Night vision" />
-                <CheckBoxEl label="Parking assist" />
-                <CheckBoxEl label="Lane keep assist" />
-                <CheckBoxEl label="Heads up display" />
-                <CheckBoxEl label="Navigation system" />
-                <div className="col-span-1 md:col-span-2 w-full">
-                    <button type="button" onClick={onValidated} className="btn-primary">
-                        Continue
-                    </button>
+        <div className="w-full shadow border rounded-md bg-white p-5 pb-8">
+            <div className="divide-y">
+                <div className="py-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-8">
+                        Exterior Color:
+                        <span className="font-normal text-base ms-2">
+                            {exteriorColorsList.find((clr) => colors.exterior === clr.hex)?.label ?? ""}
+                        </span>
+                    </h3>
+                    <div className="w-full grid grid-cols-5 items-start gap-7" >
+                        {
+                            exteriorColorsList.map((color) => (
+                                <div key={color.hex} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
+                                    <button type="button" className={cn(
+                                        "block w-14 h-auto rounded-full overflow-hidden aspect-square transition-all ring-4 cursor-pointer",
+                                        colors.exterior === color.hex ? "ring-primary" : "ring-transparent hover:ring-primary"
+                                    )}
+                                        onFocus={() => onExteriorColorChange(color)}
+                                        onClick={() => onExteriorColorChange(color)}
+                                        style={{ background: color.hex }} >
+                                    </button>
+                                    <span className="block text-sm font-semibold text-gray-800 text-center">
+                                        {color.label}
+                                    </span>
+                                </div>
+                            ))
+                        }
+                    </div>
                 </div>
+                <div className="py-8">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-8">
+                        Interior Color:
+                        <span className="font-normal text-base ms-2">
+                            {interiorColorsList.find((clr) => colors.interior === clr.hex)?.label ?? ""}
+                        </span>
+                    </h3>
+                    <div className="w-full grid grid-cols-5 items-start gap-7" >
+                        {
+                            interiorColorsList.map((color) => (
+                                <div key={color.hex} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
+                                    <button type="button" className={cn(
+                                        "block w-14 h-auto rounded-full overflow-hidden aspect-square transition-all ring-4 cursor-pointer",
+                                        colors.interior === color.hex ? "ring-primary" : "ring-transparent hover:ring-primary"
+                                    )}
+                                        onFocus={() => onInteriorColorChange(color)}
+                                        onClick={() => onInteriorColorChange(color)}
+                                        style={{ background: color.hex }} >
+                                    </button>
+                                    <span className="block text-sm font-semibold text-gray-800 text-center">
+                                        {color.label}
+                                    </span>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+            <div className="w-full mt-5">
+                <button
+                    type="button"
+                    onClick={onValidated}
+                    className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                    disabled={!colors || colors.interior === "" || colors.exterior === ""}
+                >
+                    Continue
+                </button>
             </div>
         </div >
     );
@@ -182,24 +459,108 @@ function FeaturesSection({ onValidated }) {
 
 
 
-function PostSection({ onValidated }) {
+function FeaturesSection({ onValidated, accessToken, features = [], setFeatures }) {
+    const { data: featuresCategories, isLoading, error } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarFeatures);
+
+    const onFeaturesChange = (feature, value) => {
+        if (features.includes(feature.id) && value === false) {
+            setFeatures(features.filter((f) => f.id !== feature.id))
+        }
+        else {
+            setFeatures([...features, feature.id])
+        }
+    }
+
+    return (
+        <div className="w-full shadow border rounded-md bg-white p-5 pb-8">
+            <div className="divide-y">
+                {
+                    isLoading || error ?
+                        <LoaderEl containerClassName="w-full " />
+                        :
+                        featuresCategories &&
+                        featuresCategories.map((featureCtgry) => (
+                            <div key={featureCtgry.id} className="py-8">
+                                <h3 className="text-lg font-semibold text-gray-900 mb-3">{featureCtgry.title}:</h3>
+                                <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center gap-7" >
+                                    {
+                                        featureCtgry.children.map((feature) => (
+                                            <CheckBoxEl
+                                                key={feature.id}
+                                                label={feature.title}
+                                                value={features.includes(feature.id)}
+                                                onChange={(val) => onFeaturesChange(feature, val)} />
+                                        ))
+                                    }
+                                </div>
+                            </div>
+                        ))
+                }
+            </div>
+            <div className="w-full mt-5">
+                <button
+                    type="button"
+                    onClick={onValidated}
+                    className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                >
+                    Continue
+                </button>
+            </div>
+        </div >
+    );
+}
+
+
+
+function PostSection({ onValidated, postDetails, setPostDetails }) {
+
+    const onPriceChange = (price) => {
+        setPostDetails({
+            ...postDetails,
+            price: price,
+        })
+    }
+    const onDescriptionChange = (desc) => {
+        setPostDetails({
+            ...postDetails,
+            description: desc,
+        })
+    }
+    const onFindMeBuyerChange = (value) => {
+        setPostDetails({
+            ...postDetails,
+            findMeBuyer: value,
+        })
+    }
+
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <div className="w-full col-span-3">
-                    <InputEl type="number" label="Price" icon={"fa-dollar"} />
+                    <InputEl
+                        type="number" label="Price" icon={faDollar}
+                        value={postDetails.price}
+                        onChange={onPriceChange}
+                    />
                 </div>
                 <div className="w-full col-span-3">
-                    <TextAreaEl label="Description" />
+                    <TextAreaEl label="Description"
+                        value={postDetails.description}
+                        onChange={onDescriptionChange} />
                 </div>
                 <div className="w-full col-span-3">
-                    <CheckBoxEl label="Find Me Buyer" />
+                    <CheckBoxEl label="Find Me Buyer"
+                        value={postDetails.findMeBuyer}
+                        onChange={onFindMeBuyerChange} />
                 </div>
-                <div className="col-span-3 w-full">
-                    <button type="button" onClick={onValidated} className="btn-primary">
-                        Continue
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    onClick={onValidated}
+                    className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                    disabled={!postDetails || postDetails.price === ""}
+                >
+                    Continue
+                </button>
             </div>
         </div >
     );
@@ -209,17 +570,25 @@ function PostSection({ onValidated }) {
 
 
 
-function FinishSection({ onValidated, findBuyer = false }) {
+function FinishSection({ onValidated, carLocation, setCarLocation }) {
+
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <div className="w-full col-span-3">
-                    <InputEl type="number" label="Car Location" icon={"fa-location-dot"} />
+                    <InputEl
+                        type="text" label="Car Location" icon={faLocationDot}
+                        value={carLocation} onChange={setCarLocation} />
                 </div>
                 <div className="col-span-3 w-full">
-                    <a href="/find-me-buyer" className="btn-primary">
+                    <button
+                        type="button"
+                        onClick={onValidated}
+                        className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                        disabled={!carLocation || carLocation === ""}
+                    >
                         Post
-                    </a>
+                    </button>
                 </div>
             </div>
         </div >
@@ -232,7 +601,7 @@ function FinishSection({ onValidated, findBuyer = false }) {
 
 
 
-function InputEl({ label = "", type = "text", placeholder = "", icon = null }) {
+function InputEl({ label = "", type = "text", placeholder = "", icon = null, value, onChange }) {
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
@@ -242,12 +611,14 @@ function InputEl({ label = "", type = "text", placeholder = "", icon = null }) {
                 <input type={type}
                     name={label.toLowerCase().replace(" ", "_")}
                     id={label.toLowerCase().replace(" ", "_")}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
                     className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
                 {
                     icon !== null &&
                     <span className="absolute top-1/2 -translate-y-1/2 left-4">
-                        <i className={"fa-solid text-gray-800 " + icon}></i>
+                        <FontAwesomeIcon icon={icon} className={"fa-solid text-gray-800"} />
                     </span>
                 }
             </span>
@@ -255,7 +626,7 @@ function InputEl({ label = "", type = "text", placeholder = "", icon = null }) {
     );
 }
 
-function TextAreaEl({ label = "", type = "text", placeholder = "" }) {
+function TextAreaEl({ label = "", placeholder = "", onChange, value }) {
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
@@ -265,6 +636,8 @@ function TextAreaEl({ label = "", type = "text", placeholder = "" }) {
                 name={label.toLowerCase().replace(" ", "_")}
                 id={label.toLowerCase().replace(" ", "_")}
                 placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
                 rows={4}
                 className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1"></textarea>
         </div>
@@ -272,12 +645,14 @@ function TextAreaEl({ label = "", type = "text", placeholder = "" }) {
 }
 
 
-function CheckBoxEl({ label = "" }) {
+function CheckBoxEl({ label = "", onChange, value }) {
     return (
         <div className="w-full inline-flex items-center">
             <input type="checkbox"
                 name={label.toLowerCase().replace(" ", "_")}
                 id={label.toLowerCase().replace(" ", "_")}
+                value={value}
+                onChange={(e) => onChange(e.target.checked)}
                 className="rounded p-2.5 text-primary text-base font-medium" />
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-base font-medium ml-3 text-gray-800">
                 {label}
@@ -287,130 +662,24 @@ function CheckBoxEl({ label = "" }) {
 }
 
 
-function ColorPickerEl({ label = "" }) {
-    const [pickedColor, setPickedColor] = React.useState("#fff");
-    console.log(pickedColor)
+function SelectEl({ label = "", children, items = null, value, onChange }) {
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
                 {label}
             </label>
-            {/* <Popup
-                trigger={
-                    <div role="button"
-                        name={label.toLowerCase().replace(" ", "_")}
-                        id={label.toLowerCase().replace(" ", "_")}
-                        className="rounded w-full py-6 text-gray-900 text-base font-medium mt-1 border border-gray-600"
-                        style={{ background: pickedColor }}
-                    />
+            <select value={value} onChange={(e) => onChange(e.target.value)} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
+                <option value="">Select {label}</option>
+                {
+                    items && items !== null ?
+                        items.map((item) => (
+                            <option key={item.value} value={item.value}>{item.label}</option>
+                        ))
+                        : children
                 }
-                position={['top center']}
-                contentStyle={{ border: "none", width: "max-content", padding: "20px", background: "#eee" }}
-                closeOnDocumentClick
-                nested
-            >
-                <CirclePicker onChangeComplete={(color) => setPickedColor(color.hex)} />
-            </Popup> */}
-        </div>
-    );
-}
-
-
-
-
-function SelectEl({ label = "", children }) {
-    return (
-        <div className="w-full">
-            <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
-                {label}
-            </label>
-            <select name={label.toLowerCase().replace(" ", "_")} id={label.toLowerCase().replace(" ", "_")} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
-                {children}
             </select>
         </div>
     );
 }
 
 
-
-
-
-
-function LocationAndStyle({ onValidated }) {
-    return (
-        <TabbedView
-            tabsContainerClass="pt-8"
-            tabs={[
-                {
-                    tabName: "Year/Make/Model",
-                    content: () => (
-                        <div className="w-full flex flex-wrap items-center p-5 pb-8 gap-6">
-                            <ImageDragDropInput withPreview onImagesChanged={(imgs) => setImages(imgs)} />
-                            {/* <SelectEl label="Make">
-                                <option value="">BMW</option>
-                                <option value="">Bentley</option>
-                            </SelectEl>
-
-                            <SelectEl label="Model">
-                                <option value="">2 Series</option>
-                                <option value="">3 Series</option>
-                            </SelectEl>
-                            <SelectEl label="Year">
-                                <option value="">2017</option>
-                                <option value="">2018</option>
-                            </SelectEl>
-                            <SelectEl label="Style">
-                                <option value="">Style 1</option>
-                                <option value="">Style 2</option>
-                            </SelectEl>
-                            <InputEl label="Zip" type="number" /> */}
-                            <div className="w-full mt-2">
-                                <button type="button" onClick={onValidated} className="btn-primary">
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    )
-                },
-                {
-                    tabName: "VIN",
-                    content: () => (
-                        <div className="w-full flex flex-wrap p-8 gap-6">
-                            <div className="w-full">
-                                <InputEl label="Zip" type="number" />
-                            </div>
-                            <div className="w-full">
-                                <InputEl label="VIN" />
-                            </div>
-                            <div className="w-full mt-2">
-                                <button type="button" onClick={onValidated} className="btn-primary">
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    )
-                },
-                {
-                    tabName: "Licence Plate",
-                    content: () => (
-                        <div className="w-full flex flex-wrap p-8 gap-6">
-                            <div className="w-full">
-                                <InputEl label="Zip" type="number" />
-                            </div>
-                            <InputEl label="License Plate" />
-                            <SelectEl label="State">
-                                <option value="">Select State</option>
-                                <option value="">State 1</option>
-                            </SelectEl>
-                            <div className="w-full mt-2">
-                                <button type="button" onClick={onValidated} className="pbtn-primary">
-                                    Continue
-                                </button>
-                            </div>
-                        </div>
-                    )
-                },
-            ]}
-        />
-    );
-}

@@ -1,5 +1,4 @@
-import React, { Fragment, Suspense, useEffect, useState } from "react";
-import SiderBar from "./SideBar";
+import React, { Fragment, Suspense, useState } from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,57 +6,16 @@ import { faBars, faChevronDown, faLocationDot, faMagnifyingGlass, faPlus, faRigh
 import { Menu, Transition } from "@headlessui/react";
 import { cn } from "../lib/utils";
 import { accountPageTabs } from "../pages/AccountPage";
-import useSearchCategory from "./hooks/useSearchCategory";
 import { apiConfig } from "../config/api";
 import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import useCurrentLocation, { useLocationByLatLng } from "./hooks/useCurrentLocation";
 
 const SignupPopup = React.lazy(() => import("../popups/Signup"));
 const SigninPopup = React.lazy(() => import("../popups/Signin"));
+const SiderBar = React.lazy(() => import("./SideBar"));
 const ForgotPasswordPopup = React.lazy(() => import("../popups/ForgotPassword"));
-
-
-
-// export const categories = [
-//     {
-//         id: "all",
-//         label: "All Categories"
-//     },
-//     {
-//         id: "sedan",
-//         label: "Sedan"
-//     },
-//     {
-//         id: "suv",
-//         label: "SUV"
-//     },
-//     {
-//         id: "truck",
-//         label: "Truck"
-//     },
-//     {
-//         id: "coupe",
-//         label: "Coupe"
-//     },
-//     {
-//         id: "convertible",
-//         label: "Convertible"
-//     },
-//     {
-//         id: "wagon_hatchback",
-//         label: "Wagon/Hatchback"
-//     },
-//     {
-//         id: "van_minivian",
-//         label: "Van/Minivian"
-//     },
-//     {
-//         id: "others",
-//         label: "Others"
-//     },
-// ]
-
 
 
 export default function Header({ isLoggedin = false, onLogout }) {
@@ -80,9 +38,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         <div className="hidden lg:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
                             {
-                                isLoggedin &&
+                                isLoggedin && authUser.userProfile !== null &&
                                 <span className="hidden xl:block">
-                                    <HeaderLocationEl />
+                                    <HeaderLocationEl userProfile={authUser.userProfile} />
                                 </span>
                             }
                         </div>
@@ -109,12 +67,12 @@ export default function Header({ isLoggedin = false, onLogout }) {
                                 </div>
                                 :
                                 <div>
-                                    <a href="?p=signin" id='trigger' className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-3 hover:text-primary py-2 md:py-3 rounded-full'>
+                                    <Link to="?p=signin" reloadDocument className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-3 hover:text-primary py-2 md:py-3 rounded-full'>
                                         Sign In
-                                    </a>
-                                    <a href="?p=signup" type='button' className='sign-up-popup-btn text-sm md:text-base font-medium bg-primary text-white px-5 md:px-8 py-2 md:py-3 hover:bg-primary/95 rounded-full'>
+                                    </Link>
+                                    <Link to="?p=signup" reloadDocument className='sign-up-popup-btn text-sm md:text-base font-medium bg-primary text-white px-5 md:px-8 py-2 md:py-3 hover:bg-primary/95 rounded-full'>
                                         Sign Up
-                                    </a>
+                                    </Link>
                                 </div>
                         }
                     </div>
@@ -123,9 +81,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     <HeaderSearchComponent category={category} categories={categories} />
                 </div>
                 {
-                    isLoggedin &&
+                    isLoggedin && authUser.userProfile !== null &&
                     <div className="mt-5 xl:hidden">
-                        <HeaderLocationEl />
+                        <HeaderLocationEl userProfile={authUser.userProfile} />
                     </div>
                 }
 
@@ -148,7 +106,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
             </div>
             {
                 window.innerWidth < 1024 && headerActive &&
-                <SiderBar onSidebarClose={() => setHeaderActive(false)} />
+                <Suspense>
+                    <SiderBar onLogout={onLogout} onSidebarClose={() => setHeaderActive(false)} />
+                </Suspense>
             }
             {
                 !isLoggedin &&
@@ -226,8 +186,6 @@ function AboutDropdown() {
 
 function AccountDropdown({ onLogout }) {
 
-
-
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -283,12 +241,18 @@ function AccountDropdown({ onLogout }) {
 }
 
 
-function HeaderLocationEl() {
+function HeaderLocationEl({ userProfile }) {
+    const location = useCurrentLocation();
+
     return (
         <a href="#" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
             <FontAwesomeIcon icon={faLocationDot} className="border-b border-transparent" />
             <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[150px] 2xl:max-w-[300px] border-b border-transparent hover:border-primary" style={{ WebkitLineClamp: 1 }}>
-                Location
+                {
+                    location && location !== null ?
+                        `${location.city}, ${location.country}`
+                        : "Location"
+                }
             </span>
         </a>
     );

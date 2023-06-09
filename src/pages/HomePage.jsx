@@ -1,6 +1,3 @@
-
-// type Props = {}
-
 import CarGridItem from "../components/CarGridItem"
 import useAuthUser from "../components/hooks/useAuthUser"
 import useCarsFetcher from "../components/hooks/useCarsFetcher"

@@ -2,7 +2,6 @@ import { useSearchParams } from "react-router-dom"
 import CarGridItem from "../components/CarGridItem"
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS"
 import React, { useEffect, useState } from "react"
-import FiltersPopup from "../popups/FiltersPopup"
 import MainLayout from "../components/layout"
 import useCarsFetcher from "../components/hooks/useCarsFetcher"
 import useAuthUser from "../components/hooks/useAuthUser"
@@ -10,6 +9,10 @@ import LoaderEl from "../components/loader"
 import { cn } from "../lib/utils"
 import { apiConfig } from "../config/api"
 import useFiltersFetcher from "../components/hooks/filtersFetchers"
+import { Suspense } from "react"
+
+const FiltersPopup = React.lazy(() => import("../popups/FiltersPopup"));
+
 
 
 export const Sortings = {
@@ -230,13 +233,15 @@ export default function SearchPage() {
                                 </a>
                             </div> */}
                             <div className="flex lg:hidden items-center gap-4 flex-wrap">
-                                <FiltersPopup
-                                    filters={filters} onMaxPriceChange={onMaxPriceChange}
-                                    onMinPriceChange={onMinPriceChange}
-                                    onConditionChange={onConditionChange}
-                                    accessToken={authUser.accessToken}
-                                    setFilters={setFilters}
-                                    onClearFilters={onClearAllFilters} />
+                                <Suspense>
+                                    <FiltersPopup
+                                        filters={filters} onMaxPriceChange={onMaxPriceChange}
+                                        onMinPriceChange={onMinPriceChange}
+                                        onConditionChange={onConditionChange}
+                                        accessToken={authUser.accessToken}
+                                        setFilters={setFilters}
+                                        onClearFilters={onClearAllFilters} />
+                                </Suspense>
                                 <div className="text-base text-gray-900 font-normal rounded-full bg-gray-100 transition-all hover:bg-gray-200 pl-5 pr-2">
                                     <label htmlFor="sortby" className="font-medium">Sort by: </label>
                                     <select name="sort" value={filters.sortby} onChange={onSortingChange} id="sortby" className="no-decor bg-transparent">

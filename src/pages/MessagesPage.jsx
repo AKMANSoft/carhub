@@ -1,7 +1,7 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faMagnifyingGlass, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 
 export default function MessagesPage() {
@@ -51,7 +51,7 @@ export default function MessagesPage() {
                     <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
                         <input type="text" className="no-decor bg-transparent w-full text-gray-600" placeholder="Type..." />
                         <button type="button" className="text-base aspect-square px-3 rounded-full bg-primary text-white transition-all hover:bg-primary/90">
-                            <i className="fa-solid fa-paper-plane"></i>
+                            <FontAwesomeIcon icon={faPaperPlane} />
                         </button>
                     </div>
                 </div>
@@ -66,7 +66,7 @@ function ChatHeader({ onBackPressed }) {
     return (
         <div className="bg-white flex items-center border-b last:border-none border-gray-100/90 gap-2 md:gap-5 py-4 px-4">
             <button type='button' onClick={onBackPressed} className='lg:hidden text-gray-800 text-xl rounded-full py-1 px-3 aspect-square bg-transparent transition-all hover:bg-gray-200'>
-                <i className='fa-solid fa-arrow-left'></i>
+                <FontAwesomeIcon icon={faArrowLeft} />
             </button>
             <div>
                 <img src="/images/car1.jpg" width={60} height={60} className="min-w-[60px] aspect-square rounded-full border-2 border-gray-200" alt="" />

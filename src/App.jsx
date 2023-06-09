@@ -5,13 +5,13 @@ import { useCookies } from 'react-cookie'
 import axios from "axios"
 import { apiConfig } from "./config/api"
 
-const CarDetailsPage = React.lazy(() => import("./pages/CarDetailsPage"))
-const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
+const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 const AccountPage = React.lazy(() => import("./pages/AccountPage"))
+const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
+const InboxPage = React.lazy(() => import("./pages/InboxPage"))
+const CarDetailsPage = React.lazy(() => import("./pages/CarDetailsPage"))
 const FindMeBuyerPage = React.lazy(() => import("./pages/FindMeBuyerPage"))
 const PostCarPage = React.lazy(() => import("./pages/PostCarPage"))
-const InboxPage = React.lazy(() => import("./pages/InboxPage"))
-const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 
 export const AuthUserContext = createContext({
   accessToken: "",
@@ -28,7 +28,7 @@ function App() {
       element: <HomePage />
     },
     {
-      path: "/profiles/:id",
+      path: "/profiles/:userId",
       element: (
         <Suspense>
           <PublicProfilePage />
@@ -36,7 +36,7 @@ function App() {
       )
     },
     {
-      path: "/cars/:id",
+      path: "/cars/:carId",
       element: (
         <Suspense>
           <CarDetailsPage />
@@ -115,7 +115,7 @@ function App() {
     <AuthUserContext.Provider value={{
       accessToken: cookies.accessToken,
       userProfile: userProfile,
-      logout: () => removeCookie("accessToken")
+      logout: () => removeCookie("accessToken", { path: "/" })
     }}>
       <RouterProvider router={router} />
     </AuthUserContext.Provider>

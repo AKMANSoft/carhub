@@ -196,9 +196,8 @@ function ProfileSection({ authUser = null }) {
                                         :
                                         <span>
                                             {
-                                                (authUser?.userProfile?.user_address?.city !== null
-                                                    && authUser?.userProfile?.user_address?.country !== nulll
-                                                ) &&
+                                                (authUser?.userProfile?.user_address?.city !== null && authUser?.userProfile?.user_address?.country !== null)
+                                                &&
                                                 `${authUser?.userProfile?.user_address?.city ?? ""} | ${authUser?.userProfile?.user_address?.country ?? ""}`
                                             }
                                         </span>

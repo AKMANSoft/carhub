@@ -4,7 +4,7 @@ import { cn } from "../lib/utils";
 export default function LoaderEl({ className, containerClassName, dark = true }) {
     return (
         <div className={cn(
-            "flex items-center justify-center w-full h-96",
+            "flex items-center justify-center w-full py-40",
             containerClassName
         )}>
             <div className={cn(

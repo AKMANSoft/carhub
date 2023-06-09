@@ -5,9 +5,14 @@ import MessagesPage from "./MessagesPage";
 import MainLayout from "../components/layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import useNotificationsFetcher from "../components/hooks/notificationsFetcher";
+import useAuthUser from "../components/hooks/useAuthUser";
+import LoaderEl from "../components/loader";
 
 
 export default function InboxPage() {
+    const authUser = useAuthUser();
+    const { notifications } = useNotificationsFetcher(authUser.accessToken)
 
     return (
         <MainLayout>
@@ -33,11 +38,19 @@ export default function InboxPage() {
                         {
                             tabName: "Notifications",
                             content: () => (
-                                <div className="py-4">
-                                    <NotificationItem />
-                                    <NotificationItem />
-                                    <NotificationItem />
-                                </div>
+                                notifications ?
+                                    notifications.length > 0 ?
+                                        <div className="py-4">
+                                            <NotificationItem />
+                                            <NotificationItem />
+                                            <NotificationItem />
+                                        </div>
+                                        :
+                                        <div className="flex items-center justify-center py-40">
+                                            <p className="text-base font-medium text-gray-800">No notifications.</p>
+                                        </div>
+                                    :
+                                    <LoaderEl />
                             )
                         }
                     ]}

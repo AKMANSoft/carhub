@@ -1,22 +1,85 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { countriesList } from '../data/countryCodes';
 
 
 
-export default function ThemeInput({
-    required, disabled, readOnly, type, placeholder,
-    value, onChange, className,
-}) {
 
+
+const ThemeInput = React.forwardRef(({
+    required, disabled, readOnly, type, placeholder,
+    value, onChange, className
+}, ref) => (
+    <input type={type}
+        ref={ref}
+        className={"rounded-full bg-transparent backdrop-blur border text-white placeholder:text-gray-300 border-white/50 w-full py-4 px-5 outline-none focus:border-white transition-all " + className}
+        placeholder={placeholder}
+        required={required}
+        disabled={disabled}
+        readOnly={readOnly}
+        value={value}
+        onChange={(e) => onChange(e.target.value)} />
+))
+
+export default ThemeInput
+
+
+
+
+
+export const AddressInputTypes = {
+    DEFAULT: 'default',
+    CITY: 'locality',
+}
+
+
+export function AddressInput({
+    addressType = AddressInputTypes.DEFAULT,
+    value, onChange, className, placeholder
+}) {
+    const autoCompleteRef = useRef();
+    const inputRef = useRef();
+    // const [text, setText] = useState(value);
+    const options = {
+        // componentRestrictions: { country: "ng" },
+        fields: ["address_components", "geometry", "name"],
+        types: addressType === AddressInputTypes.DEFAULT ? [] : [addressType]
+        // types: ["establishment"]
+    };
+    useEffect(() => {
+        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+            inputRef.current,
+            options
+        );
+        autoCompleteRef.current.addListener("place_changed", async function () {
+            const place = await autoCompleteRef.current?.getPlace();
+
+            let cityName = '';
+            let stateName = '';
+            for (let component of place.address_components) {
+                if (cityName === '' && component.types.includes('locality')) {
+                    cityName = component.long_name;
+                }
+                if (component.types.includes('administrative_area_level_1')) {
+                    stateName = component.long_name;
+                }
+            }
+
+            onChange({
+                city: cityName,
+                state: stateName,
+                latitude: place.geometry.location.lat(),
+                longitude: place.geometry.location.lng()
+            })
+        });
+    }, []);
     return (
-        <input type={type}
-            className={"rounded-full bg-transparent backdrop-blur border text-white placeholder:text-gray-300 border-white/50 w-full py-4 px-5 outline-none focus:border-white transition-all " + className}
+        <ThemeInput
+            ref={inputRef} type="text"
+            className={className}
             placeholder={placeholder}
-            required={required}
-            disabled={disabled}
-            readOnly={readOnly}
-            value={value}
-            onChange={(e) => onChange(e.target.value)} />
-    )
+            value={null}
+            onChange={null} />
+    );
 }
 
 

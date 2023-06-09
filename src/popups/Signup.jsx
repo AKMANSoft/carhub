@@ -1,4 +1,4 @@
-import ThemeInput, { CountryCodeDropdown } from '../components/ThemeInput';
+import ThemeInput, { AddressInput, CountryCodeDropdown } from '../components/ThemeInput';
 import React, { Fragment, useEffect, useState } from 'react';
 import ThemeTextArea from '../components/ThemeTextArea';
 import { siteConfig } from '../config/site';
@@ -29,9 +29,13 @@ export default function SignupPopup() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [currentStep, setCurrentStep] = useState("first");
     const [bio, setBio] = useState("");
-    const [state, setState] = useState("");
-    const [city, setCity] = useState("");
-    const [address, setAddress] = useState("");
+    const [address, setAddress] = useState({
+        city: "",
+        state: "",
+        streetAddress: "",
+        latitude: 0,
+        longitude: 0
+    });
     const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
 
     const [taskState, setTaskState] = useState("idle");
@@ -52,6 +56,17 @@ export default function SignupPopup() {
     })
 
 
+    const onAddressChange = (addressVal) => {
+        setAddress({
+            streetAddress: addressVal.name,
+            latitude: addressVal.latitude,
+            longitude: addressVal.longitude,
+            city: addressVal.city,
+            state: addressVal.state
+        });
+    }
+
+
     useEffect(() => {
         if (email.length > 0) {
             setInputsStatus(
@@ -64,7 +79,6 @@ export default function SignupPopup() {
     }, [email])
 
     useEffect(() => {
-        console.log(password)
         if (password.length > 0 && confPassword.length > 0) {
             let passwordsValid = password.length > 0 && confPassword.length > 0 && password === confPassword;
             setInputsStatus(
@@ -88,9 +102,13 @@ export default function SignupPopup() {
         setCountryCode("");
         setPhoneNumber("");
         setBio("");
-        setState("");
-        setCity("");
-        setAddress("");
+        setAddress({
+            city: "",
+            state: "",
+            streetAddress: "",
+            latitude: 0,
+            longitude: 0
+        });
         setCurrentStep("first")
         setIsOpen(false);
     }
@@ -105,7 +123,9 @@ export default function SignupPopup() {
             confPassword: confPassword,
             phoneNumber: phoneNumber,
             profileImage: profileImage,
-            countryCode: countryCode
+            countryCode: countryCode,
+            latitude: address.latitude,
+            longitude: address.longitude,
         })
         if (response === null) {
             setAlertMessage({
@@ -147,7 +167,7 @@ export default function SignupPopup() {
                 }
                 break;
             case "second":
-                handleSignUp();
+                if (address.lat !== 0 && address.lng !== 0) handleSignUp();
                 break;
             default:
                 setCurrentStep("first")
@@ -217,23 +237,25 @@ export default function SignupPopup() {
                                                             inputsStatus.bio === "invalid" && "border-2 !border-red-500",
                                                         )}
                                                         value={bio} onChange={(val) => setBio(val)} />
-                                                    <div className='flex gap-5'>
-                                                        <ThemeInput type='text' placeholder='State'
-                                                            className={cn(
-                                                                inputsStatus.state === "invalid" && "border-2 !border-red-500",
-                                                            )}
-                                                            value={state} onChange={(val) => setState(val)} />
-                                                        <ThemeInput type='text' placeholder='City'
-                                                            className={cn(
-                                                                inputsStatus.city === "invalid" && "border-2 !border-red-500",
-                                                            )}
-                                                            value={city} onChange={(val) => setCity(val)} />
-                                                    </div>
-                                                    <ThemeInput type='text' placeholder='Address'
+                                                    <AddressInput placeholder='Address'
                                                         className={cn(
                                                             inputsStatus.address === "invalid" && "border-2 !border-red-500",
                                                         )}
-                                                        value={address} onChange={(val) => setAddress(val)} />
+                                                        value={address.streetAddress} onChange={onAddressChange} />
+
+                                                    <div className='flex gap-5'>
+                                                        <ThemeInput type='text' readOnly placeholder='City'
+                                                            className={cn(
+                                                                inputsStatus.city === "invalid" && "border-2 !border-red-500",
+                                                            )}
+                                                            value={address.city} onChange={(val) => setAddress({ ...address, state: val })} />
+                                                        <ThemeInput type='text' readOnly placeholder='State'
+                                                            className={cn(
+                                                                inputsStatus.state === "invalid" && "border-2 !border-red-500",
+                                                            )}
+                                                            value={address.state} onChange={(val) => setAddress({ ...address, state: val })} />
+                                                    </div>
+
                                                     <div className='pt-10'>
                                                         {
                                                             taskState === "processing" ?

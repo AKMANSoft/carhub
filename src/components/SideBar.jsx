@@ -1,13 +1,15 @@
 import React from "react";
 import { accountPageTabs } from "../pages/AccountPage";
-import { faBell, faCircleInfo, faList, faLock, faMessage, faPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faCircleInfo, faList, faLock, faMessage, faPlus, faRightFromBracket, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
+import { apiConfig } from "../config/api";
+import { cn } from "../lib/utils";
 
 
 
-export default function SiderBar({ onSidebarClose }) {
+export default function SiderBar({ onSidebarClose, onLogout }) {
     const authUser = useAuthUser();
     const { data: categories } = useFiltersFetcher(authUser.accessToken, apiConfig.endpoints.getCategories, []);
 
@@ -77,6 +79,13 @@ export default function SiderBar({ onSidebarClose }) {
                             Privacy
                         </a>
                     </li>
+                    <li className="border-t mt-6 pt-4"></li>
+                    <li>
+                        <button type="button" onClick={onLogout} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                            <FontAwesomeIcon icon={faRightFromBracket} className=" text-base text-gray-700 mr-4" />
+                            Logout
+                        </button>
+                    </li>
                 </ul>
             </div>
             <div className="mt-8 border-t pt-8">
@@ -84,9 +93,9 @@ export default function SiderBar({ onSidebarClose }) {
                 <ul className="py-2">
                     {
                         categories.map((ctgry) => (
-                            <li key={ctgry}>
-                                <a href={"search?category=" + ctgry} key={ctgry} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
-                                    {ctgry}
+                            <li key={ctgry.id}>
+                                <a href={"search?category=" + ctgry.id} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                                    {ctgry.title}
                                     <i className="fa-solid fa-arrow-right text-sm text-gray-700"></i>
                                 </a>
                             </li>

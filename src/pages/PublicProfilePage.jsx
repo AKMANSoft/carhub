@@ -1,6 +1,5 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
-import EditPofilePopup from "../popups/EditProfilePopup";
 import CarGridItem from "../components/CarGridItem";
 import MainLayout from "../components/layout";
 
