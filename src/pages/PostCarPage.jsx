@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TabbedView from "../components/TabbedView";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import ImageDragDropInput from "../components/ImageDragDropInput";
@@ -13,6 +13,7 @@ import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
+import { AddressInputTypes } from "../components/ThemeInput";
 
 
 const CarPostSections = {
@@ -534,8 +535,8 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
     }
 
     return (
-        <div className="pt-5 w-full shadow border rounded-md bg-white">
-            <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
+        <div className=" w-full shadow border rounded-md bg-white p-5 pb-8">
+            <div className="w-full grid grid-cols-3 place-items-center pt-5  gap-7" >
                 <div className="w-full col-span-3">
                     <InputEl
                         type="number" label="Price" icon={faDollar}
@@ -553,15 +554,15 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
                         value={postDetails.findMeBuyer}
                         onChange={onFindMeBuyerChange} />
                 </div>
-                <button
-                    type="button"
-                    onClick={onValidated}
-                    className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                    disabled={!postDetails || postDetails.price === ""}
-                >
-                    Continue
-                </button>
             </div>
+            <button
+                type="button"
+                onClick={onValidated}
+                className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                disabled={!postDetails || postDetails.price === ""}
+            >
+                Continue
+            </button>
         </div >
     );
 }
@@ -576,8 +577,8 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <div className="w-full col-span-3">
-                    <InputEl
-                        type="text" label="Car Location" icon={faLocationDot}
+                    <LocationInputEl
+                        label="Car Location" icon={faLocationDot}
                         value={carLocation} onChange={setCarLocation} />
                 </div>
                 <div className="col-span-3 w-full">
@@ -601,30 +602,87 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
 
 
 
-function InputEl({ label = "", type = "text", placeholder = "", icon = null, value, onChange }) {
-    return (
-        <div className="w-full">
-            <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
-                {label}
-            </label>
-            <span className="relative">
-                <input type={type}
-                    name={label.toLowerCase().replace(" ", "_")}
-                    id={label.toLowerCase().replace(" ", "_")}
-                    value={value}
-                    onChange={(e) => onChange(e.target.value)}
-                    placeholder={placeholder}
-                    className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
-                {
-                    icon !== null &&
-                    <span className="absolute top-1/2 -translate-y-1/2 left-4">
-                        <FontAwesomeIcon icon={icon} className={"fa-solid text-gray-800"} />
-                    </span>
+
+
+
+const InputEl = React.forwardRef(({ label = "", type = "text", placeholder = "", icon = null, value, onChange }, ref) => (
+    <div className="w-full">
+        <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
+            {label}
+        </label>
+        <span className="relative">
+            <input ref={ref} type={type}
+                name={label.toLowerCase().replace(" ", "_")}
+                id={label.toLowerCase().replace(" ", "_")}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder={placeholder}
+                className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
+            {
+                icon !== null &&
+                <span className="absolute top-1/2 -translate-y-1/2 left-4">
+                    <FontAwesomeIcon icon={icon} className={"fa-solid text-gray-800"} />
+                </span>
+            }
+        </span>
+    </div>
+))
+
+
+
+
+export function LocationInputEl({
+    onChange, className, label
+}) {
+    const autoCompleteRef = useRef();
+    const inputRef = useRef();
+    // const [text, setText] = useState(value);
+    const options = {
+        // componentRestrictions: { country: "ng" },
+        fields: ["address_components", "geometry", "name"],
+        // types: addressType === AddressInputTypes.DEFAULT ? [] : [addressType]
+        // types: ["establishment"]
+    };
+    useEffect(() => {
+        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+            inputRef.current,
+            options
+        );
+        autoCompleteRef.current.addListener("place_changed", async function () {
+            const place = await autoCompleteRef.current?.getPlace();
+
+            let cityName = '';
+            let stateName = '';
+            for (let component of place.address_components) {
+                if (cityName === '' && component.types.includes('locality')) {
+                    cityName = component.long_name;
                 }
-            </span>
-        </div>
+                if (component.types.includes('administrative_area_level_1')) {
+                    stateName = component.long_name;
+                }
+            }
+
+            onChange({
+                city: cityName,
+                state: stateName,
+                latitude: place.geometry.location.lat(),
+                longitude: place.geometry.location.lng()
+            })
+        });
+    }, []);
+    return (
+        <InputEl
+            ref={inputRef} type="text"
+            className={className}
+            label={label}
+            icon={faLocationDot}
+            value={null}
+            onChange={null} />
     );
 }
+
+
+
 
 function TextAreaEl({ label = "", placeholder = "", onChange, value }) {
     return (
