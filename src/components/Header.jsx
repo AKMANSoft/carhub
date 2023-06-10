@@ -11,6 +11,7 @@ import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
 import { Link, useSearchParams } from "react-router-dom";
 import useCurrentLocation, { useLocationByLatLng } from "./hooks/useCurrentLocation";
+import { siteConfig } from "../config/site";
 
 const SignupPopup = React.lazy(() => import("../popups/Signup"));
 const SigninPopup = React.lazy(() => import("../popups/Signin"));
@@ -147,7 +148,7 @@ function AboutDropdown() {
                 <Menu.Items className="absolute right-0 mt-2 w-56 overflow-clip origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <Menu.Item>
                         {({ active }) => (
-                            <a href="https://www.gocarhub.app/" className={cn(
+                            <a href={siteConfig.links.aboutLink} className={cn(
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
@@ -245,16 +246,16 @@ function HeaderLocationEl({ userProfile }) {
     const location = useCurrentLocation();
 
     return (
-        <a href="#" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
+        <button type="button" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
             <FontAwesomeIcon icon={faLocationDot} className="border-b border-transparent" />
             <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[150px] 2xl:max-w-[300px] border-b border-transparent hover:border-primary" style={{ WebkitLineClamp: 1 }}>
                 {
                     location && location !== null ?
                         `${location.city}, ${location.country}`
-                        : "Location"
+                        : ""
                 }
             </span>
-        </a>
+        </button>
     );
 }
 
