@@ -2,6 +2,8 @@
 
 <https://carhub.mi6.global>
 
+# Please make sure Google Maps Api is enabled because the provided Google Api Key is not working with location.
+
 # Please provide Find Me Buyer Screen design sample.
 
 # CORS Issue
