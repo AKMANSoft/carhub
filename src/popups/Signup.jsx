@@ -11,6 +11,9 @@ import { useSearchParams } from 'react-router-dom';
 import AlertMessage from '../components/ThemeAlert';
 import { useCookies } from 'react-cookie'
 import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
+import doSocialSignIn from '../api/socialSignIn';
 
 
 
@@ -174,6 +177,59 @@ export default function SignupPopup() {
                 break;
         }
     }
+
+
+    const signInWithGoogle = useGoogleLogin({
+        flow: "implicit",
+        onSuccess: async (googleRes) => {
+            try {
+                const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${googleRes.access_token}` },
+                }).then((res) => res.data);
+                const response = await doSocialSignIn({
+                    email: userInfo.email,
+                    firstName: userInfo.given_name,
+                    lastName: userInfo.family_name,
+                    googleId: userInfo.sub
+                })
+                if (response === null) {
+                    throw new Error();
+                }
+                else {
+                    setAlertMessage({
+                        text: response.message,
+                        success: response.success,
+                        visible: true,
+                    })
+                    if (response.success === true) {
+                        setCookies("accessToken", response.data.access_token, {
+                            maxAge: 3600 * 24,
+                            path: "/"
+                        })
+                        setTaskState("completed");
+                        setTimeout(() => {
+                            onPopupClose();
+                            window.location.reload();
+                        }, 500);
+                    }
+                }
+
+            } catch (error) {
+                setAlertMessage({
+                    text: "Got some error while processing your request. Please try again.",
+                    success: false,
+                    visible: true,
+                })
+            }
+        },
+        onError: (error) => {
+            setAlertMessage({
+                text: "Got some error while processing your request. Please try again.",
+                success: false,
+                visible: true,
+            })
+        },
+    })
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -342,7 +398,7 @@ export default function SignupPopup() {
                                                         <button type="button" onClick={() => onContinue("first")} className="btn-light w-full mt-10">Continue</button>
                                                     </div>
                                                     <div className="mt-16 space-y-3 w-full">
-                                                        <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
+                                                        <button type="button" onClick={signInWithGoogle} className="w-full btn-light justify-center flex gap-8 items-center">
                                                             <FontAwesomeIcon icon={faGoogle} className="text-2xl" />
                                                             <span>Continue with Google</span>
                                                         </button>
