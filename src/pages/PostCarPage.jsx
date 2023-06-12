@@ -13,7 +13,6 @@ import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
-import { AddressInputTypes } from "../components/ThemeInput";
 
 
 const CarPostSections = {
@@ -86,7 +85,14 @@ export default function PostCarPage() {
             description: "",
             findMeBuyer: false
         },
-        carLocation: "",
+        carLocation: {
+            city: "",
+            state: "",
+            country: "",
+            latitude: 0,
+            longitude: 0,
+            zipCode: null,
+        },
     });
 
 
@@ -558,7 +564,7 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
             <button
                 type="button"
                 onClick={onValidated}
-                className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                className="btn-primary mt-5 disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                 disabled={!postDetails || postDetails.price === ""}
             >
                 Continue
@@ -572,6 +578,11 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
 
 
 function FinishSection({ onValidated, carLocation, setCarLocation }) {
+    const isValidated = () => {
+        return (
+            carLocation && carLocation.latitude !== 0 && carLocation.longitude !== 0 && carLocation.zipCode !== null && carLocation.zipCode !== ""
+        )
+    }
 
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
@@ -581,12 +592,19 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
                         label="Car Location" icon={faLocationDot}
                         value={carLocation} onChange={setCarLocation} />
                 </div>
+                <div className="w-full col-span-3">
+                    <InputEl
+                        type="number" label="Zip Code"
+                        value={carLocation.zipCode}
+                        onChange={(value) => setCarLocation({ ...carLocation, zipCode: value })}
+                    />
+                </div>
                 <div className="col-span-3 w-full">
                     <button
                         type="button"
                         onClick={onValidated}
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                        disabled={!carLocation || carLocation === ""}
+                        disabled={!isValidated()}
                     >
                         Post
                     </button>
@@ -605,7 +623,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
 
 
 
-const InputEl = React.forwardRef(({ label = "", type = "text", placeholder = "", icon = null, value, onChange }, ref) => (
+const InputEl = React.forwardRef(({ label = "", type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => (
     <div className="w-full">
         <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
             {label}
@@ -615,7 +633,7 @@ const InputEl = React.forwardRef(({ label = "", type = "text", placeholder = "",
                 name={label.toLowerCase().replace(" ", "_")}
                 id={label.toLowerCase().replace(" ", "_")}
                 value={value}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={(e) => onChange !== null && onChange(e.target.value)}
                 placeholder={placeholder}
                 className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
             {
@@ -641,7 +659,7 @@ export function LocationInputEl({
         // componentRestrictions: { country: "ng" },
         fields: ["address_components", "geometry", "name"],
         // types: addressType === AddressInputTypes.DEFAULT ? [] : [addressType]
-        // types: ["establishment"]
+        types: ["address"]
     };
     useEffect(() => {
         autoCompleteRef.current = new window.google.maps.places.Autocomplete(
@@ -651,8 +669,11 @@ export function LocationInputEl({
         autoCompleteRef.current.addListener("place_changed", async function () {
             const place = await autoCompleteRef.current?.getPlace();
 
+            console.log(place)
             let cityName = '';
             let stateName = '';
+            let countryName = '';
+            let postalCode = '';
             for (let component of place.address_components) {
                 if (cityName === '' && component.types.includes('locality')) {
                     cityName = component.long_name;
@@ -660,13 +681,23 @@ export function LocationInputEl({
                 if (component.types.includes('administrative_area_level_1')) {
                     stateName = component.long_name;
                 }
+                if (component.types.includes('country')) {
+                    countryName = component.long_name;
+                }
+                if (component.types.includes('postal_code')) {
+                    postalCode = component.long_name;
+                }
             }
+
+            console.log(postalCode)
 
             onChange({
                 city: cityName,
                 state: stateName,
+                country: countryName,
                 latitude: place.geometry.location.lat(),
-                longitude: place.geometry.location.lng()
+                longitude: place.geometry.location.lng(),
+                zipCode: postalCode
             })
         });
     }, []);

@@ -12,9 +12,11 @@ export default function useCurrentLocation() {
             navigator.geolocation.getCurrentPosition((position) => {
                 const latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                 geocoder.geocode({ 'location': latLng }, (results, status) => {
+                    console.log(results);
                     if (status === google.maps.GeocoderStatus.OK) {
                         if (results.length > 0) {
-                            const addressComponents = results[0].address_components;
+                            const result = results[0];
+                            const addressComponents = result.address_components;
                             let city, country;
                             for (let component of addressComponents) {
                                 if (component.types.includes('locality')) {
@@ -26,7 +28,8 @@ export default function useCurrentLocation() {
                             }
                             setLocation({
                                 city: city,
-                                country: country
+                                country: country,
+                                address: result.formatted_address
                             })
                         }
                     }

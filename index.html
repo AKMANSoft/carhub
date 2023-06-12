@@ -15,8 +15,13 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBQqculjZW5hiDVLL8cLL5iKNufERGrpk&libraries=places"
-    ></script>
+  <script>
+    function initMap() {
+      console.log("Map Initialized")
+    }
+  </script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBQqculjZW5hiDVLL8cLL5iKNufERGrpk&libraries=places&callback=initMap"></script>
 </body>
 
 </html>

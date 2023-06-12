@@ -69,12 +69,12 @@ export default function AccountPage() {
                                     }
 
                                 </div>
-                                <div className="px-4 mt-10">
+                                {/* <div className="px-4 mt-10">
                                     <a href="/profiles/1" className={"text-base font-normal border-b border-transparent border-gray-100 transition-all text-primary hover:border-primary"}>
                                         View public profile
                                         <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="text-sm ml-2" />
                                     </a>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="w-full relative pt-5">
                                 <div className="mx-8 my-6 absolute -top-[41px] bg-white px-2">
@@ -220,7 +220,7 @@ function ProfileSection({ authUser = null }) {
                     </div>
                 </div>
                 {/* Reviews and Offers Section  */}
-                <div className="mt-10">
+                {/* <div className="mt-10">
                     <div className="flex items-center justify-center gap-10 md:gap-20 lg:gap-40">
                         <button type="button" onClick={() => setActiveTab(0)} className={"text-lg font-semibold text-gray-800 px-5 py-2 border-b-4 rounded " + (activeTab === 0 ? "border-primary" : "border-transparent")}>
                             Offers
@@ -245,7 +245,7 @@ function ProfileSection({ authUser = null }) {
                                 <ReviewItem />
                             </div>
                     }
-                </div>
+                </div> */}
             </div>
     );
 }

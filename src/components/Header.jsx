@@ -36,7 +36,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                             <FontAwesomeIcon icon={faBars} />
                         </button>
                         <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
-                        <div className="hidden lg:flex items-center gap-2" >
+                        <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
                             {
                                 isLoggedin && authUser.userProfile !== null &&
@@ -78,7 +78,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         }
                     </div>
                 </div>
-                <div className="mt-5 lg:hidden">
+                <div className="mt-5 xl:hidden">
                     <HeaderSearchComponent category={category} categories={categories} />
                 </div>
                 {
@@ -248,10 +248,14 @@ function HeaderLocationEl({ userProfile }) {
     return (
         <button type="button" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
             <FontAwesomeIcon icon={faLocationDot} className="border-b border-transparent" />
-            <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[150px] 2xl:max-w-[300px] border-b border-transparent hover:border-primary" style={{ WebkitLineClamp: 1 }}>
+            <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[200px] 2xl:max-w-[300px] transition-all hover:underline" style={{ WebkitLineClamp: 1 }}>
                 {
                     location && location !== null ?
-                        `${location.city}, ${location.country}`
+                        <>
+                            {location.address}
+                            {/* {location.city && location.city !== "" && `${location.city}`}
+                            {location.country && location.country !== "" && `, ${location.country}`} */}
+                        </>
                         : ""
                 }
             </span>
@@ -265,18 +269,18 @@ function HeaderSearchComponent({ className, category, categories = [] }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [searchCategory, setSearchCategory] = useState(category);
     return (
-        <div className={"w-full lg:w-96 xl:w-full relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
+        <div className={"w-full xl:w-full relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
             <input className="ps-5 text-sm w-full min-h-full no-decor text-gray-600 appearance-none bg-transparent"
                 value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
                 type="search" name="search" placeholder="Search" />
             <span className="block w-0 min-h-full my-2 border-l border-gray-300"></span>
-            <select name="category" value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)} className="w-36 md:w-auto bg-transparent no-decor transition-all duration-300 px-2 md:px-4 py-2 my-1">
+            {/* <select name="category" value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)} className="w-36 md:w-auto bg-transparent no-decor transition-all duration-300 px-2 md:px-4 py-2 my-1">
                 {
                     categories.map((ctgry) => (
                         <option key={ctgry.id} value={ctgry.id}>{ctgry.title}</option>
                     ))
                 }
-            </select>
+            </select> */}
             <a href={`/search?category=${isNaN(searchCategory) ? -1 : searchCategory}&query=${searchTerm}`} aria-disabled="true" className="text-base md:text-lg min-w-max bg-primary text-white rounded-full m-1 ms-3 aspect-square transition-all duration-300 px-3 flex items-center hover:bg-primary/90">
                 <FontAwesomeIcon icon={faMagnifyingGlass} />
             </a>

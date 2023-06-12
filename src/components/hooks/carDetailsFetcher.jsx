@@ -1,6 +1,7 @@
 import axios from "axios";
 import { apiConfig } from "../../config/api";
 import useSWR from 'swr';
+import { defaultCarDetail } from "../../data/default-car-data";
 
 
 

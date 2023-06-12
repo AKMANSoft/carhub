@@ -1,3 +1,4 @@
+import { formatDate, formatPrice } from "../lib/utils";
 
 
 export default function CarGridItem({ car, className = "" }) {
@@ -7,11 +8,19 @@ export default function CarGridItem({ car, className = "" }) {
                 <img src={car.car_images[0]?.image} loading="lazy" width={250} height={250}
                     className="w-full h-auto object-cover aspect-square overflow-hidden object-center rounded-md bg-gray-200" alt="" />
                 <h3 className="text-lg font-semibold text-gray-900 mt-2 line-clamp-2">
-                    {`${car.make}, ${car.model}`}
+                    {car.make} {car.model}
                 </h3>
-                <p className="text-base font-normal text-gray-900">${car.amount}</p>
+                <p className="text-base font-normal text-gray-900">
+                    ${formatPrice(car.amount)}
+                </p>
+                <p className="text-base font-normal text-gray-600">
+                    {car.user_count} views
+                </p>
                 <p className="text-base font-normal text-gray-600">
                     Zip Code: {car.zip_code}
+                </p>
+                <p className="text-base font-normal text-gray-600">
+                    Posted: {formatDate(new Date(car.created_at), "-")}
                 </p>
             </div>
         </a>

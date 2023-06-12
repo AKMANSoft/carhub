@@ -346,14 +346,6 @@ export default function SignupPopup() {
                                                             <FontAwesomeIcon icon={faGoogle} className="text-2xl" />
                                                             <span>Continue with Google</span>
                                                         </button>
-                                                        <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
-                                                            <FontAwesomeIcon icon={faFacebook} className="text-2xl" />
-                                                            <span>Continue with Google</span>
-                                                        </button>
-                                                        <button type="submit" className="w-full btn-light justify-center flex gap-8 items-center">
-                                                            <FontAwesomeIcon icon={faApple} className="text-2xl" />
-                                                            <span>Continue with Google</span>
-                                                        </button>
                                                     </div>
                                                     <div className='mt-10 w-full text-center'>
                                                         <a href='?p=signin' className="cursor-pointer border-b transition-all">
