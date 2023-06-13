@@ -12,7 +12,7 @@ export const sortYears = (years = []) => {
 export default function useFiltersFetcher(accessToken, fetchUrl, defaultValue = [], sortFunc = null) {
     const { data, error, isLoading } = useSWR(apiConfig.basePath + fetchUrl,
         async (url) => {
-            if (accessToken === undefined || accessToken === null || accessToken === "") return defaultValue
+            // if (accessToken === undefined || accessToken === null || accessToken === "") return defaultValue
             const res = await axios.get(url, {
                 headers: {
                     Authorization: "Bearer " + accessToken

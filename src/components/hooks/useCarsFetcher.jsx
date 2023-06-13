@@ -6,7 +6,7 @@ import { apiConfig } from "../../config/api";
 
 
 const carsFetcher = async (url, accessToken) => {
-    if (accessToken === undefined || accessToken === null || accessToken === "") return []
+    // if (accessToken === undefined || accessToken === null || accessToken === "") return []
     const res = await axios.get(url, {
         headers: {
             Authorization: "Bearer " + accessToken

@@ -223,7 +223,7 @@ export default function SignupPopup() {
                 success: false,
                 visible: true,
             })
-        },
+        }
     })
 
     return (

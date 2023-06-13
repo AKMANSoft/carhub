@@ -15,16 +15,16 @@ export default function HomePage() {
         <MainLayout secureRoute={false}>
             <div className={"flex justify-center py-10" + MAIN_HORIZONTAL_PADDING}>
                 {
-                    authUser.accessToken === undefined || authUser.accessToken === null || authUser.accessToken === "" ?
-                        <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
-                            <h4 className="text-xl font-medium text-gray-800 text-center">
-                                Unauthorized. Please signin to continue.
-                            </h4>
-                            <a href="/?p=signin" className="text-primary outline-none transition-all hover:underline">
-                                Signin
-                            </a>
-                        </div>
-                        :
+                    // authUser.accessToken === undefined || authUser.accessToken === null || authUser.accessToken === "" ?
+                    //     <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
+                    //         <h4 className="text-xl font-medium text-gray-800 text-center">
+                    //             Unauthorized. Please signin to continue.
+                    //         </h4>
+                    //         <a href="/?p=signin" className="text-primary outline-none transition-all hover:underline">
+                    //             Signin
+                    //         </a>
+                    //     </div>
+                    //     :
                         isLoading || error ?
                             <LoaderEl containerClassName="w-full h-[400px]" />
                             :
