@@ -11,6 +11,8 @@ import { apiConfig } from "../config/api"
 import useFiltersFetcher, { sortYears } from "../components/hooks/filtersFetchers"
 import { Suspense } from "react"
 import useUserLocation from "../components/hooks/useLocation"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"
 
 const FiltersPopup = React.lazy(() => import("../popups/FiltersPopup"));
 
@@ -59,7 +61,8 @@ const DEFAULT_FILTERS = {
     condition: CarConditions.ALL,
     year: "",
     make: "",
-    model: ""
+    model: "",
+    page: 1
 }
 
 
@@ -77,7 +80,6 @@ export default function SearchPage() {
         query: searchParams.get("query") ?? "",
         category: isNaN(parseInt(searchParams.get("category"))) ? -1 : parseInt(searchParams.get("category")),
     });
-    const [pageIndex, setPageIndex] = useState(1);
     const [formattedUrl, setFormattedUrl] = useState(null)
     const { cars, isLoading, error } = useCarsFetcher(authUser.accessToken, formattedUrl);
     const { data: categories } = useFiltersFetcher(authUser.accessToken, apiConfig.endpoints.getCategories, []);
@@ -142,7 +144,7 @@ export default function SearchPage() {
     useEffect(() => {
         setFormattedUrl(joinStrs(
             apiConfig.basePath + apiConfig.endpoints.getAllCars,
-            `?type=BUY&sort=${filters.sortby}&page=${pageIndex}`,
+            `?type=BUY&sort=${filters.sortby}&page=${filters.page}`,
             `&search_term=${filters.query}`,
             `&min_price=${filters.price.min}`,
             `&max_price=${filters.price.max}`,
@@ -153,14 +155,17 @@ export default function SearchPage() {
             `&model=${filters.model}`,
             location !== null && location?.latitude !== undefined && `&latitude=${location.latitude}`,
             location !== null && location?.longitude !== undefined && `&longitude=${location.longitude}`,
-        ))
-
+        ));
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        })
     }, [filters, location])
 
 
 
     return (
-        <MainLayout>
+        <MainLayout secureRoute={false}>
             <div className={"py-10" + MAIN_HORIZONTAL_PADDING}>
                 <div className="flex items-start gap-0 md:gap-5">
                     <div className="min-w-[300px] rounded border px-4 py-5 hidden lg:block">
@@ -256,40 +261,98 @@ export default function SearchPage() {
                                 </div>
                             </div>
                         </div>
-                        {
-                            isLoading || error ?
-                                <LoaderEl containerClassName="w-full h-[400px]" />
-                                :
-                                cars?.length > 0 ?
-                                    <>
-                                        <div className="flex justify-end w-full mb-2">
+                        <div className="flex flex-col justify-between w-full min-h-[700px]">
+
+                            {
+                                isLoading || error ?
+                                    <LoaderEl containerClassName="w-full h-[400px]" />
+                                    :
+                                    cars?.length > 0 ?
+                                        <div>
+                                            <div className="flex justify-end w-full mb-2">
+                                                <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
+                                                    Clear All Filters
+                                                </button>
+                                            </div>
+                                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
+                                                {
+                                                    cars &&
+                                                    cars.map((car) => (
+                                                        <CarGridItem key={car.id} car={car} />
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+
+                                        :
+                                        <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
+                                            <h4 className="text-xl font-medium text-gray-800 text-center">
+                                                No cars found. Try changing filters.
+                                            </h4>
                                             <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
                                                 Clear All Filters
                                             </button>
                                         </div>
-                                        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
-                                            {
-                                                cars &&
-                                                cars.map((car) => (
-                                                    <CarGridItem key={car.id} car={car} />
-                                                ))
-                                            }
-                                        </div>
-                                    </>
-                                    :
-                                    <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
-                                        <h4 className="text-xl font-medium text-gray-800 text-center">
-                                            No cars found. Try changing filters.
-                                        </h4>
-                                        <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                            Clear All Filters
-                                        </button>
-                                    </div>
-                        }
+                            }
+                            <Pagination
+                                activePage={filters.page}
+                                setActivePage={(page) => setFilters({
+                                    ...filters,
+                                    page: page
+                                })} />
+                        </div>
+
                     </div>
                 </div>
             </div >
         </MainLayout>
+    )
+}
+
+
+
+function Pagination({ activePage, setActivePage }) {
+    let visiblePages = [activePage, activePage + 1];
+    if (activePage > 1) {
+        visiblePages = [activePage - 1, ...visiblePages]
+    }
+    else {
+        visiblePages = [...visiblePages, activePage + 2]
+    }
+
+    const onPageChange = (page) => {
+        let newPage = page;
+        if (newPage <= 0) newPage = 1
+        setActivePage(newPage);
+    }
+
+    return (
+        <div className="w-full py-[10px] px-5 flex items-center justify-center">
+            <div className="flex items-center gap-2">
+                <button type="button"
+                    onClick={() => onPageChange(activePage - 1)}
+                    className="outline-none bg-gray-800/20 rounded text-xs font-normal text-gray-800 p-2 w-8 h-8 aspect-square">
+                    <FontAwesomeIcon icon={faChevronLeft} />
+                </button>
+                {
+                    visiblePages.map((page) => (
+                        <button key={page} type="button"
+                            onClick={() => onPageChange(page)}
+                            className={cn(
+                                "outline-none rounded text-xs font-normal p-2 w-8 h-8 aspect-square",
+                                activePage === page ? "bg-primary text-white" : "bg-gray-800/20 text-gray-800"
+                            )}>
+                            {page}
+                        </button>
+                    ))
+                }
+                <button type="button"
+                    onClick={() => onPageChange(activePage + 1)}
+                    className="outline-none bg-gray-800/20 rounded text-xs font-normal text-gray-800 p-2 w-8 h-8 aspect-square">
+                    <FontAwesomeIcon icon={faChevronRight} />
+                </button>
+            </div>
+        </div>
     )
 }
 
