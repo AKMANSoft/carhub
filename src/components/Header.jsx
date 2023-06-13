@@ -40,7 +40,6 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
                             {
-                                isLoggedin &&
                                 <span className="hidden xl:block">
                                     <HeaderLocationEl />
                                 </span>
@@ -49,11 +48,16 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     </div>
                     <div className='flex items-center gap-5'>
                         {
-                            isLoggedin &&
+
                             <div className='hidden md:flex items-center gap-2'>
                                 <AboutDropdown />
-                                <InboxDropdown />
-                                <AccountDropdown onLogout={onLogout} />
+                                {
+                                    isLoggedin &&
+                                    <>
+                                        <InboxDropdown />
+                                        <AccountDropdown onLogout={onLogout} />
+                                    </>
+                                }
                                 {/* <a href="/account" className='text-2xl text-gray-700 transition-all hover:text-primary hover:scale-110'>
                                     <FontAwesomeIcon icon={faUser} />
                                 </a> */}
@@ -83,7 +87,6 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     <HeaderSearchComponent category={category} categories={categories} />
                 </div>
                 {
-                    isLoggedin &&
                     <div className="mt-5 xl:hidden">
                         <HeaderLocationEl />
                     </div>
