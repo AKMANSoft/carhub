@@ -19,9 +19,41 @@ const FiltersPopup = React.lazy(() => import("../popups/FiltersPopup"));
 
 
 export const Sortings = {
-    RECENT_FIRST: "recent_first",
-    OLDER_FIRST: "old_first",
+    RECENT_FIRST: {
+        value: "recent_first",
+        label: "Recent First"
+    },
+    CLOSEST_FIRST: {
+        value: "closest_first",
+        label: "Closest First"
+    },
+    PRICE_LOW_TO_HIGH: {
+        value: "price_lh",
+        label: "Price: Low to High"
+    },
+    PRICE_HIGH_TO_LOW: {
+        value: "price_hl",
+        label: "Price: High to Low"
+    },
+    MODEL_NEWEST: {
+        value: "model_newest",
+        label: "Model: Newest"
+    },
+    MODEL_LOWEST: {
+        value: "mileage_lowest",
+        label: "Model: Lowest"
+    },
 }
+
+export const SortingsList = [
+    Sortings.RECENT_FIRST,
+    Sortings.CLOSEST_FIRST,
+    Sortings.PRICE_LOW_TO_HIGH,
+    Sortings.PRICE_HIGH_TO_LOW,
+    Sortings.MODEL_NEWEST,
+    Sortings.MODEL_LOWEST,
+]
+
 
 export const CarConditions = {
     ALL: {
@@ -29,24 +61,39 @@ export const CarConditions = {
         label: "All"
     },
     NEW: {
-        id: "new",
+        id: "New",
         label: "New"
     },
-    OPEN_BOX: {
-        id: "open_box",
-        label: "Open Box",
+    EXCELENT: {
+        id: "Excelent",
+        label: "Excelent",
     },
-    RECONDITIONED: {
-        id: "reconditioned",
-        label: "Reconditioned"
+    VERY_GOOD: {
+        id: "Very Good",
+        label: "Very Good",
+    },
+    GOOD: {
+        id: "Good",
+        label: "Good",
+    },
+    FAIR: {
+        id: "Fair",
+        label: "Fair"
+    },
+    FOR_PARTS: {
+        id: "For Parts",
+        label: "For Parts"
     }
 }
 
 export const CarConditionsList = [
     CarConditions.ALL,
     CarConditions.NEW,
-    CarConditions.OPEN_BOX,
-    CarConditions.RECONDITIONED,
+    CarConditions.EXCELENT,
+    CarConditions.VERY_GOOD,
+    CarConditions.GOOD,
+    CarConditions.FAIR,
+    CarConditions.FOR_PARTS,
 ]
 
 
@@ -87,7 +134,7 @@ export default function SearchPage() {
     const onSortingChange = (e) => {
         setFilters({
             ...filters,
-            sortby: e.target.value
+            sortby: SortingsList.find((sort) => sort.value === e.target.value) ?? Sortings.RECENT_FIRST
         })
     }
 
@@ -144,11 +191,12 @@ export default function SearchPage() {
     useEffect(() => {
         setFormattedUrl(joinStrs(
             apiConfig.basePath + apiConfig.endpoints.getAllCars,
-            `?type=BUY&sort=${filters.sortby}&page=${filters.page}`,
+            `?type=BUY&page=${filters.page}`,
+            `&sort=${filters.sortby.value}`,
             `&search_term=${filters.query}`,
             `&min_price=${filters.price.min}`,
             `&max_price=${filters.price.max}`,
-            `&condition=${filters.condition.label}`,
+            filters.condition.id !== "all" && `&condition=${filters.condition.label}`,
             filters.category !== -1 && `&category_id=${filters.category}`,
             `&year=${filters.year}`,
             `&make=${filters.make}`,
@@ -225,9 +273,14 @@ export default function SearchPage() {
                                 </h3>
                                 <div className="hidden lg:block text-base text-gray-900 font-normal">
                                     <label htmlFor="sortby" className="font-medium">Sort by: </label>
-                                    <select name="sort" id="sortby" value={filters.sortby} onChange={onSortingChange} className="no-decor">
-                                        <option value={Sortings.RECENT_FIRST}>Recent first</option>
-                                        <option value={Sortings.OLDER_FIRST}>Older first</option>
+                                    <select name="sort" id="sortby" value={filters.sortby.value} onChange={onSortingChange} className="no-decor">
+                                        {
+                                            SortingsList.map((sort) => (
+                                                <option key={sort.value} value={sort.value}>
+                                                    {sort.label}
+                                                </option>
+                                            ))
+                                        }
                                     </select>
                                 </div>
                             </div>
@@ -255,19 +308,24 @@ export default function SearchPage() {
                                 <div className="text-base text-gray-900 font-normal rounded-full bg-gray-100 transition-all hover:bg-gray-200 pl-5 pr-2">
                                     <label htmlFor="sortby" className="font-medium">Sort by: </label>
                                     <select name="sort" value={filters.sortby} onChange={onSortingChange} id="sortby" className="no-decor bg-transparent">
-                                        <option value={Sortings.RECENT_FIRST}>Recent first</option>
-                                        <option value={Sortings.OLDER_FIRST}>Older first</option>
+                                        {
+                                            SortingsList.map((sort) => (
+                                                <option key={sort.value} value={sort.value}>
+                                                    {sort.label}
+                                                </option>
+                                            ))
+                                        }
                                     </select>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col justify-between w-full min-h-[700px]">
 
-                            {
-                                isLoading || error ?
-                                    <LoaderEl containerClassName="w-full h-[400px]" />
-                                    :
-                                    cars?.length > 0 ?
+                        {
+                            isLoading || error ?
+                                <LoaderEl containerClassName="w-full h-[400px]" />
+                                :
+                                cars?.length > 0 ?
+                                    <div className="flex flex-col justify-between w-full min-h-[700px]">
                                         <div>
                                             <div className="flex justify-end w-full mb-2">
                                                 <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
@@ -283,24 +341,25 @@ export default function SearchPage() {
                                                 }
                                             </div>
                                         </div>
+                                        <Pagination
+                                            activePage={filters.page}
+                                            setActivePage={(page) => setFilters({
+                                                ...filters,
+                                                page: page
+                                            })} />
+                                    </div>
 
-                                        :
-                                        <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
-                                            <h4 className="text-xl font-medium text-gray-800 text-center">
-                                                No cars found. Try changing filters.
-                                            </h4>
-                                            <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                                Clear All Filters
-                                            </button>
-                                        </div>
-                            }
-                            <Pagination
-                                activePage={filters.page}
-                                setActivePage={(page) => setFilters({
-                                    ...filters,
-                                    page: page
-                                })} />
-                        </div>
+                                    :
+                                    <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
+                                        <h4 className="text-xl font-medium text-gray-800 text-center">
+                                            No cars found. Try changing filters.
+                                        </h4>
+                                        <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
+                                            Clear All Filters
+                                        </button>
+                                    </div>
+                        }
+
 
                     </div>
                 </div>
