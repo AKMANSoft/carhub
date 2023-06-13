@@ -40,9 +40,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
                             {
-                                isLoggedin && authUser.userProfile !== null &&
+                                isLoggedin &&
                                 <span className="hidden xl:block">
-                                    <HeaderLocationEl userProfile={authUser.userProfile} />
+                                    <HeaderLocationEl />
                                 </span>
                             }
                         </div>
@@ -83,9 +83,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                     <HeaderSearchComponent category={category} categories={categories} />
                 </div>
                 {
-                    isLoggedin && authUser.userProfile !== null &&
+                    isLoggedin &&
                     <div className="mt-5 xl:hidden">
-                        <HeaderLocationEl userProfile={authUser.userProfile} />
+                        <HeaderLocationEl />
                     </div>
                 }
 
