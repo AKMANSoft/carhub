@@ -325,7 +325,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                     onChange={(value) => setDetails({ ...details, condition: value })} />
                 {/* Year/Model/Make Start */}
                 <SelectEl
-                    items={years ? years.map((yearObj) => ({ value: yearObj.year, label: yearObj.year })) : []}
+                    items={years ? years.map((year) => ({ value: year, label: year })) : []}
                     label="Year" value={details.year}
                     onChange={(value) => setDetails({ ...details, year: value })} />
                 <SelectEl
