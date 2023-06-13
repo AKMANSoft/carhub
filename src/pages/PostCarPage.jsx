@@ -8,7 +8,7 @@ import { faCheck, faChevronRight, faDollar, faLocationDot } from "@fortawesome/f
 import { CarConditionsList } from "./SearchPage";
 import { cn } from "../lib/utils";
 import { apiConfig } from "../config/api";
-import useFiltersFetcher from "../components/hooks/filtersFetchers";
+import useFiltersFetcher, { sortYears } from "../components/hooks/filtersFetchers";
 import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
@@ -289,7 +289,7 @@ const FuelTypes = [
 
 function DetailsSection({ onValidated, details, setDetails, accessToken }) {
     const { data: categories } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCategories);
-    const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears);
+    const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${details.year}`);
     const { data: models } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarModels + `?year=${details.year}&make=${details.make}`);
     const { data: vehicleTrims } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarTrims + `?year=${details.year}&make=${details.make}&model=${details.model}`);

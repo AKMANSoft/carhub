@@ -10,7 +10,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { useSearchParams } from 'react-router-dom';
 import AlertMessage from '../components/ThemeAlert';
 import { useCookies } from 'react-cookie'
-import { faApple, faFacebook, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import doSocialSignIn from '../api/socialSignIn';
@@ -28,7 +28,6 @@ export default function SignupPopup() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confPassword, setConfPassword] = useState("");
-    const [countryCode, setCountryCode] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [currentStep, setCurrentStep] = useState("first");
     const [bio, setBio] = useState("");
@@ -51,7 +50,6 @@ export default function SignupPopup() {
         password: "idle",
         confPassword: "idle",
         phoneNumber: "idle",
-        countryCode: "idle",
         bio: "idle",
         city: "idle",
         state: "idle",
@@ -102,7 +100,6 @@ export default function SignupPopup() {
         setEmail("");
         setPassword("");
         setConfPassword("");
-        setCountryCode("");
         setPhoneNumber("");
         setBio("");
         setAddress({
@@ -126,7 +123,6 @@ export default function SignupPopup() {
             confPassword: confPassword,
             phoneNumber: phoneNumber,
             profileImage: profileImage,
-            countryCode: countryCode,
             latitude: address.latitude,
             longitude: address.longitude,
         })
@@ -163,8 +159,7 @@ export default function SignupPopup() {
                 if (
                     email.match(siteConfig.emailPattern) && password !== "" &&
                     confPassword !== "" && password === confPassword &&
-                    firstName !== "" && lastName !== "" && countryCode !== ""
-                    && phoneNumber !== ""
+                    firstName !== "" && lastName !== "" && phoneNumber !== ""
                 ) {
                     setCurrentStep("second");
                 }
@@ -381,16 +376,13 @@ export default function SignupPopup() {
                                                             )}
                                                             placeholder='Confirm Password'
                                                             value={confPassword} onChange={(val) => setConfPassword(val)} />
-                                                        <div className='flex items-center gap-3 mb-5'>
-                                                            <CountryCodeDropdown
-                                                                value={countryCode}
-                                                                onChange={(val) => setCountryCode(val)}
-                                                            />                                                            <ThemeInput
+                                                        <div className='flex items-center gap-3 mb-5 relative overflow-hidden rounded-full'>
+                                                            <span className='absolute left-0 top-1/2 -translate-y-1/2 z-[1] border-r border-r-gray-400 bg-transparent text-white py-2 px-5 pr-3'>
+                                                                +1
+                                                            </span>
+                                                            <ThemeInput
                                                                 type='number'
-                                                                className={cn(
-                                                                    inputsStatus.phoneNumber === "invalid" && "border-2 !border-red-500",
-                                                                    // inputsStatus.phoneNumber === "valid" && "border-2 !border-green-500",
-                                                                )}
+                                                                className="ps-16"
                                                                 placeholder='Phone Number'
                                                                 variant='phone'
                                                                 value={phoneNumber} onChange={(val) => setPhoneNumber(val)} />

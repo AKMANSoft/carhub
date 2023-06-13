@@ -3,7 +3,13 @@ import useSWR from 'swr'
 import { apiConfig } from "../../config/api";
 
 
-export default function useFiltersFetcher(accessToken, fetchUrl, defaultValue = []) {
+
+export const sortYears = (years = []) => {
+    return years.map((yObj) => yObj.year).reverse();
+}
+
+
+export default function useFiltersFetcher(accessToken, fetchUrl, defaultValue = [], sortFunc = null) {
     const { data, error, isLoading } = useSWR(apiConfig.basePath + fetchUrl,
         async (url) => {
             if (accessToken === undefined || accessToken === null || accessToken === "") return defaultValue
@@ -17,7 +23,7 @@ export default function useFiltersFetcher(accessToken, fetchUrl, defaultValue = 
     )
 
     return {
-        data, isLoading, error
+        data: (sortFunc !== null && data !== undefined && data !== null ? sortFunc(data) : data), isLoading, error
     }
 }
 

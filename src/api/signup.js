@@ -4,8 +4,8 @@ import { apiConfig } from "../config/api";
 
 
 export default async function doSignUp({
-    name, email, password, bio,
-    phoneNumber, profileImage, countryCode,
+    name, email, password,
+    phoneNumber, profileImage,
     latitude, longitude
 }) {
     console.log(latitude)
@@ -15,7 +15,7 @@ export default async function doSignUp({
     data.set("email", email);
     data.set("password", password);
     data.set("device_type", "web");
-    data.set("country_code", countryCode);
+    data.set("country_code", "+1");
     data.set("mobile", phoneNumber);
     data.set("latitude", latitude);
     data.set("longitude", longitude);

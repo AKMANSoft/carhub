@@ -34,7 +34,7 @@ export const AddressInputTypes = {
 
 export function AddressInput({
     addressType = AddressInputTypes.DEFAULT,
-    value, onChange, className, placeholder
+    onChange, className, placeholder
 }) {
     const autoCompleteRef = useRef();
     const inputRef = useRef();
@@ -55,9 +55,13 @@ export function AddressInput({
 
             let cityName = '';
             let stateName = '';
+            let country = '';
             for (let component of place.address_components) {
                 if (cityName === '' && component.types.includes('locality')) {
                     cityName = component.long_name;
+                }
+                if (component.types.includes('country')) {
+                    country = component.long_name;
                 }
                 if (component.types.includes('administrative_area_level_1')) {
                     stateName = component.long_name;
@@ -67,6 +71,7 @@ export function AddressInput({
             onChange({
                 city: cityName,
                 state: stateName,
+                country: country,
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng()
             })

@@ -1,4 +1,4 @@
-import React, { Fragment, Suspense, useState } from "react";
+import React, { Fragment, Suspense, useEffect, useState } from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,8 +10,9 @@ import { apiConfig } from "../config/api";
 import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
 import { Link, useSearchParams } from "react-router-dom";
-import useCurrentLocation, { useLocationByLatLng } from "./hooks/useCurrentLocation";
+import useCurrentLocation, { getCurrentLatLng, getLocationByLatLng, useLocationByLatLng } from "./hooks/useCurrentLocation";
 import { siteConfig } from "../config/site";
+import ChooseLocationPopup from "../popups/ChooseLocation";
 
 const SignupPopup = React.lazy(() => import("../popups/Signup"));
 const SigninPopup = React.lazy(() => import("../popups/Signin"));
@@ -243,23 +244,8 @@ function AccountDropdown({ onLogout }) {
 
 
 function HeaderLocationEl({ userProfile }) {
-    const location = useCurrentLocation();
-
     return (
-        <button type="button" className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
-            <FontAwesomeIcon icon={faLocationDot} className="border-b border-transparent" />
-            <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[200px] 2xl:max-w-[300px] transition-all hover:underline" style={{ WebkitLineClamp: 1 }}>
-                {
-                    location && location !== null ?
-                        <>
-                            {location.address}
-                            {/* {location.city && location.city !== "" && `${location.city}`}
-                            {location.country && location.country !== "" && `, ${location.country}`} */}
-                        </>
-                        : ""
-                }
-            </span>
-        </button>
+        <ChooseLocationPopup />
     );
 }
 

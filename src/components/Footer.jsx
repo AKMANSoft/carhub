@@ -10,7 +10,7 @@ export default function Footer() {
                 <div>
                     <p className="text-base text-gray-800 font-normal">
                         &copy; 2023
-                        <span className="text-primary pl-1 font-semibold">CarHub Inc.</span>
+                        <span className="text-primary pl-1 font-semibold">GO CARHUB1 LLC.</span>
                     </p>
                 </div>
 

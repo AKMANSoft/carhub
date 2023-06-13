@@ -16,7 +16,12 @@ const PostCarPage = React.lazy(() => import("./pages/PostCarPage"))
 export const AuthUserContext = createContext({
   accessToken: "",
   userProfile: null,
+  location: null,
   logout: () => { }
+});
+export const LocationContext = createContext({
+  location: null,
+  setLocation: (newLocation) => { }
 });
 
 
@@ -86,6 +91,8 @@ function App() {
   ])
   const [cookies, setCookies, removeCookie] = useCookies(["accessToken"]);
   const [userProfile, setUserProfile] = useState(null);
+  const [location, setLocation] = useState(null);
+
 
 
   useEffect(() => {
@@ -117,7 +124,12 @@ function App() {
       userProfile: userProfile,
       logout: () => removeCookie("accessToken", { path: "/" })
     }}>
-      <RouterProvider router={router} />
+      <LocationContext.Provider value={{
+        location: location,
+        setLocation: setLocation
+      }}>
+        <RouterProvider router={router} />
+      </LocationContext.Provider>
     </AuthUserContext.Provider>
   )
 }

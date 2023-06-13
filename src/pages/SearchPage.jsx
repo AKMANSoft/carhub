@@ -8,8 +8,9 @@ import useAuthUser from "../components/hooks/useAuthUser"
 import LoaderEl from "../components/loader"
 import { cn } from "../lib/utils"
 import { apiConfig } from "../config/api"
-import useFiltersFetcher from "../components/hooks/filtersFetchers"
+import useFiltersFetcher, { sortYears } from "../components/hooks/filtersFetchers"
 import { Suspense } from "react"
+import useUserLocation from "../components/hooks/useLocation"
 
 const FiltersPopup = React.lazy(() => import("../popups/FiltersPopup"));
 
@@ -69,6 +70,7 @@ function joinStrs(...strs) {
 
 export default function SearchPage() {
     const authUser = useAuthUser();
+    const { location, _ } = useUserLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [filters, setFilters] = useState({
         ...DEFAULT_FILTERS,
@@ -149,8 +151,11 @@ export default function SearchPage() {
             `&year=${filters.year}`,
             `&make=${filters.make}`,
             `&model=${filters.model}`,
+            location !== null && location?.latitude !== undefined && `&latitude=${location.latitude}`,
+            location !== null && location?.longitude !== undefined && `&longitude=${location.longitude}`,
         ))
-    }, [filters])
+
+    }, [filters, location])
 
 
 
@@ -290,11 +295,12 @@ export default function SearchPage() {
 
 
 
+
 export function FiltersSectionEl({
     filters, accessToken, onMinPriceChange,
     onMaxPriceChange, setFilters
 }) {
-    const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears);
+    const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${filters.year}`);
     const { data: models } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarModels + `?year=${filters.year}&make=${filters.make}`);
 
@@ -324,8 +330,8 @@ export function FiltersSectionEl({
                         <option value="">Select Year</option>
                         {
                             years &&
-                            years?.map((yearObj) => (
-                                <option key={yearObj.year} value={yearObj.year}>{yearObj.year}</option>
+                            years?.map((year) => (
+                                <option key={year} value={year}>{year}</option>
                             ))
                         }
                     </select>
