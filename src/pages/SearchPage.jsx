@@ -66,7 +66,7 @@ const DEFAULT_FILTERS = {
 }
 
 
-function joinStrs(...strs) {
+export function joinStrs(...strs) {
     return strs.filter(Boolean).join("");
 }
 
