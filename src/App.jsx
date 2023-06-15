@@ -115,7 +115,7 @@ function App() {
           setUserProfile(null);
         })
     }
-  }, [cookies])
+  }, [cookies]);
 
 
   return (

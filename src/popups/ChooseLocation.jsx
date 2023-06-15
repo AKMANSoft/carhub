@@ -15,15 +15,21 @@ export default function ChooseLocationPopup() {
 
 
     const onLocationChange = (newLocation) => {
-        // sessionStorage.setItem("location", JSON.stringify(newLocation));
+        sessionStorage.setItem("location", JSON.stringify(newLocation));
         setLocation(newLocation);
     }
 
 
     useEffect(() => {
-        getCurrentLatLng(({ lat, lng }) => {
-            getLocationByLatLng(lat, lng, onLocationChange)
-        })
+        try {
+            let savedLocation = JSON.parse(sessionStorage.getItem("location"));
+            if (savedLocation === null) throw new Error("Location is null");
+            setLocation(savedLocation);
+        } catch (error) {
+            getCurrentLatLng(({ lat, lng }) => {
+                getLocationByLatLng(lat, lng, onLocationChange)
+            })
+        }
     }, [])
 
 

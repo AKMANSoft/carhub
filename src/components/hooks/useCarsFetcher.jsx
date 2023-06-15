@@ -9,6 +9,7 @@ const carsFetcher = async (url, accessToken) => {
     // if (accessToken === undefined || accessToken === null || accessToken === "") return []
     const res = await axios.get(url, {
         headers: {
+            "Content-Type": "application/json",
             Authorization: "Bearer " + accessToken
         }
     });
