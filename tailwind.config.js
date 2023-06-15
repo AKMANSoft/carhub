@@ -13,7 +13,7 @@ export default {
 
     },
     backgroundImage: {
-      'primary-image': "url('/images/auth_bg_image.svg')"
+      'primary-image': "url('/images/auth_bg_image.jpg')"
     },
     backgroundPosition: {
       'primary-image': 'center',
