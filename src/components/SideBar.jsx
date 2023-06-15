@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
 import { apiConfig } from "../config/api";
-import { cn } from "../lib/utils";
+import { siteConfig } from "../config/site";
 
 
 
@@ -62,19 +62,19 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                     }
                     <li className="border-t mt-6 pt-4"></li>
                     <li>
-                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href={siteConfig.links.aboutLink} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faCircleInfo} className=" text-base text-gray-700 mr-4" />
                             About
                         </a>
                     </li>
                     <li>
-                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href={siteConfig.links.termsOfServices} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faList} className=" text-base text-gray-700 mr-4" />
                             Terms of Services
                         </a>
                     </li>
                     <li>
-                        <a href="https://www.gocarhub.app/" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
+                        <a href={siteConfig.links.privacyPolicy} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faLock} className=" text-base text-gray-700 mr-4" />
                             Privacy
                         </a>

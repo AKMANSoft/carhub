@@ -138,9 +138,6 @@ export default function SearchPage() {
         })
     }
 
-    console.log(formattedUrl)
-
-
     const onMinPriceChange = (e) => {
         setFilters({
             ...filters,

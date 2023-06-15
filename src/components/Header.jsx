@@ -162,7 +162,7 @@ function AboutDropdown() {
                     </Menu.Item>
                     <Menu.Item>
                         {({ active }) => (
-                            <a href="https://www.gocarhub.app/" className={cn(
+                            <a href={siteConfig.links.termsOfServices} className={cn(
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
@@ -172,7 +172,7 @@ function AboutDropdown() {
                     </Menu.Item>
                     <Menu.Item>
                         {({ active }) => (
-                            <a href="https://www.gocarhub.app/" className={cn(
+                            <a href={siteConfig.links.privacyPolicy} className={cn(
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
