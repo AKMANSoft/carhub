@@ -1,7 +1,7 @@
 import CarGridItem from "../components/CarGridItem"
 import useAuthUser from "../components/hooks/useAuthUser"
 import useCarsFetcher from "../components/hooks/useCarsFetcher"
-import useUserLocation from "../components/hooks/useLocation"
+import useFilterLocation from "../components/hooks/useLocation"
 import MainLayout from "../components/layout"
 import LoaderEl from "../components/loader"
 import { apiConfig } from "../config/api"
@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 
 export default function HomePage() {
     const authUser = useAuthUser();
-    const { location, _ } = useUserLocation();
+    const { location, _ } = useFilterLocation();
     const [formattedUrl, setFormattedUrl] = useState(null);
     const { cars, isLoading, error } = useCarsFetcher(authUser.accessToken, formattedUrl);
 

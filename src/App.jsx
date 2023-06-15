@@ -4,6 +4,7 @@ import React, { createContext, Suspense, useEffect, useState } from "react"
 import { useCookies } from 'react-cookie'
 import axios from "axios"
 import { apiConfig } from "./config/api"
+import { MAX_DISTANCE } from "./pages/SearchPage"
 
 const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 const AccountPage = React.lazy(() => import("./pages/AccountPage"))
@@ -20,8 +21,10 @@ export const AuthUserContext = createContext({
   logout: () => { }
 });
 export const LocationContext = createContext({
+  filterDistance: MAX_DISTANCE,
   location: null,
-  setLocation: (newLocation) => { }
+  setLocation: (newLocation) => { },
+  setFilterDistance: (newDistance) => { },
 });
 
 
@@ -92,6 +95,7 @@ function App() {
   const [cookies, setCookies, removeCookie] = useCookies(["accessToken"]);
   const [userProfile, setUserProfile] = useState(null);
   const [location, setLocation] = useState(null);
+  const [filterDistance, setFilterDistance] = useState(MAX_DISTANCE);
 
 
 
@@ -126,7 +130,9 @@ function App() {
     }}>
       <LocationContext.Provider value={{
         location: location,
-        setLocation: setLocation
+        setLocation: setLocation,
+        filterDistance: filterDistance,
+        setFilterDistance: setFilterDistance
       }}>
         <RouterProvider router={router} />
       </LocationContext.Provider>

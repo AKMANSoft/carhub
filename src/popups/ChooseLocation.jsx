@@ -4,19 +4,19 @@ import { Dialog, Transition } from '@headlessui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentLatLng, getLocationByLatLng } from '../components/hooks/useCurrentLocation';
-import useUserLocation from '../components/hooks/useLocation';
+import useFilterLocation from '../components/hooks/useLocation';
 
 
 
 
 export default function ChooseLocationPopup() {
     let [isOpen, setIsOpen] = useState(false);
-    const { location, setLocation } = useUserLocation()
+    const location = useFilterLocation()
 
 
     const onLocationChange = (newLocation) => {
         sessionStorage.setItem("location", JSON.stringify(newLocation));
-        setLocation(newLocation);
+        location.setLocation(newLocation);
     }
 
 
@@ -24,7 +24,7 @@ export default function ChooseLocationPopup() {
         try {
             let savedLocation = JSON.parse(sessionStorage.getItem("location"));
             if (savedLocation === null) throw new Error("Location is null");
-            setLocation(savedLocation);
+            location.setLocation(savedLocation);
         } catch (error) {
             getCurrentLatLng(({ lat, lng }) => {
                 getLocationByLatLng(lat, lng, onLocationChange)
@@ -47,6 +47,12 @@ export default function ChooseLocationPopup() {
                             : ""
                     }
                 </span>
+                {
+                    location && location !== null &&
+                    <span className='ms-3 xl:ms-1 font-normal min-w-max items-center'>
+                        :{location.filterDistance} Miles
+                    </span>
+                }
             </button>
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={() => setIsOpen(false)}>

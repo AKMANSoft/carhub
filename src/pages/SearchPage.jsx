@@ -10,7 +10,7 @@ import { cn } from "../lib/utils"
 import { apiConfig } from "../config/api"
 import useFiltersFetcher, { sortYears } from "../components/hooks/filtersFetchers"
 import { Suspense } from "react"
-import useUserLocation from "../components/hooks/useLocation"
+import useFilterLocation from "../components/hooks/useLocation"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"
 
@@ -97,6 +97,8 @@ export const CarConditionsList = [
 ]
 
 
+export const MAX_DISTANCE = 2000;
+
 const DEFAULT_FILTERS = {
     category: -1,
     query: "",
@@ -109,7 +111,8 @@ const DEFAULT_FILTERS = {
     year: "",
     make: "",
     model: "",
-    page: 1
+    page: 1,
+    distance: MAX_DISTANCE,
 }
 
 
@@ -120,12 +123,13 @@ export function joinStrs(...strs) {
 
 export default function SearchPage() {
     const authUser = useAuthUser();
-    const { location, _ } = useUserLocation();
+    const location = useFilterLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const [filters, setFilters] = useState({
         ...DEFAULT_FILTERS,
         query: searchParams.get("query") ?? "",
         category: isNaN(parseInt(searchParams.get("category"))) ? -1 : parseInt(searchParams.get("category")),
+        distance: location.filterDistance
     });
     const [formattedUrl, setFormattedUrl] = useState(null)
     const { cars, isLoading, error } = useCarsFetcher(authUser.accessToken, formattedUrl);
@@ -175,6 +179,13 @@ export default function SearchPage() {
             condition: condition,
         })
     }
+    const onFilterDistanceChange = (distance) => {
+        location.setFilterDistance(distance);
+        setFilters({
+            ...filters,
+            distance: distance
+        })
+    }
 
 
     const onClearAllFilters = () => {
@@ -192,6 +203,7 @@ export default function SearchPage() {
             apiConfig.basePath + apiConfig.endpoints.getAllCars,
             `?type=BUY&page=${filters.page}`,
             `&sort=${filters.sortby.value}`,
+            `&km=${filters.distance}`,
             filters.query !== "" && `&search_term=${filters.query}`,
             filters.price.min !== "" && `&min_price=${filters.price.min}`,
             filters.price.max !== "" && `&max_price=${filters.price.max}`,
@@ -237,6 +249,7 @@ export default function SearchPage() {
                                 accessToken={authUser.accessToken}
                                 filters={filters} onMaxPriceChange={onMaxPriceChange}
                                 setFilters={setFilters}
+                                setFilterDistance={onFilterDistanceChange}
                                 onMinPriceChange={onMinPriceChange} />
                             <div className="pt-7">
                                 <h5 className="text-base font-medium">Condition</h5>
@@ -419,7 +432,8 @@ function Pagination({ activePage, setActivePage }) {
 
 export function FiltersSectionEl({
     filters, accessToken, onMinPriceChange,
-    onMaxPriceChange, setFilters
+    onMaxPriceChange, setFilters,
+    setFilterDistance
 }) {
     const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${filters.year}`);
@@ -440,8 +454,25 @@ export function FiltersSectionEl({
     }, [selectedYear, selectedMake, selectedModel])
 
 
+
     return (
         <div className="border-b py-6 space-y-4">
+            <div>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    Distance
+                    <span className="font-normal ms-2">
+                        ({filters.distance} Miles)
+                    </span>
+                </h5>
+                <div className="flex items-center gap-3 mt-2">
+                    <input type="range"
+                        min={0} max={MAX_DISTANCE}
+                        value={filters.distance}
+                        step={20}
+                        onChange={(e) => setFilterDistance(e.target.value)}
+                        className="accent-primary w-full" />
+                </div>
+            </div>
             <div>
                 <h5 className="text-sm font-semibold text-gray-800">Year</h5>
                 <div className="flex items-center gap-3 mt-2">
@@ -498,6 +529,7 @@ export function FiltersSectionEl({
                     <input type="number" placeholder="Max" value={filters.price.max} onChange={onMaxPriceChange} className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md" />
                 </div>
             </div>
+
         </div>
     )
 }

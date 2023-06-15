@@ -4,9 +4,14 @@ import { LocationContext } from '../../App';
 
 
 
-export default function useUserLocation() {
-    const { location, setLocation } = useContext(LocationContext);
-    return { location, setLocation };
+export default function useFilterLocation() {
+    const { location, setLocation, filterDistance, setFilterDistance } = useContext(LocationContext);
+    return {
+        ...location,
+        setLocation,
+        filterDistance,
+        setFilterDistance
+    };
 }
 
 
