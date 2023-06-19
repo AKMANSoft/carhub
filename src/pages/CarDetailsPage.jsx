@@ -15,13 +15,14 @@ import { cn, formatPrice } from "../lib/utils";
 export default function CarDetailsPage() {
     const authUser = useAuthUser();
     const { carId } = useParams();
-    console.log(carId)
     const { data: carDetails } = useCarDetails(authUser.accessToken, carId);
 
     const carFeatures = carDetails ? carDetails.vehicle_list.filter((fCtgry) => {
         const selFeatures = fCtgry.children.filter((f) => f.is_selected)
         return selFeatures.length > 0
     }) : []
+
+    console.log(authUser.userProfile)
 
     return (
         <MainLayout secureRoute={false}>
@@ -31,7 +32,7 @@ export default function CarDetailsPage() {
                     <div className="flex gap-5">
                         <div className="w-full xl:w-[70%]">
                             <CarsSliderEl images={carDetails.cars_images} />
-                            <CarDetailsSection carDetails={carDetails} className="xl:hidden w-full py-5 mt-10" />
+                            <CarDetailsSection carDetails={carDetails} userProfile={authUser.userProfile} className="xl:hidden w-full py-5 mt-10" />
                             <div className="mt-10 pb-10 border-b">
                                 <div className="flex items-center gap-3">
                                     <h2 className="text-xl font-extrabold text-gray-900 uppercase">
@@ -94,7 +95,8 @@ export default function CarDetailsPage() {
 
 
 
-function CarDetailsSection({ className, carDetails }) {
+function CarDetailsSection({ className, carDetails, userProfile }) {
+    console.log(userProfile)
     return (
         <div className={className}>
             <div className="md:px-5">
@@ -109,9 +111,18 @@ function CarDetailsSection({ className, carDetails }) {
                 </p>
             </div>
             <div className="py-5 md:p-5 mt-3 flex items-center gap-5 flex-wrap">
-                <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
-                    Contact Seller
-                </button>
+                {
+                    userProfile !== null && (userProfile?.id === carDetails.user_id) ?
+                        <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
+                            Edit Car Info
+                        </button>
+                        :
+                        <>
+                            <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
+                                Contact Seller
+                            </button>
+                        </>
+                }
             </div>
             <div className="mt-8 bg-gray-50 p-3 md:p-5 rounded-md">
                 <div className="flex items-center gap-3">
@@ -237,17 +248,10 @@ function CarsSliderEl({ className, images }) {
                 {
                     images.map((img) => (
                         <div key={img.id} className="w-full outline-none px-0.5">
-                            <img src={img.image} alt="" loading="lazy" className="mx-auto object-cover h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px]" />
+                            <img src={img.image} alt="" loading="lazy" className="mx-auto object-contain h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px]" />
                         </div>
                     ))
                 }
-                {/* 
-            <div className="w-full outline-none px-0.5">
-                <img src="/images/car2.jpg" alt="" loading="lazy" className="mx-auto object-cover h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px]" />
-            </div>
-            <div className="w-full outline-none px-0.5">
-                <img src="/images/car4.jpg" alt="" loading="lazy" className="mx-auto object-cover h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px]" />
-            </div> */}
             </Slider>
             <div className="flex justify-center mt-4 md:mt-0">
                 <div className="flex items-center gap-5 p-2 max-w-full overflow-x-auto no-scrollbar">

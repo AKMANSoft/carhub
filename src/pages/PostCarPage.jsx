@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import TabbedView from "../components/TabbedView";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import ImageDragDropInput from "../components/ImageDragDropInput";
 import MainLayout from "../components/layout";
@@ -14,6 +13,7 @@ import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
 import AlertMessage from "../components/ThemeAlert";
+import { Navigate, redirect, useNavigate } from "react-router-dom";
 
 
 const CarPostSections = {
@@ -53,10 +53,42 @@ const expandableSections = [
     }
 ]
 
-
+const defaultCarDetails = {
+    images: [],
+    details: {
+        category: 0,
+        condition: "",
+        year: "",
+        make: "",
+        model: "",
+        vehicleTrim: "",
+        mileage: "",
+        fuelType: "",
+        titleStatus: ""
+    },
+    colors: {
+        interior: "",
+        exterior: "",
+    },
+    features: [],
+    postDetails: {
+        price: "",
+        description: "",
+        findMeBuyer: false
+    },
+    carLocation: {
+        city: "",
+        state: "",
+        country: "",
+        latitude: 0,
+        longitude: 0,
+        zipCode: null,
+    },
+}
 
 export default function PostCarPage() {
     const authUser = useAuthUser();
+    const navigate = useNavigate();
     const [expandedSection, setExpandedSection] = React.useState(expandableSections[0].name)
     const [validatedSections, setValidatedSections] = React.useState([]);
     const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
@@ -105,7 +137,6 @@ export default function PostCarPage() {
         });
     }
     const onFeaturesChange = (features) => {
-        console.log(features)
         setCarDetails({
             ...carDetails,
             features: features,
@@ -140,8 +171,23 @@ export default function PostCarPage() {
 
     const handlePostingCar = async () => {
         setTaskState("processing");
+        window.scrollTo({
+            top: 0
+        })
         const response = await doPostCar(carDetails, authUser.accessToken);
-        console.log(response);
+        if (response !== null) {
+            setAlertMessage({
+                success: response.success,
+                visible: true,
+                text: response.message
+            });
+            if (response.success === true) {
+                setCarDetails(defaultCarDetails);
+            }
+            setTaskState(response.success ? "completed" : "failed")
+        } else {
+            setTaskState("failed");
+        }
     }
 
 
@@ -155,103 +201,118 @@ export default function PostCarPage() {
                         <a href="/post-car" className="text-lg text-gray-900">Post Car</a>
                     </h2>
                 </div>
+                <AlertMessage
+                    success={alertMessage.success}
+                    visible={alertMessage.visible}
+                    text={alertMessage.text}
+                    onDissmissAlert={() => setAlertMessage({ ...alertMessage, visible: false })} />
                 {
-                    taskState === "processing" ?
-                        <LoaderEl className="" />
-                        :
-                        <div className="space-y-6 relative">
-                            <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
-                            <div>
-                                {
-                                    expandableSections.map(({ name, content }, index) => {
-                                        if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
-                                            return (
-                                                <div key={name} role="button" onClick={() => setExpandedSection(name)}
-                                                    className={cn(
-                                                        "flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer",
-                                                        !(expandedSection === name) && "mb-6"
-                                                    )}>
-                                                    {
-                                                        validatedSections.includes(name) && expandedSection !== name ?
-                                                            <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
-                                                                <FontAwesomeIcon icon={faCheck} />
-                                                            </span>
-                                                            :
-                                                            <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
-                                                                {index + 1}
-                                                            </span>
-                                                    }
-                                                    <h3 className="text-primary text-xl font-semibold">{name}</h3>
-                                                </div>
-
-                                            );
-                                        }
-                                    })
-                                }
-                                {
-                                    expandedSection === CarPostSections.Photos &&
-                                    <PhotosSection
-                                        images={carDetails.images}
-                                        setImages={onImagesChange}
-                                        onValidated={() => {
-                                            if (carDetails.images.length <= 0) return;
-                                            setValidatedSections([...validatedSections, CarPostSections.Photos]);
-                                            setExpandedSection(CarPostSections.Details)
-                                        }} />
-                                }
-                                {
-                                    expandedSection === CarPostSections.Details &&
-                                    <DetailsSection
-                                        details={carDetails.details}
-                                        setDetails={onDetailsChange}
-                                        accessToken={authUser.accessToken}
-                                        onValidated={() => {
-                                            setValidatedSections([...validatedSections, CarPostSections.Details]);
-                                            setExpandedSection(CarPostSections.Colors)
-                                        }} />
-                                }
-                                {
-                                    expandedSection === CarPostSections.Colors &&
-                                    <ColorsSection
-                                        colors={carDetails.colors}
-                                        setColors={onColorsChange}
-                                        onValidated={() => {
-                                            setValidatedSections([...validatedSections, CarPostSections.Colors]);
-                                            setExpandedSection(CarPostSections.Features)
-                                        }} />
-                                }
-                                {
-                                    expandedSection === CarPostSections.Features &&
-                                    <FeaturesSection
-                                        features={carDetails.features}
-                                        setFeatures={onFeaturesChange}
-                                        accessToken={authUser.accessToken}
-                                        onValidated={() => {
-                                            setValidatedSections([...validatedSections, CarPostSections.Features]);
-                                            setExpandedSection(CarPostSections.Post)
-                                        }} />
-                                }
-                                {
-                                    expandedSection === CarPostSections.Post &&
-                                    <PostSection
-                                        postDetails={carDetails.postDetails}
-                                        setPostDetails={onPostDetailsChange}
-                                        onValidated={() => {
-                                            setValidatedSections([...validatedSections, CarPostSections.Post]);
-                                            setExpandedSection(CarPostSections.Finish)
-                                        }} />
-                                }
-                                {
-                                    expandedSection === CarPostSections.Finish &&
-                                    <FinishSection
-                                        carLocation={carDetails.carLocation}
-                                        setCarLocation={onCarLocationChange}
-                                        onValidated={() => {
-                                            handlePostingCar()
-                                        }} />
-                                }
-                            </div>
+                    taskState === "completed" ?
+                        <div className="flex items-center justify-center gap-5 h-64">
+                            <a href="/" className="rounded bg-gray-200 py-3 px-5 text-base">
+                                Go to home
+                            </a>
+                            <a href="/account?active=my-cars" className="btn-primary text-base">
+                                View your cars
+                            </a>
                         </div>
+                        :
+                        taskState === "processing" ?
+                            <LoaderEl className="" />
+                            :
+                            <div className="space-y-6 relative">
+                                <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
+                                <div>
+                                    {
+                                        expandableSections.map(({ name, content }, index) => {
+                                            if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
+                                                return (
+                                                    <div key={name} role="button" onClick={() => setExpandedSection(name)}
+                                                        className={cn(
+                                                            "flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer",
+                                                            !(expandedSection === name) && "mb-6"
+                                                        )}>
+                                                        {
+                                                            validatedSections.includes(name) && expandedSection !== name ?
+                                                                <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
+                                                                    <FontAwesomeIcon icon={faCheck} />
+                                                                </span>
+                                                                :
+                                                                <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
+                                                                    {index + 1}
+                                                                </span>
+                                                        }
+                                                        <h3 className="text-primary text-xl font-semibold">{name}</h3>
+                                                    </div>
+
+                                                );
+                                            }
+                                        })
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Photos &&
+                                        <PhotosSection
+                                            images={carDetails.images}
+                                            setImages={onImagesChange}
+                                            onValidated={() => {
+                                                if (carDetails.images.length <= 0) return;
+                                                setValidatedSections([...validatedSections, CarPostSections.Photos]);
+                                                setExpandedSection(CarPostSections.Details)
+                                            }} />
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Details &&
+                                        <DetailsSection
+                                            details={carDetails.details}
+                                            setDetails={onDetailsChange}
+                                            accessToken={authUser.accessToken}
+                                            onValidated={() => {
+                                                setValidatedSections([...validatedSections, CarPostSections.Details]);
+                                                setExpandedSection(CarPostSections.Colors)
+                                            }} />
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Colors &&
+                                        <ColorsSection
+                                            colors={carDetails.colors}
+                                            setColors={onColorsChange}
+                                            onValidated={() => {
+                                                setValidatedSections([...validatedSections, CarPostSections.Colors]);
+                                                setExpandedSection(CarPostSections.Features)
+                                            }} />
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Features &&
+                                        <FeaturesSection
+                                            features={carDetails.features}
+                                            setFeatures={onFeaturesChange}
+                                            accessToken={authUser.accessToken}
+                                            onValidated={() => {
+                                                setValidatedSections([...validatedSections, CarPostSections.Features]);
+                                                setExpandedSection(CarPostSections.Post)
+                                            }} />
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Post &&
+                                        <PostSection
+                                            postDetails={carDetails.postDetails}
+                                            setPostDetails={onPostDetailsChange}
+                                            onValidated={() => {
+                                                setValidatedSections([...validatedSections, CarPostSections.Post]);
+                                                setExpandedSection(CarPostSections.Finish)
+                                            }} />
+                                    }
+                                    {
+                                        expandedSection === CarPostSections.Finish &&
+                                        <FinishSection
+                                            carLocation={carDetails.carLocation}
+                                            setCarLocation={onCarLocationChange}
+                                            onValidated={() => {
+                                                handlePostingCar()
+                                            }} />
+                                    }
+                                </div>
+                            </div>
                 }
             </div>
         </MainLayout>
@@ -332,10 +393,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
     const { data: vehicleTrims } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarTrims + `?year=${details.year}&make=${details.make}&model=${details.model}`);
 
     const isValidated = () => {
-        return (details.category !== "" && details.condition !== "" &&
-            details.year !== "" && details.make !== "" &&
-            details.mdoel !== "" && details.fuelType !== "" &&
-            details.titleStatus !== "")
+        return (details.year !== "" && details.make !== "" && details.model !== "")
     }
 
     const validateAndContinue = () => {
@@ -348,16 +406,16 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
         }
     }
 
-    console.log(vehicleTrims)
-
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <SelectEl
+                    isOptional={true}
                     items={categories ? categories.map((ctgry) => ({ value: ctgry.id, label: ctgry.title })) : []}
                     label="Category" value={details.category}
                     onChange={(value) => setDetails({ ...details, category: value })} />
                 <SelectEl
+                    isOptional={true}
                     items={
                         CarConditionsList
                             .filter((condition) => condition.id !== "all")
@@ -382,19 +440,25 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                 {/* Year/Model/Make End */}
 
                 <SelectEl
+                    isOptional={true}
                     items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim, label: vTrim.vehicle_trim })) : []}
                     label="Vehicle Trim" value={details.vehicleTrim}
                     onChange={(value) => setDetails({ ...details, vehicleTrim: value })} />
 
-                <InputEl label="Mileage" type="number"
+                <InputEl
+                    isOptional={true}
+                    label="Mileage" type="number"
                     value={details.mileage}
                     onChange={(value) => setDetails({ ...details, mileage: value })} />
 
                 <SelectEl
+                    isOptional={true}
                     items={FuelTypes.map((fuel) => ({ value: fuel, label: fuel }))}
                     label="Car Fuel Type" value={details.fuelType}
                     onChange={(value) => setDetails({ ...details, fuelType: value })} />
-                <SelectEl label="Title Status" value={details.titleStatus}
+                <SelectEl
+                    isOptional={true}
+                    label="Title Status" value={details.titleStatus}
                     onChange={(value) => setDetails({ ...details, titleStatus: value })}>
                     <option value="clean">Clean</option>
                     <option value="rebuilt">Rebuilt</option>
@@ -606,7 +670,9 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
                     />
                 </div>
                 <div className="w-full col-span-3">
-                    <TextAreaEl label="Description"
+                    <TextAreaEl
+                        isOptional={true}
+                        label="Description"
                         value={postDetails.description}
                         onChange={onDescriptionChange} />
                 </div>
@@ -678,10 +744,16 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
 
 
 
-const InputEl = React.forwardRef(({ label = "", type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => (
+const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => (
     <div className="w-full">
         <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
             {label}
+            {
+                isOptional &&
+                <span className="ms-2 text-gray-500">
+                    (optional)
+                </span>
+            }
         </label>
         <span className="relative">
             <input ref={ref} type={type}
@@ -723,8 +795,6 @@ export function LocationInputEl({
         );
         autoCompleteRef.current.addListener("place_changed", async function () {
             const place = await autoCompleteRef.current?.getPlace();
-
-            console.log(place)
             let cityName = '';
             let stateName = '';
             let countryName = '';
@@ -743,9 +813,6 @@ export function LocationInputEl({
                     postalCode = component.long_name;
                 }
             }
-
-            console.log(postalCode)
-
             onChange({
                 city: cityName,
                 state: stateName,
@@ -770,11 +837,17 @@ export function LocationInputEl({
 
 
 
-function TextAreaEl({ label = "", placeholder = "", onChange, value }) {
+function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange, value }) {
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
                 {label}
+                {
+                    isOptional &&
+                    <span className="ms-2 text-gray-500">
+                        (optional)
+                    </span>
+                }
             </label>
             <textarea
                 name={label.toLowerCase().replace(" ", "_")}
@@ -806,11 +879,17 @@ function CheckBoxEl({ label = "", onChange, value }) {
 }
 
 
-function SelectEl({ label = "", children, items = null, value, onChange }) {
+function SelectEl({ label = "", children, items = null, value, onChange, isOptional = false }) {
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
                 {label}
+                {
+                    isOptional &&
+                    <span className="ms-2 text-gray-500">
+                        (optional)
+                    </span>
+                }
             </label>
             <select value={value} onChange={(e) => onChange(e.target.value)} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
                 <option value="">Select {label}</option>

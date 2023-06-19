@@ -15,19 +15,20 @@ export default async function doPostCar(carDetails, accessToken) {
     data.set("mileage", carDetails.details.mileage);
     data.set("car_fuel_type", carDetails.details.fuelType);
     data.set("title_status", carDetails.details.titleStatus);
-    data.set("title_status", carDetails.details.titleStatus);
     data.set("color", carDetails.colors.interior);
     data.set("exterior_color", carDetails.colors.exterior);
     data.set("features", carDetails.features.join(","));
     data.set("amount", carDetails.postDetails.price);
     data.set("find_me_buyer", carDetails.postDetails.findMeBuyer ? 1 : 0);
     data.set("description", carDetails.postDetails.description);
-    data.set("car_address", `${carDetails.carrLocation.city},${carDetails.carrLocation.state},${carDetails.carrLocation.country}`);
-    data.set("city", carDetails.carrLocation.city);
-    data.set("state", carDetails.carrLocation.state);
-    data.set("lat", carDetails.carrLocation.latitude);
-    data.set("lng", carDetails.carrLocation.longitude);
-    data.set("file[]", carDetails.images.map((img) => img.blob));
+    data.set("car_address", `${carDetails.carLocation.city},${carDetails.carLocation.state},${carDetails.carLocation.country}`);
+    data.set("city", carDetails.carLocation.city);
+    data.set("state", carDetails.carLocation.state);
+    data.set("lat", carDetails.carLocation.latitude);
+    data.set("lng", carDetails.carLocation.longitude);
+    carDetails.images.forEach((img) => {
+        data.append("file[]", img.blob);
+    })
 
 
     try {

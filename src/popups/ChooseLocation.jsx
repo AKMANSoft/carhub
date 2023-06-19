@@ -37,7 +37,7 @@ export default function ChooseLocationPopup() {
         <>
             <button type="button" onClick={() => setIsOpen(true)} className="w-full text-xl font-semibold inline-flex justify-start items-center text-primary rounded-full px-6 py-2">
                 <FontAwesomeIcon icon={faLocationDot} className="border-b border-transparent" />
-                <span className="ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[200px] 2xl:max-w-[300px] transition-all hover:underline" style={{ WebkitLineClamp: 1 }}>
+                <span className="block ml-2 overflow-hidden overflow-ellipsis whitespace-nowrap xl:max-w-[200px] 2xl:max-w-[250px] transition-all hover:underline" style={{ WebkitLineClamp: 1 }}>
                     {
                         location && location !== null ?
                             <>

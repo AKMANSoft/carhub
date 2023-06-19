@@ -13,6 +13,7 @@ import useCarsFetcher from "../components/hooks/useCarsFetcher";
 import { apiConfig } from "../config/api";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
+import CarGridItem from "../components/CarGridItem";
 
 
 export const accountPageTabs = [
@@ -64,7 +65,7 @@ export default function AccountPage() {
                                     {
                                         accountPageTabs.map((tab) => (
                                             <button type="button" key={tab.id} onClick={() => setTab(tab)} className={
-                                                "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all "
+                                                "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all last:border-none "
                                                 + (activeTab.id === tab.id ? "text-primary bg-gray-100 font-semibold" : "hover:text-primary hover:bg-gray-100 hover:font-semibold")
                                             }>
                                                 {tab.name}
@@ -147,14 +148,26 @@ function MyCarsSection({ authUser }) {
 
     return (
         <div className="p-10">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-7 gap-5 md:gap-8">
-                {
-                    myCars &&
-                    myCars.map((car) => (
-                        <MyCarGridItem car={car} />
-                    ))
-                }
-            </div>
+            {
+                myCars?.length > 0 ?
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-6 gap-5 md:gap-8">
+                        {
+                            myCars &&
+                            myCars.map((car) => (
+                                <CarGridItem car={car} type="SELL" />
+                            ))
+                        }
+                    </div>
+                    :
+                    <div className="w-full h-52 flex flex-col gap-1 items-center justify-center text-center">
+                        <p>
+                            Nothing to show.
+                        </p>
+                        <a href="/post-car" className="text-primary transition-all hover:underline text-base">
+                            Add a car to sell
+                        </a>
+                    </div>
+            }
         </div>
     );
 }
@@ -163,73 +176,80 @@ function MyCarsSection({ authUser }) {
 
 function MyCarGridItem({ car }) {
     return (
-        <div className="w-full relative">
-            {/* <MyCarOptionsDropMenu /> */}
-            <img src={car.car_images[0].image} width={200} height={200}
-                className="w-full h-auto object-cover aspect-square overflow-hidden object-center rounded-md" alt="" />
-            <h3 className="text-base font-semibold mt-2 line-clamp-2">
-                {car.make} {car.model}
-            </h3>
-        </div>
+        <a href={`cars/${car.id}`}>
+            <div className="w-full relative">
+                {/* <MyCarOptionsDropMenu /> */}
+                <img src={car.car_images[0].image} width={200} height={200}
+                    className="w-full h-auto object-cover aspect-square overflow-hidden object-center rounded-md" alt="" />
+                <h3 className="text-base font-semibold mt-2 line-clamp-2">
+                    {car.make} {car.model}
+                </h3>
+
+                {/* {
+                    car.find_me_buyer &&
+                    <button className="btn-primary text-sm w-full px-4 py-1 mt-2 hover:bg-primary">
+                        Find Me Buyer
+                    </button>
+                } */}
+            </div>
+        </a>
     );
 }
 
 
 function MyCarOptionsDropMenu() {
     return (
-      <div className="absolute top-2 right-5 w-4">
-        <Menu as="div" className="relative inline-block text-left">
-          <div>
-            <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 p-1 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-              <FontAwesomeIcon icon={faEllipsisVertical}
-                className="h-5 w-5 text-violet-200 hover:text-violet-100"
-                aria-hidden="true"
-              />
-            </Menu.Button>
-          </div>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="px-1 py-1 ">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-primary text-white' : 'text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      Edit
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
+        <div className="absolute top-2 right-5 w-4">
+            <Menu as="div" className="relative inline-block text-left">
+                <div>
+                    <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 p-1 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+                        <FontAwesomeIcon icon={faEllipsisVertical}
+                            className="h-5 w-5 text-violet-200 hover:text-violet-100"
+                            aria-hidden="true"
+                        />
+                    </Menu.Button>
+                </div>
+                <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                >
+                    <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <div className="px-1 py-1 ">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`${active ? 'bg-primary text-white' : 'text-gray-900'
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                            </Menu.Item>
+                        </div>
 
-              <div className="px-1 py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-primary text-white' : 'text-gray-900'
-                      } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </Menu.Item>
-              </div>
-            </Menu.Items>
-          </Transition>
-        </Menu>
-      </div>
+                        <div className="px-1 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <button
+                                        className={`${active ? 'bg-primary text-white' : 'text-gray-900'
+                                            } group flex w-full items-center rounded-md px-2 py-2 text-sm`}
+                                    >
+                                        Delete
+                                    </button>
+                                )}
+                            </Menu.Item>
+                        </div>
+                    </Menu.Items>
+                </Transition>
+            </Menu>
+        </div>
     )
-  }
+}
 
 
 

@@ -46,7 +46,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                             }
                         </div>
                     </div>
-                    <div className='flex items-center gap-5'>
+                    <div className='flex items-center gap-1'>
                         {
 
                             <div className='hidden md:flex items-center gap-2'>
@@ -65,7 +65,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         }
                         {
                             isLoggedin ?
-                                <div>
+                                <div className="ml-3">
                                     <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                                         Post Car
                                         <FontAwesomeIcon icon={faPlus} className="ms-3 lg:ms-5" />
@@ -73,7 +73,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                                 </div>
                                 :
                                 <div>
-                                    <Link to="?p=signin" reloadDocument className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-3 hover:text-primary py-2 md:py-3 rounded-full'>
+                                    <Link to="?p=signin" reloadDocument className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-5 hover:text-primary py-2 md:py-3 rounded-full'>
                                         Sign In
                                     </Link>
                                     <Link to="?p=signup" reloadDocument className='sign-up-popup-btn text-sm md:text-base font-medium bg-primary text-white px-5 md:px-8 py-2 md:py-3 hover:bg-primary/95 rounded-full'>
