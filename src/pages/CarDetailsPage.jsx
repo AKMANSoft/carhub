@@ -7,7 +7,6 @@ import { faArrowLeft, faArrowRight, faChevronLeft } from "@fortawesome/free-soli
 import { useParams } from "react-router-dom";
 import useCarDetails from "../components/hooks/carDetailsFetcher";
 import useAuthUser from "../components/hooks/useAuthUser";
-import { defaultCarDetail } from "../data/default-car-data";
 import { useRef } from "react";
 import { useState } from "react";
 import { cn, formatPrice } from "../lib/utils";
