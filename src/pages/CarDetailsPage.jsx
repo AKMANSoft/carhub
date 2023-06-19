@@ -22,7 +22,6 @@ export default function CarDetailsPage() {
         return selFeatures.length > 0
     }) : []
 
-    console.log(authUser.userProfile)
 
     return (
         <MainLayout secureRoute={false}>
@@ -84,7 +83,7 @@ export default function CarDetailsPage() {
                                 </div>
                             </div>
                         </div>
-                        {<CarDetailsSection carDetails={carDetails} className="hidden xl:block w-[30%] py-5" />}
+                        {<CarDetailsSection carDetails={carDetails} userProfile={authUser.userProfile} className="hidden xl:block w-[30%] py-5" />}
                     </div>
                 </div>
             }
@@ -113,9 +112,11 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
             <div className="py-5 md:p-5 mt-3 flex items-center gap-5 flex-wrap">
                 {
                     userProfile !== null && (userProfile?.id === carDetails.user_id) ?
-                        <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
-                            Edit Car Info
-                        </button>
+                        <>
+                            {/* <button type='button' className='btn-primary text-base font-medium rounded-full'>
+                                Edit Car Info
+                            </button> */}
+                        </>
                         :
                         <>
                             <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
@@ -135,31 +136,31 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Year</span>
                         <span className="font-medium">
-                            {carDetails.year ?? 'not specified'}
+                            {carDetails.year ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Make</span>
                         <span className="font-medium">
-                            {carDetails.make ?? 'not specified'}
+                            {carDetails.make ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Model</span>
                         <span className="font-medium">
-                            {carDetails.model ?? 'not specified'}
+                            {carDetails.model ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Condition</span>
                         <span className="font-medium">
-                            {carDetails.condition ?? 'not specified'}
+                            {carDetails.condition ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Mileage</span>
                         <span className="font-medium">
-                            {carDetails.mileage ?? 'not specified'}
+                            {carDetails.mileage ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
@@ -174,31 +175,31 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Title Status</span>
                         <span className="font-medium">
-                            {carDetails.title_status ?? 'not specified'}
+                            {carDetails.title_status ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Car Fuel Type</span>
                         <span className="font-medium">
-                            {carDetails.car_fuel_type ?? 'not specified'}
+                            {carDetails.car_fuel_type ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">Vehicle Trim</span>
                         <span className="font-medium">
-                            {carDetails.engine_size ?? 'not specified'}
+                            {carDetails.engine_size ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">City</span>
                         <span className="font-medium">
-                            {carDetails.city ?? 'not specified'}
+                            {carDetails.city ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">State</span>
                         <span className="font-medium">
-                            {carDetails.state ?? 'not specified'}
+                            {carDetails.state ?? ''}
                         </span>
                     </li>
                 </ul>
