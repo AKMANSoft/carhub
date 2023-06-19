@@ -28,12 +28,12 @@ export default function CarGridItem({ car, className = "", type = "BUY" }) {
                     Posted: {formatDate(new Date(car.created_at), "-")}
                 </p>
                 {
-                    car.find_me_buyer &&
-                    <div>
-                        <a href={`/find-me-buyer?car_id=${car.id}`} className="btn-primary block text-center text-sm w-full px-4 py-1 mt-2 hover:bg-primary">
-                            Find Me Buyer
-                        </a>
-                    </div>
+                    // car.find_me_buyer &&
+                    // <div>
+                    //     <a href={`/find-me-buyer?car_id=${car.id}`} className="btn-primary block text-center text-sm w-full px-4 py-1 mt-2 hover:bg-primary">
+                    //         Find Me Buyer
+                    //     </a>
+                    // </div>
                 }
             </div>
         </div>
