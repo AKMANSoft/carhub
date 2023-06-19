@@ -18,7 +18,7 @@ export default function useCarDetails(accessToken, carId) {
                     "method": "POST",
                     "timeout": 0,
                     "headers": {
-                        // "Authorization": "Bearer " + accessToken
+                        "Authorization": "Bearer " + accessToken
                     },
                     "processData": false,
                     "mimeType": "multipart/form-data",
