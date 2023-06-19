@@ -16,10 +16,13 @@ import { cn, formatPrice } from "../lib/utils";
 export default function CarDetailsPage() {
     const authUser = useAuthUser();
     const { carId } = useParams();
+    console.log(carId)
     const { data: carDetails } = useCarDetails(authUser.accessToken, carId);
-    // const carDetails = defaultCarDetail;
 
-
+    const carFeatures = carDetails ? carDetails.vehicle_list.filter((fCtgry) => {
+        const selFeatures = fCtgry.children.filter((f) => f.is_selected)
+        return selFeatures.length > 0
+    }) : []
 
     return (
         <MainLayout>
@@ -36,26 +39,33 @@ export default function CarDetailsPage() {
                                         Features
                                     </h2>
                                 </div>
-                                <div className="divide-y">
-                                    {
-                                        carDetails.vehicle_list.map((featureCtgry) => (
-                                            <div key={featureCtgry.id} className="py-5">
-                                                <h4 className="text-lg font-semibold">
-                                                    {featureCtgry.title}
-                                                </h4>
-                                                <div className="mt-2 grid-cols-1 md:grid-cols-2 grid lg:grid-cols-3 gap-2">
-                                                    {
-                                                        featureCtgry.children.map((feature) => (
-                                                            <li key={feature.id} className="list-disc text-base text-gray-800 font-medium">
-                                                                {feature.title}
-                                                            </li>
-                                                        ))
-                                                    }
-                                                </div>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
+                                {
+                                    carFeatures.length > 0 ?
+                                        <div className="divide-y">
+                                            {
+                                                carFeatures.map((featureCtgry) => (
+                                                    <div key={featureCtgry.id} className="py-5">
+                                                        <h4 className="text-lg font-semibold">
+                                                            {featureCtgry.title}
+                                                        </h4>
+                                                        <div className="mt-2 grid-cols-1 md:grid-cols-2 grid lg:grid-cols-3 gap-2">
+                                                            {
+                                                                featureCtgry.children.filter((f) => f.is_selected).map((feature) => (
+                                                                    <li key={feature.id} className="list-disc text-base text-gray-800 font-medium">
+                                                                        {feature.title}
+                                                                    </li>
+                                                                ))
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            }
+                                        </div>
+                                        :
+                                        <div className="flex items-center justify-center h-32 w-full">
+                                            <p>No special features.</p>
+                                        </div>
+                                }
                             </div>
                             <div className="mt-10">
                                 <div className="flex items-center gap-3">
@@ -103,9 +113,6 @@ function CarDetailsSection({ className, carDetails }) {
                 <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
                     Contact Seller
                 </button>
-                <button type='button' className='text-base font-medium bg-primary text-white px-8 py-2.5 hover:bg-primary/90 rounded-full'>
-                    Make an Offer
-                </button>
             </div>
             <div className="mt-8 bg-gray-50 p-3 md:p-5 rounded-md">
                 <div className="flex items-center gap-3">
@@ -115,72 +122,72 @@ function CarDetailsSection({ className, carDetails }) {
                     <span className="block rounded w-full h-0 border-b border-gray-400"></span>
                 </div>
                 <ul className="mt-5">
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Year</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Year</span>
+                        <span className="font-medium">
                             {carDetails.year ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Make</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Make</span>
+                        <span className="font-medium">
                             {carDetails.make ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Model</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Model</span>
+                        <span className="font-medium">
                             {carDetails.model ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Condition</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Condition</span>
+                        <span className="font-medium">
                             {carDetails.condition ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Mileage</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Mileage</span>
+                        <span className="font-medium">
                             {carDetails.mileage ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Exterior Color</span>
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Exterior Color</span>
                         <span className="block w-5 h-5 aspect-square rounded-full"
                             style={{ background: carDetails.exterior_color }} />
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Interior Color</span>
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Interior Color</span>
                         <span className="block w-5 h-5 aspect-square rounded-full"
                             style={{ background: carDetails.color }} />                    </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Title Status</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Title Status</span>
+                        <span className="font-medium">
                             {carDetails.title_status ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Car Fuel Type</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Car Fuel Type</span>
+                        <span className="font-medium">
                             {carDetails.car_fuel_type ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">Vehicle Trim</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">Vehicle Trim</span>
+                        <span className="font-medium">
                             {carDetails.engine_size ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">City</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">City</span>
+                        <span className="font-medium">
                             {carDetails.city ?? 'not specified'}
                         </span>
                     </li>
-                    <li className="text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase">State</span>
-                        <span className="font-medium text-gray-800">
+                    <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
+                        <span className="uppercase min-w-max">State</span>
+                        <span className="font-medium">
                             {carDetails.state ?? 'not specified'}
                         </span>
                     </li>
@@ -243,19 +250,21 @@ function CarsSliderEl({ className, images }) {
                 <img src="/images/car4.jpg" alt="" loading="lazy" className="mx-auto object-cover h-[300px] sm:h-[450px] md:h-[600px] lg:h-[700px]" />
             </div> */}
             </Slider>
-            <div className="w-full flex items-center justify-center gap-5 p-2">
-                {
-                    images.map((img, index) => (
-                        <button type="button" key={img.id}
-                            className={cn(
-                                "outline-none rounded overflow-hidden outline-2 outline-transparent",
-                                currentIndex === index && "outline-primary"
-                            )}
-                            onClick={() => sliderRef?.current?.slickGoTo(index)}>
-                            <img src={img.image} alt="" loading="lazy" className="object-cover h-16 w-16 aspect-square " />
-                        </button>
-                    ))
-                }
+            <div className="flex justify-center mt-4 md:mt-0">
+                <div className="flex items-center gap-5 p-2 max-w-full overflow-x-auto no-scrollbar">
+                    {
+                        images.map((img, index) => (
+                            <button type="button" key={img.id}
+                                className={cn(
+                                    "outline-none rounded overflow-hidden outline-2 outline-transparent min-w-max",
+                                    currentIndex === index && "outline-primary"
+                                )}
+                                onClick={() => sliderRef?.current?.slickGoTo(index)}>
+                                <img src={img.image} alt="" loading="lazy" className="object-cover h-16 w-16 aspect-square " />
+                            </button>
+                        ))
+                    }
+                </div>
             </div>
         </div>
     );

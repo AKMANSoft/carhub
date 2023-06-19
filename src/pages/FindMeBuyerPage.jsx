@@ -1,6 +1,5 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
-import { useSearchParams } from "react-router-dom";
 
 
 

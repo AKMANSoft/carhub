@@ -24,10 +24,6 @@ export const exteriorColorsList = [
         label: "Tanzanite Blue II Metallic",
     },
     {
-        hex: "#105ba1",
-        label: "Frozen Tanzanite Blue Metallic",
-    },
-    {
         hex: "#b03810",
         label: "Sunset Orange Metallic",
     },
@@ -58,54 +54,19 @@ export const exteriorColorsList = [
 
 
 
+
 export const interiorColorsList = [
     {
         hex: "#000000",
         label: "Black Extended Merino",
     },
     {
-        hex: "#000000",
-        label: "Night Blue/Black Extended Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Fiona Red/Black Extended Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Tartufo/Black Extended Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Black Full Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Night Blue/Black Full Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Tartufo/Black Full Merino",
-    },
-    {
-        hex: "#000000",
-        label: "Black Extended Merino w/Black M Piping",
-    },
-    {
         hex: "#9c745b",
         label: "Cognac Full Merino",
     },
     {
-        hex: "#9c745b",
-        label: "Cognac Extended Merino",
-    },
-    {
         hex: "#9d7866",
         label: "Ivory White/Tartufo Full Merino",
-    },
-    {
-        hex: "#f1f2ed",
-        label: "Ivory White Extended Merino",
     },
     {
         hex: "#f1f2ed",

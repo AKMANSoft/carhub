@@ -79,6 +79,7 @@ export default function SignupPopup() {
         }
     }, [email])
 
+
     useEffect(() => {
         if (password.length > 0 && confPassword.length > 0) {
             let passwordsValid = password.length > 0 && confPassword.length > 0 && password === confPassword;

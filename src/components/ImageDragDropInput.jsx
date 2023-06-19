@@ -7,24 +7,43 @@ export default function ImageDragDropInput({
     className = "",
     images = [],
     onImagesChange = (images) => { },
-    withPreview = false
+    withPreview = false,
 }) {
-    const onDrop = React.useCallback(acceptedFiles => {
-        onImagesChange(acceptedFiles.map((img) => {
-            return {
-                src: window.URL.createObjectURL(img),
-                blob: img,
-                id: (new Date().getTime() * Math.random())
-            }
-        }));
-    }, [])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop: onDrop,
+    // const onDrop = React.useCallback(acceptedFiles => {
+    //     onImagesChange([
+    //         ...images,
+    //         ...(acceptedFiles.map((img) => {
+    //             return {
+    //                 src: window.URL.createObjectURL(img),
+    //                 blob: img,
+    //                 id: (new Date().getTime() * Math.random())
+    //             }
+    //         }))
+    //     ]);
+    // }, [])
+    const { getRootProps, getInputProps, isDragActive, acceptedFiles } = useDropzone({
+        // onDrop: onDrop,
         accept: {
-            'image/*': ['.jpeg', '.jpg', '.png']
+            'image/jpg': ['.jpeg'],
+            'image/jpeg': ['.jpeg'],
+            'image/png': ['.png'],
         },
         multiple: true
     })
+
+
+    React.useEffect(() => {
+        onImagesChange([
+            ...images,
+            ...(acceptedFiles.map((img) => {
+                return {
+                    src: window.URL.createObjectURL(img),
+                    blob: img,
+                    id: (new Date().getTime() * Math.random())
+                }
+            }))
+        ]);
+    }, [acceptedFiles])
 
 
     const removeImage = (id) => {
@@ -34,7 +53,7 @@ export default function ImageDragDropInput({
     return (
         <>
             <div {...getRootProps()} className={"w-full flex justify-center py-20 px-10 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 outline-none " + className}>
-                <input {...getInputProps()} accept='image/*' />
+                <input {...getInputProps()} accept='image/png,image/jpg,image/jpeg' />
                 {
                     isDragActive ?
                         <span>

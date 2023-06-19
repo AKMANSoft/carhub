@@ -111,6 +111,8 @@ const DEFAULT_FILTERS = {
     year: "",
     make: "",
     model: "",
+    vehicleTrim: "",
+    mileage: "",
     page: 1,
     distance: MAX_DISTANCE,
 }
@@ -212,6 +214,8 @@ export default function SearchPage() {
             filters.year !== "" && `&year=${filters.year}`,
             filters.make !== "" && `&make=${filters.make}`,
             filters.model !== "" && `&model=${filters.model}`,
+            filters.vehicleTrim !== "" && `&engine_size=${filters.vehicleTrim}`,
+            filters.mileage !== "" && `&mileage=${filters.mileage}`,
             location !== null && location?.latitude !== undefined && `&latitude=${location.latitude}`,
             location !== null && location?.longitude !== undefined && `&longitude=${location.longitude}`,
         ));
@@ -429,6 +433,46 @@ function Pagination({ activePage, setActivePage }) {
 
 
 
+const mileageList = [
+    {
+        value: "0",
+        label: "No miles"
+    },
+    {
+        value: "25000",
+        label: "Up to 25,000 miles"
+    },
+    {
+        value: "50000",
+        label: "Up to 50,000 miles"
+    },
+    {
+        value: "75000",
+        label: "Up to 75,000 miles"
+    },
+    {
+        value: "100000",
+        label: "Up to 100,000 miles"
+    },
+    {
+        value: "125000",
+        label: "Up to 125,000 miles"
+    },
+    {
+        value: "150000",
+        label: "Up to 150,000 miles"
+    },
+    {
+        value: "170000",
+        label: "Up to 170,000 miles"
+    },
+    {
+        value: "200000",
+        label: "Up to 200,000 miles"
+    },
+]
+
+
 
 export function FiltersSectionEl({
     filters, accessToken, onMinPriceChange,
@@ -438,10 +482,14 @@ export function FiltersSectionEl({
     const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${filters.year}`);
     const { data: models } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarModels + `?year=${filters.year}&make=${filters.make}`);
+    const { data: vehicleTrims } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarTrims + `?year=${filters.year}&make=${filters.make}&model=${filters.model}`);
+
 
     const [selectedYear, setSelectedYear] = useState(filters.year);
     const [selectedMake, setSelectedMake] = useState(filters.make);
     const [selectedModel, setSelectedModel] = useState(filters.model);
+    const [selectedVTrim, setSelectedVTrim] = useState(filters.vehicleTrim);
+    const [selectedMileage, setSelectedMileage] = useState(filters.mileage);
 
 
     useEffect(() => {
@@ -450,8 +498,10 @@ export function FiltersSectionEl({
             year: selectedYear,
             make: selectedMake,
             model: selectedModel,
+            mileage: selectedMileage,
+            vehicleTrim: selectedVTrim
         })
-    }, [selectedYear, selectedMake, selectedModel])
+    }, [selectedYear, selectedMake, selectedModel, selectedVTrim, selectedMileage])
 
 
 
@@ -516,6 +566,37 @@ export function FiltersSectionEl({
                             models &&
                             models?.map((modelObj) => (
                                 <option key={modelObj.model} value={modelObj.model}>{modelObj.model}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+            </div>
+            <div>
+                <h5 className="text-sm font-semibold text-gray-800">Vehicle Trim</h5>
+                <div className="flex items-center gap-3 mt-2">
+                    <select value={selectedVTrim} disabled={!vehicleTrims || vehicleTrims.length <= 0}
+                        onChange={(e) => setSelectedVTrim(e.target.value)}
+                        className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
+                        <option value="">Select Vehicle Trim</option>
+                        {
+                            vehicleTrims &&
+                            vehicleTrims?.map((vTrimObj) => (
+                                <option key={vTrimObj.vehicle_trim} value={vTrimObj.vehicle_trim}>{vTrimObj.vehicle_trim}</option>
+                            ))
+                        }
+                    </select>
+                </div>
+            </div>
+            <div>
+                <h5 className="text-sm font-semibold text-gray-800">Mileage</h5>
+                <div className="flex items-center gap-3 mt-2">
+                    <select value={selectedMileage}
+                        onChange={(e) => setSelectedMileage(e.target.value)}
+                        className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
+                        <option value="">Select Mileage</option>
+                        {
+                            mileageList.map((mileage) => (
+                                <option key={mileage.value} value={mileage.value}>{mileage.label}</option>
                             ))
                         }
                     </select>

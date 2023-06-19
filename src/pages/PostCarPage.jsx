@@ -13,6 +13,7 @@ import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
+import AlertMessage from "../components/ThemeAlert";
 
 
 const CarPostSections = {
@@ -260,17 +261,48 @@ export default function PostCarPage() {
 
 
 function PhotosSection({ onValidated, setImages, images }) {
+    const [alertMessage, setAlertMessage] = useState({
+        visible: false,
+        text: "Please upload 5-15 images.",
+        success: false
+    });
+
+    const isValidated = () => {
+        return images.length >= 5 && images.length <= 15;
+    }
+
+    useEffect(() => {
+        if (images.length > 0 && (images.length < 5 || images.length > 15)) {
+            setAlertMessage({
+                ...alertMessage,
+                visible: true,
+            })
+        }
+    }, [images])
+
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full flex flex-wrap items-center p-5 pb-8 gap-6" >
                 <ImageDragDropInput images={images} withPreview onImagesChange={setImages} />
-                <div className="w-full mt-2">
+                <div className="w-full mt-2 flex items-center justify-between">
                     <button
                         type="button" onClick={onValidated}
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                        disabled={images?.length <= 0}>
+                        disabled={!isValidated()}>
                         Continue
                     </button>
+                    <div>
+                        <AlertMessage
+                            success={alertMessage.success}
+                            visible={alertMessage.visible}
+                            text={alertMessage.text}
+                            onDissmissAlert={() => {
+                                setAlertMessage({
+                                    ...alertMessage,
+                                    visible: false,
+                                })
+                            }} />
+                    </div>
                 </div>
             </div>
         </div >
@@ -288,6 +320,11 @@ const FuelTypes = [
 ]
 
 function DetailsSection({ onValidated, details, setDetails, accessToken }) {
+    const [alertMessage, setAlertMessage] = useState({
+        visible: false,
+        text: "Please fill all fields to coninue.",
+        success: false
+    });
     const { data: categories } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCategories);
     const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${details.year}`);
@@ -303,6 +340,12 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
     const validateAndContinue = () => {
         if (isValidated()) onValidated();
+        else {
+            setAlertMessage({
+                ...alertMessage,
+                visible: true
+            })
+        }
     }
 
     console.log(vehicleTrims)
@@ -358,7 +401,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                     <option value="salvage">Salvage</option>
                 </SelectEl>
 
-                <div className="col-span-1 md:col-span-2 lg:col-span-3 w-full">
+                <div className="col-span-full flex items-center justify-between w-full">
                     <button
                         type="button"
                         onClick={validateAndContinue}
@@ -367,6 +410,18 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                     >
                         Continue
                     </button>
+                    <div>
+                        <AlertMessage
+                            success={alertMessage.success}
+                            visible={alertMessage.visible}
+                            text={alertMessage.text}
+                            onDissmissAlert={() => {
+                                setAlertMessage({
+                                    ...alertMessage,
+                                    visible: false,
+                                })
+                            }} />
+                    </div>
                 </div>
             </div>
         </div >
