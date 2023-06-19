@@ -1,5 +1,5 @@
-import axios from "axios";
 import { apiConfig } from "../config/api";
+import $ from "jquery";
 
 
 
@@ -32,19 +32,32 @@ export default async function doPostCar(carDetails, accessToken) {
 
 
     try {
-        let response = await axios.post(
-            apiConfig.basePath + apiConfig.endpoints.postCar,
-            data,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Accept: "application/json",
-                    "Authorization": "Bearer " + accessToken
-                },
-            }
-        )
-        console.log(response.data)
-        return response.data;
+        var settings = {
+            "url": apiConfig.basePath + apiConfig.endpoints.postCar,
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Authorization": "Bearer " + accessToken
+            },
+            "processData": false,
+            "mimeType": "multipart/form-data",
+            "contentType": false,
+            "data": data
+        };
+        const response = await $.ajax(settings).promise()
+        const resData = JSON.parse(response);
+        // let response = await axios.post(
+        //     apiConfig.basePath + apiConfig.endpoints.postCar,
+        //     data,
+        //     {
+        //         headers: {
+        //             "Content-Type": "multipart/form-data",
+        //             Accept: "application/json",
+        //             "Authorization": "Bearer " + accessToken
+        //         },
+        //     }
+        // )
+        return resData;
     } catch (error) {
         console.log(error);
         return null;

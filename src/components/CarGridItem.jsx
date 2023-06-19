@@ -25,9 +25,6 @@ export default function CarGridItem({ car, className = "", type = "BUY" }) {
                 <p className="text-sm font-normal text-gray-600">
                     Posted: {formatDate(new Date(car.created_at), "-")}
                 </p>
-                <p className="text-sm font-normal text-gray-600">
-                    {car.id}
-                </p>
             </div>
         </a>
     );

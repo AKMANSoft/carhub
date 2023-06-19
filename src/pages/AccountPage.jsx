@@ -142,31 +142,34 @@ function PaymentAndDepositMethodsSection() {
 
 
 function MyCarsSection({ authUser }) {
-    const { cars: myCars } = useCarsFetcher(authUser.accessToken, null, "SELL");
+    const { cars: myCars, isLoading, error } = useCarsFetcher(authUser.accessToken, null, "SELL");
 
     console.log(myCars)
 
     return (
         <div className="p-10">
             {
-                myCars?.length > 0 ?
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-6 gap-5 md:gap-8">
-                        {
-                            myCars &&
-                            myCars.map((car) => (
-                                <CarGridItem car={car} type="SELL" />
-                            ))
-                        }
-                    </div>
+                isLoading || error ?
+                    <LoaderEl className="" />
                     :
-                    <div className="w-full h-52 flex flex-col gap-1 items-center justify-center text-center">
-                        <p>
-                            Nothing to show.
-                        </p>
-                        <a href="/post-car" className="text-primary transition-all hover:underline text-base">
-                            Add a car to sell
-                        </a>
-                    </div>
+                    myCars?.length > 0 ?
+                        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
+                            {
+                                myCars &&
+                                myCars.map((car) => (
+                                    <CarGridItem car={car} type="SELL" />
+                                ))
+                            }
+                        </div>
+                        :
+                        <div className="w-full h-52 flex flex-col gap-1 items-center justify-center text-center">
+                            <p>
+                                Nothing to show.
+                            </p>
+                            <a href="/post-car" className="text-primary transition-all hover:underline text-base">
+                                Add a car to sell
+                            </a>
+                        </div>
             }
         </div>
     );
