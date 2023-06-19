@@ -25,7 +25,7 @@ export default function CarDetailsPage() {
     }) : []
 
     return (
-        <MainLayout>
+        <MainLayout secureRoute={false}>
             {
                 carDetails && carDetails !== null &&
                 <div className={"mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
