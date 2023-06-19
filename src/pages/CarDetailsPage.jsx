@@ -14,10 +14,10 @@ import { cn, formatPrice } from "../lib/utils";
 
 
 export default function CarDetailsPage() {
-    const authUser = useAuthUser();
+    // const authUser = useAuthUser();
     const { carId } = useParams();
     console.log(carId)
-    const { data: carDetails } = useCarDetails(authUser.accessToken, carId);
+    const { data: carDetails } = useCarDetails("", carId);
 
     const carFeatures = carDetails ? carDetails.vehicle_list.filter((fCtgry) => {
         const selFeatures = fCtgry.children.filter((f) => f.is_selected)
