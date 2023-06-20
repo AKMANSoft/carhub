@@ -12,6 +12,7 @@ import { useState } from "react";
 import { cn, formatPrice } from "../lib/utils";
 
 
+
 export default function CarDetailsPage() {
     const authUser = useAuthUser();
     const { carId } = useParams();
@@ -22,9 +23,8 @@ export default function CarDetailsPage() {
         return selFeatures.length > 0
     }) : []
 
-
     return (
-        <MainLayout secureRoute={false}>
+        <MainLayout>
             {
                 carDetails && carDetails !== null &&
                 <div className={"mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
@@ -83,7 +83,9 @@ export default function CarDetailsPage() {
                                 </div>
                             </div>
                         </div>
-                        {<CarDetailsSection carDetails={carDetails} userProfile={authUser.userProfile} className="hidden xl:block w-[30%] py-5" />}
+                        <CarDetailsSection
+                            carDetails={carDetails} userProfile={authUser.userProfile}
+                            className="hidden xl:block w-[30%] py-5" />
                     </div>
                 </div>
             }

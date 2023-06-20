@@ -13,7 +13,6 @@ const carsFetcher = async (url, accessToken, type) => {
             Authorization: "Bearer " + accessToken
         }
     });
-    console.log(res)
     return res.data.success ? (type === "BUY" ? res.data.buyerObj : res.data.sellerObj) : [];
 }
 

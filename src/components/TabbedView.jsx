@@ -24,7 +24,7 @@ export default function TabbedView({
 
 
     return (
-        <div className="w-full shadow border rounded-md bg-white overflow-hidden">
+        <div className="w-full h-full shadow border rounded-md bg-white overflow-hidden">
             <div className={"px-8 py-3 flex items-center gap-7 " + tabsContainerClass}>
                 {
                     tabs.map(({ tabName, _ }) => (

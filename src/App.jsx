@@ -5,6 +5,8 @@ import { useCookies } from 'react-cookie'
 import axios from "axios"
 import { apiConfig } from "./config/api"
 import { MAX_DISTANCE } from "./pages/SearchPage"
+import { connectSocket, socket, SocketContext } from "./lib/socketio"
+import { initFirebaseMessaging } from "./lib/fcm"
 
 const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 const AccountPage = React.lazy(() => import("./pages/AccountPage"))
@@ -119,6 +121,8 @@ function App() {
           setUserProfile(null);
         })
     }
+    connectSocket()
+    initFirebaseMessaging()
   }, [cookies]);
 
 
@@ -134,7 +138,9 @@ function App() {
         filterDistance: filterDistance,
         setFilterDistance: setFilterDistance
       }}>
-        <RouterProvider router={router} />
+        <SocketContext.Provider value={socket}>
+          <RouterProvider router={router} />
+        </SocketContext.Provider>
       </LocationContext.Provider>
     </AuthUserContext.Provider>
   )

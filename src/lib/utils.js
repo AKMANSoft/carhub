@@ -43,3 +43,23 @@ export function formatPrice(price) {
   // Append the decimal part and return the formatted price
   return formattedPrice + decimalPart;
 }
+
+
+
+
+export function formatDateTimeForMsg(date) {
+  if (date instanceof Date) {
+    const now = new Date();
+    const diff = now - date; // Difference in milliseconds
+    // Format time if the date is today
+    if (diff < 86400000 && date.getDate() === now.getDate()) {
+      return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    }
+    // Format as "Yesterday" if the date is yesterday
+    if (diff < 172800000 && date.getDate() === now.getDate() - 1) {
+      return 'Yesterday ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+    }
+    return date.toLocaleString('en-US');
+  }
+  else return ""
+}

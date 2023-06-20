@@ -8,6 +8,7 @@ import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import useNotificationsFetcher from "../components/hooks/notificationsFetcher";
 import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
+import { cn } from "../lib/utils";
 
 
 export default function InboxPage() {
@@ -32,7 +33,8 @@ export default function InboxPage() {
                         {
                             tabName: "Messages",
                             content: () => (
-                                <MessagesPage />
+                                authUser.userProfile !== null &&
+                                <MessagesPage authUser={authUser} />
                             )
                         },
                         {
@@ -40,10 +42,12 @@ export default function InboxPage() {
                             content: () => (
                                 notifications ?
                                     notifications.length > 0 ?
-                                        <div className="py-4">
-                                            <NotificationItem />
-                                            <NotificationItem />
-                                            <NotificationItem />
+                                        <div className="py-4 max-h-[80vh] lg:max-h-[600px] overflow-y-auto">
+                                            {
+                                                notifications?.map((noti) => (
+                                                    <NotificationItem notification={noti} />
+                                                ))
+                                            }
                                         </div>
                                         :
                                         <div className="flex items-center justify-center py-40">
@@ -60,15 +64,32 @@ export default function InboxPage() {
     );
 }
 
-export function NotificationItem({ short = false, title = "Notification Title" }) {
+export function NotificationItem({ notification, short = false, }) {
+    console.log(notification);
     return (
-        <div className={"border-b-2 last:border-none border-gray-100 px-8 transition-all bg-transparent hover:bg-gray-100 " + (short ? "py-4" : "py-6")}>
-            <h4 className={"text-gray-800 " + (short ? "text-lg font-medium" : "font-semibold")}>
-                <span>{title}</span>
-            </h4>
-            <p className={"font-normal text-gray-700 " + (short ? "line-clamp-2 mt-1 text-sm" : "mt-2 text-base")}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt aspernatur odio corporis fugit quasi. Quidem amet similique cum accusamus alias id unde, vel nam itaque, soluta dolorum maiores sapiente eos.
-            </p>
+        <div className={cn(
+            "border-b-2 last:border-none border-gray-100 transition-all bg-transparent hover:bg-gray-100 ",
+            short ? "py-3 px-4" : "py-4 px-8",
+            "flex items-center gap-5"
+        )}>
+            {
+                notification.type === "TYPE_MESSAGE" &&
+                <img src={notification?.seller_detail?.image} width={50} height={50} className="min-w-[50px] aspect-square rounded-full border-2 border-gray-200" alt="" />
+            }
+            <div>
+                {
+                    notification.type === "TYPE_MESSAGE" &&
+                    <h4 className={"text-gray-800 " + (short ? "text-base font-semibold" : "font-semibold")}>
+                        <span>{notification?.seller_detail?.name}</span>
+                    </h4>
+                }
+                <p className={cn(
+                    "font-normal text-gray-700",
+                    short ? "line-clamp-2 mt-1 text-sm" : "mt-2 text-base"
+                )}>
+                    {notification?.message}
+                </p>
+            </div>
         </div>
     );
 }

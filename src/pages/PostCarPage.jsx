@@ -14,6 +14,7 @@ import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
 import AlertMessage from "../components/ThemeAlert";
 import { Navigate, redirect, useNavigate } from "react-router-dom";
+import SelectEl from "../components/selectel";
 
 
 const CarPostSections = {
@@ -874,33 +875,6 @@ function CheckBoxEl({ label = "", onChange, value }) {
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-base font-medium ml-3 text-gray-800">
                 {label}
             </label>
-        </div>
-    );
-}
-
-
-function SelectEl({ label = "", children, items = null, value, onChange, isOptional = false }) {
-    return (
-        <div className="w-full">
-            <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
-                {label}
-                {
-                    isOptional &&
-                    <span className="ms-2 text-gray-500">
-                        (optional)
-                    </span>
-                }
-            </label>
-            <select value={value} onChange={(e) => onChange(e.target.value)} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
-                <option value="">Select {label}</option>
-                {
-                    items && items !== null ?
-                        items.map((item) => (
-                            <option key={item.value} value={item.value}>{item.label}</option>
-                        ))
-                        : children
-                }
-            </select>
         </div>
     );
 }

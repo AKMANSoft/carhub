@@ -2,7 +2,7 @@
 
 export const apiConfig = {
     basePath: "https://pro.gocarhub.app/api",
-    socketPath: "http://3.130.87.79:3000",
+    socketPath: "ws://3.130.87.79:3000",
     endpoints: {
         //Auth and User Endpoints
         signup: "/signup",
@@ -18,6 +18,8 @@ export const apiConfig = {
         blockUnblockUser: "",
         blockedUsersList: "",
         blockedUsersList: "",
+        getChatsList: "/chat-list",
+        getChatMessages: "/chat-detail",
         //Cars Related Endpoints
         getCategories: "/car-category",
         getYears: "/car-year",
@@ -37,6 +39,6 @@ export const apiConfig = {
         userCount: "",
         carSave: "",
         chatList: "",
-        seenAll: "",
+        seenAllMessages: "/seen-all-message",
     }
 }
