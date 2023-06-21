@@ -104,8 +104,8 @@
     "clean": "clean",
     "rebuilt": "rebuilt",
     "salvage": "salvage",
-    "exterior-color": "Exterior Color:",
-    "Interior-Color": "Interior Color:",
+    "exterior-color": "Exterior Color",
+    "Interior-Color": "Interior Color",
     "acc": "Accounts",
     "transition": "Transactions",
     "balance": "Balance",
@@ -153,5 +153,6 @@
     "price_hl": "Price: High to Low",
     "model_newest": "Model: Newest",
     "mileage_lowest": "Model: Lowest",
-    "no_special_features": "No special features."
+    "no_special_features": "No special features.",
+    "photos": "Photos"
 }

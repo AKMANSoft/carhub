@@ -17,7 +17,7 @@ export default function SelectEl({ label = "", children, items = null, value, on
                     {
                         isOptional &&
                         <span className="ms-2 text-gray-500">
-                            (optional)
+                            ({trans("optional")})
                         </span>
                     }
                 </label>

@@ -105,7 +105,7 @@
     "rebuilt": "reconstruido",
     "salvage": "siniestro",
     "exterior-color": "Color exterior:",
-    "Interior-Color": "Color interior:",
+    "interior-Color": "Color interior:",
     "acc": "Cuentas",
     "transition": "Transacciones",
     "balance": "Saldo",
@@ -121,6 +121,7 @@
     "details": "Detalles",
     "city": "Ciudad",
     "state": "Estado",
+    "optional": "opcional",
     "continue-pay": "Continuar con el pago",
     "boost-offer": "Aumenta tu oferta por",
     "days": "días",
@@ -153,5 +154,6 @@
     "price_hl": "Precio: de mayor a menor",
     "model_newest": "Modelo: más nuevo",
     "mileage_lowest": "Modelo: menor kilometraje",
-    "no_special_features": "Sin características especiales."
+    "no_special_features": "Sin características especiales.",
+    "photos": "Fotos"
 }

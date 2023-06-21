@@ -198,9 +198,13 @@ export default function PostCarPage() {
             <div className={"max-w-screen-xl mx-auto py-10 md:py-20 " + MAIN_HORIZONTAL_PADDING}>
                 <div className="mb-12">
                     <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                        <a href="/" className="text-lg text-gray-600">Home</a>
+                        <a href="/" className="text-lg text-gray-600">
+                            {trans("home")}
+                        </a>
                         <FontAwesomeIcon icon={faChevronRight} className="mx-3 text-sm text-gray-500" />
-                        <a href="/post-car" className="text-lg text-gray-900">Post Car</a>
+                        <a href="/post-car" className="text-lg text-gray-900">
+                            {trans("post_car")}
+                        </a>
                     </h2>
                 </div>
                 <AlertMessage
@@ -212,10 +216,9 @@ export default function PostCarPage() {
                     taskState === "completed" ?
                         <div className="flex items-center justify-center gap-5 h-64">
                             <a href="/" className="rounded bg-gray-200 py-3 px-5 text-base">
-                                Go to home
+                                {trans("go-home")}
                             </a>
                             <a href="/account?active=my-cars" className="btn-primary text-base">
-                                View your cars
                                 {trans("view_your_cars")}
                             </a>
                         </div>
@@ -427,7 +430,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                         CarConditionsList
                             .filter((condition) => condition.id !== "all")
                             .map((condition) =>
-                                ({ value: condition.id, label: condition.label })
+                                ({ value: condition.id, label: trans(condition.label) })
                             )}
                     label={trans("condition")} value={details.condition}
                     onChange={(value) => setDetails({ ...details, condition: value })} />
@@ -449,7 +452,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                 <SelectEl
                     isOptional={true}
                     items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim, label: vTrim.vehicle_trim })) : []}
-                    label={trans("vehicletrim")} value={details.vehicleTrim}
+                    label={trans("vehicle_trim")} value={details.vehicleTrim}
                     onChange={(value) => setDetails({ ...details, vehicleTrim: value })} />
 
                 <InputEl
@@ -461,15 +464,15 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                 <SelectEl
                     isOptional={true}
                     items={FuelTypes.map((fuel) => ({ value: fuel, label: fuel }))}
-                    label="Car Fuel Type" value={details.fuelType}
+                    label={trans("car-fuel-type")} value={details.fuelType}
                     onChange={(value) => setDetails({ ...details, fuelType: value })} />
                 <SelectEl
                     isOptional={true}
-                    label="Title Status" value={details.titleStatus}
+                    label={trans("title_status")} value={details.titleStatus}
                     onChange={(value) => setDetails({ ...details, titleStatus: value })}>
-                    <option value="clean">Clean</option>
-                    <option value="rebuilt">Rebuilt</option>
-                    <option value="salvage">Salvage</option>
+                    <option value="clean">{trans("clean")}</option>
+                    <option value="rebuilt">{trans("rebuilt")}</option>
+                    <option value="salvage">{trans("salvage")}</option>
                 </SelectEl>
 
                 <div className="col-span-full flex items-center justify-between w-full">
@@ -479,7 +482,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                         disabled={!isValidated()}
                     >
-                        Continue
+                        {trans("continue")}
                     </button>
                     <div>
                         <AlertMessage
@@ -523,7 +526,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
             <div className="divide-y">
                 <div className="py-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
-                        Exterior Color:
+                        {trans("exterior-color")}:
                         <span className="font-normal text-base ms-2">
                             {exteriorColorsList.find((clr) => colors.exterior === clr.hex)?.label ?? ""}
                         </span>
@@ -550,7 +553,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                 </div>
                 <div className="py-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
-                        Interior Color:
+                        {trans("interior-color")}:
                         <span className="font-normal text-base ms-2">
                             {interiorColorsList.find((clr) => colors.interior === clr.hex)?.label ?? ""}
                         </span>
@@ -593,6 +596,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
 
 
 function FeaturesSection({ onValidated, accessToken, features = [], setFeatures }) {
+    const { trans, apiTrans } = handleTranslation()
     const { data: featuresCategories, isLoading, error } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarFeatures);
 
     const onFeaturesChange = (feature, value) => {
@@ -614,13 +618,15 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
                         featuresCategories &&
                         featuresCategories.map((featureCtgry) => (
                             <div key={featureCtgry.id} className="py-8">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-3">{featureCtgry.title}:</h3>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                                    {apiTrans(featureCtgry, "title")}:
+                                </h3>
                                 <div className="w-full grid grid-cols-1 md:grid-cols-2 place-items-center gap-7" >
                                     {
                                         featureCtgry.children.map((feature) => (
                                             <CheckBoxEl
                                                 key={feature.id}
-                                                label={feature.title}
+                                                label={apiTrans(feature, "title")}
                                                 value={features.includes(feature.id)}
                                                 onChange={(val) => onFeaturesChange(feature, val)} />
                                         ))
@@ -647,6 +653,7 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
 
 
 function PostSection({ onValidated, postDetails, setPostDetails }) {
+    const { trans } = handleTranslation();
 
     const onPriceChange = (price) => {
         setPostDetails({
@@ -672,7 +679,7 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
             <div className="w-full grid grid-cols-3 place-items-center pt-5  gap-7" >
                 <div className="w-full col-span-3">
                     <InputEl
-                        type="number" label="Price" icon={faDollar}
+                        type="number" label={trans("price")} icon={faDollar}
                         value={postDetails.price}
                         onChange={onPriceChange}
                     />
@@ -680,12 +687,12 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
                 <div className="w-full col-span-3">
                     <TextAreaEl
                         isOptional={true}
-                        label="Description"
+                        label={trans("description")}
                         value={postDetails.description}
                         onChange={onDescriptionChange} />
                 </div>
                 <div className="w-full col-span-3">
-                    <CheckBoxEl label="Find Me Buyer"
+                    <CheckBoxEl label={trans("find_me_buyer")}
                         value={postDetails.findMeBuyer}
                         onChange={onFindMeBuyerChange} />
                 </div>
@@ -707,6 +714,7 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
 
 
 function FinishSection({ onValidated, carLocation, setCarLocation }) {
+    const { trans } = handleTranslation()
     const isValidated = () => {
         return (
             carLocation && carLocation.latitude !== 0 && carLocation.longitude !== 0 && carLocation.zipCode !== null && carLocation.zipCode !== ""
@@ -718,7 +726,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
             <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <div className="w-full col-span-3">
                     <LocationInputEl
-                        label="Car Location" icon={faLocationDot}
+                        label={trans("car_location")} icon={faLocationDot}
                         value={carLocation} onChange={setCarLocation} />
                 </div>
                 <div className="w-full col-span-3">
@@ -752,34 +760,39 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
 
 
 
-const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => (
-    <div className="w-full">
-        <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
-            {label}
-            {
-                isOptional &&
-                <span className="ms-2 text-gray-500">
-                    (optional)
-                </span>
-            }
-        </label>
-        <span className="relative">
-            <input ref={ref} type={type}
-                name={label.toLowerCase().replace(" ", "_")}
-                id={label.toLowerCase().replace(" ", "_")}
-                value={value}
-                onChange={(e) => onChange !== null && onChange(e.target.value)}
-                placeholder={placeholder}
-                className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
-            {
-                icon !== null &&
-                <span className="absolute top-1/2 -translate-y-1/2 left-4">
-                    <FontAwesomeIcon icon={icon} className={"fa-solid text-gray-800"} />
-                </span>
-            }
-        </span>
-    </div>
-))
+const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => {
+    const { trans } = handleTranslation()
+
+    return (
+        <div div className="w-full" >
+            <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
+                {label}
+                {
+                    isOptional &&
+                    <span className="ms-2 text-gray-500">
+                        ({trans("optional")})
+                    </span>
+                }
+            </label>
+            <span className="relative">
+                <input ref={ref} type={type}
+                    name={label.toLowerCase().replace(" ", "_")}
+                    id={label.toLowerCase().replace(" ", "_")}
+                    value={value}
+                    onChange={(e) => onChange !== null && onChange(e.target.value)}
+                    placeholder={placeholder}
+                    className={"rounded w-full py-3 text-gray-900 text-base font-medium mt-1 " + (icon !== null ? "pl-10" : "")} />
+                {
+                    icon !== null &&
+                    <span className="absolute top-1/2 -translate-y-1/2 left-4">
+                        <FontAwesomeIcon icon={icon} className={"fa-solid text-gray-800"} />
+                    </span>
+                }
+            </span>
+        </div >
+
+    )
+})
 
 
 
@@ -846,6 +859,7 @@ export function LocationInputEl({
 
 
 function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange, value }) {
+    const { trans } = handleTranslation()
     return (
         <div className="w-full">
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-sm font-normal text-gray-800">
@@ -853,7 +867,7 @@ function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange
                 {
                     isOptional &&
                     <span className="ms-2 text-gray-500">
-                        (optional)
+                        ({trans("optional")})
                     </span>
                 }
             </label>
