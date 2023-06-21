@@ -12,6 +12,13 @@ export function formatDate(date, seperator = "-") {
   else ""
 }
 
+export function blobToBase64(blob) {
+  return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(blob);
+  });
+}
 
 export function formatNumberto0(num) {
   return num >= 10 ? `${num}` : `0${num}`;

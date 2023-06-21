@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft, faMagnifyingGlass, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCheckDouble, faClock, faImage, faMagnifyingGlass, faPaperPlane, faPaperclip, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useSocketIO from "../components/hooks/useSocketIO";
 import useChatsList from "../components/hooks/chatsListFetcher";
-import { cn, formatDateTimeForMsg } from "../lib/utils";
+import { blobToBase64, cn, formatDateTimeForMsg } from "../lib/utils";
 import { SOCKET_EV_SEEN, SOCKET_EV_SEND_MESSAGE } from "../lib/socketio";
 import LoaderEl from "../components/loader";
 import axios from "axios";
@@ -23,7 +23,7 @@ export default function MessagesPage({ authUser }) {
     }, [socket]);
 
 
-    const sendMessage = (message) => {
+    const sendMessage = async (message) => {
         socket.emit(
             SOCKET_EV_SEND_MESSAGE,
             message
@@ -106,13 +106,16 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
     const [messageText, setMessageText] = React.useState("");
     const [messages, setMessages] = React.useState(null);
     const messagesContainerRef = React.useRef(null);
+    const fileInputRef = React.useRef(null);
     // const { data: messages, isLoading, error } = useMessagesFetcher(authUser.accessToken, {
     //     userId: selectedChat.chatProfile.id,
     //     carId: selectedChat.car_id
     // })
 
+
     React.useEffect(async () => {
-        setMessages(null);
+        if (messages === null)
+            setMessages(null);
         try {
             const res = await axios.post(
                 apiConfig.basePath + apiConfig.endpoints.getChatMessages,
@@ -127,21 +130,36 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
                     }
                 });
             setMessages(res.data.data)
+            setTimeout(() => {
+                messagesContainerRef?.current?.scrollTo({
+                    top: messagesContainerRef?.current?.scrollHeight,
+                })
+            }, 10)
         } catch (error) {
             console.log(error);
+            setMessages(null)
         }
     }, [selectedChat])
 
     React.useEffect(() => {
-        messagesContainerRef?.current?.scrollTo({
-            top: messagesContainerRef?.current?.scrollHeight,
-        })
+        setTimeout(() => {
+            messagesContainerRef?.current?.scrollTo({
+                top: messagesContainerRef?.current?.scrollHeight,
+                behavior: "smooth"
+            })
+        }, 15)
+
+        if (messages?.find((msg) => msg?.state === "sending")) {
+            setTimeout(() => {
+                setMessages(messages.map((msg) => ({ ...msg, state: "" })))
+            }, 2000)
+        }
     }, [messages]);
 
 
 
     const handleSendMessage = () => {
-        if (messageText === "") return;
+        if (messageText === "" || !messages) return;
         const senderId = authUser.userProfile.id;
         const receiverId = selectedChat.chatProfile.id
         const message = {
@@ -155,19 +173,63 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             "sender_id": senderId
         }
         onSendMessage(message)
-        messages.push({
-            ...message,
-            created_at: (new Date()).toUTCString()
-        });
+        setMessages([
+            ...(messages ? messages : []),
+            {
+                id: Math.round((new Date()).getTime() * Math.random()),
+                ...message,
+                created_at: (new Date()).toUTCString()
+            }
+        ])
         setMessageText("");
-        setTimeout(() => {
-            messagesContainerRef?.current?.scrollTo({
-                top: messagesContainerRef?.current?.scrollHeight,
-                behavior: "smooth"
+    }
+    const sendImageMessage = async (imageBlob) => {
+        const senderId = authUser.userProfile.id;
+        const receiverId = selectedChat.chatProfile.id
+        const message = {
+            "car_id": selectedChat.car_id,
+            "sent_by": senderId,
+            "receiver_id": receiverId,
+            "chatId": receiverId + senderId,
+            "type": "file",
+            "file_type": "image",
+            "file": window.URL.createObjectURL(imageBlob),
+            "is_seen": "0",
+            "message": "",
+            "sender_id": senderId
+        }
+        blobToBase64(imageBlob).then((imageB64) => {
+            onSendMessage({
+                ...message,
+                file: imageB64,
+                message: imageB64,
+                base64data: imageB64
             })
-        }, 20)
+        })
+        setMessages([
+            ...(messages.map((msg) => ({ ...msg, state: "" }))),
+            {
+                id: Math.round((new Date()).getTime() * Math.random()),
+                ...message,
+                state: "sending",
+                created_at: (new Date()).toUTCString()
+            }
+        ])
     }
 
+
+
+
+    const onFilesChange = (e) => {
+        const images = e.target.files;
+        if (images.length <= 0) return;
+        if (!messages) {
+            console.log("messages null")
+            return;
+        }
+        const imageBlob = images[0];
+        sendImageMessage(imageBlob)
+    }
 
     return (
         <div className={cn(
@@ -192,7 +254,10 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
                                 messages
                                     .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
                                     .map((message) => (
-                                        <MessageItem message={message} primary={message.sent_by === authUser.userProfile.id} />
+                                        <MessageItem
+                                            key={message?.id}
+                                            message={message}
+                                            primary={message.sent_by === authUser.userProfile.id} />
                                     ))
                             }
                         </div>
@@ -201,6 +266,16 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             {/* Chat Footer  */}
             <div className="bg-white h-20">
                 <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-5 px-2 py-1">
+                    <input type="file"
+                        ref={fileInputRef}
+                        className="hidden"
+                        accept="image/jpeg,image/png,image/gif"
+                        onChange={onFilesChange} />
+                    <button type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="text-base aspect-square px-3 rounded-full bg-gray-50 text-gray-800 transition-all hover:bg-gray-200">
+                        <FontAwesomeIcon icon={faPaperclip} />
+                    </button>
                     <input type="text"
                         className="no-decor bg-transparent w-full text-gray-600"
                         placeholder="Type..."
@@ -279,7 +354,6 @@ function ChatSidebar({ userProfile, chatsList, setSelectedChat, selectedChat = n
 
 
 function ChatHeader({ onBackPressed, chat, className }) {
-    console.log(chat.cars_images)
     return (
         <div className={cn(
             "bg-white flex items-center justify-between border-b last:border-none border-gray-100/90 py-4 gap-5 px-4",
@@ -309,41 +383,49 @@ function ChatHeader({ onBackPressed, chat, className }) {
 }
 
 
-function MessageDateHeader({ message, nextMessage, prevMessage }) {
-    return (
-        <div className={"flex " + (primary ? "justify-end" : "justify-start")}>
-            <div>
-                <div className={"rounded-3xl py-3 px-4 max-w-[80%] md:max-w-[400px] " + (primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none")}>
-                    <p className={"text-sm font-light " + (primary ? "text-white" : "text-gray-900")}>
-                        {message.message}
-                    </p>
-                </div>
-                <span className={cn(
-                    "text-xs text-gray-600 font-normal block min-w-max px-1 mt-1",
-                    primary ? "text-end" : "text-start"
-                )}>
-                    {formatDateTimeForMsg(new Date(message.created_at))}
-                </span>
-            </div>
-        </div>
-    );
-}
+
 
 function MessageItem({ message, primary = true }) {
     return (
         <div className={"flex " + (primary ? "justify-end" : "justify-start")}>
-            <div>
-                <div className={"rounded-3xl py-3 px-4 max-w-[80%] md:max-w-[400px] " + (primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none")}>
-                    <p className={"text-sm font-light " + (primary ? "text-white" : "text-gray-900")}>
-                        {message.message}
-                    </p>
-                </div>
-                <span className={cn(
-                    "text-xs text-gray-600 font-normal block min-w-max px-1 mt-1",
-                    primary ? "text-end" : "text-start"
+            <div className="max-w-[80%] md:max-w-[400px]">
+                {
+                    message.type === "file" ?
+                        message.file_type === "image" &&
+                        <img src={message?.file} alt=""
+                            width={350} height={220}
+                            className={cn(
+                                "rounded-3xl w-[300px] h-[250px] object-cover object-center",
+                                primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none"
+                            )} />
+                        :
+                        <div className={cn(
+                            "rounded-3xl py-3 px-4",
+                            primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none"
+                        )}>
+                            <p className={"text-sm font-light " + (primary ? "text-white" : "text-gray-900")}>
+                                {message.message}
+                            </p>
+                        </div>
+                }
+                <div className={cn(
+                    "flex items-center gap-2",
+                    primary ? "justify-end" : "justify-start"
                 )}>
-                    {formatDateTimeForMsg(new Date(message.created_at))}
-                </span>
+                    <span className={cn(
+                        "text-xs text-gray-600 font-normal block min-w-max px-1 mt-1",
+                    )}>
+                        {formatDateTimeForMsg(new Date(message.created_at))}
+                    </span>
+                    {
+                        message?.state === "sending" &&
+                        <FontAwesomeIcon icon={faClock} className="text-gray-600 text-xs" />
+                    }
+                    {
+                        message?.is_seen === "1" &&
+                        <FontAwesomeIcon icon={faCheckDouble} className="text-primary text-xs" />
+                    }
+                </div>
             </div>
         </div>
     );
@@ -373,7 +455,16 @@ function ChatItem({ onClick, chat, selected }) {
 
                 <div className="w-full flex items-center justify-between">
                     <p className="text-sm text-gray-600 font-normal line-clamp-1 gap-5">
-                        {chat?.last_message?.message}
+                        {
+                            chat?.last_message?.type === "file" ?
+                                chat?.last_message?.file_type === "image" &&
+                                <span>
+                                    <FontAwesomeIcon icon={faImage} className="text-xs mr-2" />
+                                    Image
+                                </span>
+                                :
+                                <span>{chat?.last_message?.message}</span>
+                        }
                     </p>
                     <span className="text-sm text-gray-600 font-normal block min-w-max px-3">
                         {formatDateTimeForMsg(new Date(chat.last_message.created_at))}
