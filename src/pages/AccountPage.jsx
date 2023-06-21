@@ -14,6 +14,7 @@ import { apiConfig } from "../config/api";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
 import CarGridItem from "../components/CarGridItem";
+import { handleTranslation } from "../lib/i18n";
 
 
 export const accountPageTabs = [
@@ -25,19 +26,20 @@ export const accountPageTabs = [
     // },
     {
         id: "my-cars",
-        name: "My Cars",
+        name: "my_cars",
         icon: faCar,
         content: (authUser) => <MyCarsSection authUser={authUser} />
     },
     {
         id: "account-settings",
-        name: "Account Settings",
+        name: "acc_settings",
         icon: faUser,
         content: (authUser) => <ProfileSection authUser={authUser} />
     }
 ]
 
 export default function AccountPage() {
+    const { trans } = handleTranslation()
     const authUser = useAuthUser();
     const [searchParams, setSearchParams] = useSearchParams();
     const [activeTab, setActiveTab] = React.useState(() => {
@@ -68,7 +70,7 @@ export default function AccountPage() {
                                                 "text-base font-normal border-b w-full text-start border-gray-100 text-black block py-5 px-4 transition-all last:border-none "
                                                 + (activeTab.id === tab.id ? "text-primary bg-gray-100 font-semibold" : "hover:text-primary hover:bg-gray-100 hover:font-semibold")
                                             }>
-                                                {tab.name}
+                                                {trans(tab.name)}
                                             </button>
                                         ))
                                     }
@@ -84,7 +86,7 @@ export default function AccountPage() {
                             <div className="w-full relative pt-5">
                                 <div className="mx-8 my-6 absolute -top-[41px] bg-white px-2">
                                     <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                                        {activeTab?.name}
+                                        {trans(activeTab?.name)}
                                     </h2>
                                 </div>
                                 {activeTab?.content(authUser)}
@@ -142,6 +144,7 @@ function PaymentAndDepositMethodsSection() {
 
 
 function MyCarsSection({ authUser }) {
+    const { trans } = handleTranslation();
     const { cars: myCars, isLoading, error } = useCarsFetcher(authUser.accessToken, null, "SELL");
 
     console.log(myCars)
@@ -164,10 +167,10 @@ function MyCarsSection({ authUser }) {
                         :
                         <div className="w-full h-52 flex flex-col gap-1 items-center justify-center text-center">
                             <p>
-                                Nothing to show.
+                                {trans("nothing_to_show")}
                             </p>
                             <a href="/post-car" className="text-primary transition-all hover:underline text-base">
-                                Add a car to sell
+                                {trans("add_car_to_sell")}
                             </a>
                         </div>
             }
@@ -258,6 +261,7 @@ function MyCarOptionsDropMenu() {
 
 
 function ProfileSection({ authUser = null }) {
+    const { trans } = handleTranslation()
     const [activeTab, setActiveTab] = React.useState(1);
 
     return (
@@ -304,7 +308,7 @@ function ProfileSection({ authUser = null }) {
                                     {authUser?.userProfile?.average_rating ?? 0.0}
                                 </span>
                                 <p className="text-base font-normal text-gray-600">
-                                    {authUser?.userProfile?.ratings_count ?? 0} Reviews
+                                    {authUser?.userProfile?.ratings_count ?? 0} {trans("reviews")}
                                 </p>
                             </div>
                         </div>

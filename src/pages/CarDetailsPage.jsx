@@ -10,10 +10,12 @@ import useAuthUser from "../components/hooks/useAuthUser";
 import { useRef } from "react";
 import { useState } from "react";
 import { cn, formatPrice } from "../lib/utils";
+import { handleTranslation } from "../lib/i18n";
 
 
 
 export default function CarDetailsPage() {
+    const { trans, apiTrans } = handleTranslation()
     const authUser = useAuthUser();
     const { carId } = useParams();
     const { data: carDetails } = useCarDetails(authUser.accessToken, carId);
@@ -22,6 +24,7 @@ export default function CarDetailsPage() {
         const selFeatures = fCtgry.children.filter((f) => f.is_selected)
         return selFeatures.length > 0
     }) : []
+
 
     return (
         <MainLayout>
@@ -35,7 +38,7 @@ export default function CarDetailsPage() {
                             <div className="mt-10 pb-10 border-b">
                                 <div className="flex items-center gap-3">
                                     <h2 className="text-xl font-extrabold text-gray-900 uppercase">
-                                        Features
+                                        {trans("features")}
                                     </h2>
                                 </div>
                                 {
@@ -45,13 +48,13 @@ export default function CarDetailsPage() {
                                                 carFeatures.map((featureCtgry) => (
                                                     <div key={featureCtgry.id} className="py-5">
                                                         <h4 className="text-lg font-semibold">
-                                                            {featureCtgry.title}
+                                                            {apiTrans(featureCtgry, "title")}
                                                         </h4>
                                                         <div className="mt-2 grid-cols-1 md:grid-cols-2 grid lg:grid-cols-3 gap-2">
                                                             {
                                                                 featureCtgry.children.filter((f) => f.is_selected).map((feature) => (
                                                                     <li key={feature.id} className="list-disc text-base text-gray-800 font-medium">
-                                                                        {feature.title}
+                                                                        {apiTrans(feature, "title")}
                                                                     </li>
                                                                 ))
                                                             }
@@ -62,14 +65,14 @@ export default function CarDetailsPage() {
                                         </div>
                                         :
                                         <div className="flex items-center justify-center h-32 w-full">
-                                            <p>No special features.</p>
+                                            <p>{trans("no_special_features")}</p>
                                         </div>
                                 }
                             </div>
                             <div className="mt-10">
                                 <div className="flex items-center gap-3">
                                     <h2 className="text-xl font-extrabold text-gray-900 uppercase">
-                                        Description
+                                        {trans("description")}
                                     </h2>
                                 </div>
                                 <div className="mt-3">
@@ -97,6 +100,7 @@ export default function CarDetailsPage() {
 
 
 function CarDetailsSection({ className, carDetails, userProfile }) {
+    const { trans } = handleTranslation()
     console.log(userProfile)
     return (
         <div className={className}>
@@ -108,7 +112,7 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     ${formatPrice(carDetails.amount)}
                 </p>
                 <p className="text-sm md:text-base text-gray-700 font-medium mt-1">
-                    Zip Code: {carDetails.zip_code}
+                    {trans("zip_code")}: {carDetails.zip_code}
                 </p>
             </div>
             <div className="py-5 md:p-5 mt-3 flex items-center gap-5 flex-wrap">
@@ -122,7 +126,7 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                         :
                         <>
                             <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
-                                Contact Seller
+                                {trans("contact_seller")}
                             </button>
                         </>
                 }
@@ -130,76 +134,83 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
             <div className="mt-8 bg-gray-50 p-3 md:p-5 rounded-md">
                 <div className="flex items-center gap-3">
                     <h2 className="text-xl font-extrabold text-gray-800 uppercase">
-                        Details
+                        {trans('details')}
                     </h2>
                     <span className="block rounded w-full h-0 border-b border-gray-400"></span>
                 </div>
                 <ul className="mt-5">
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Year</span>
+                        <span className="uppercase min-w-max">{trans("year")}</span>
                         <span className="font-medium">
                             {carDetails.year ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Make</span>
+                        <span className="uppercase min-w-max">{trans("make")}</span>
                         <span className="font-medium">
                             {carDetails.make ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Model</span>
+                        <span className="uppercase min-w-max">{trans("model")}</span>
                         <span className="font-medium">
                             {carDetails.model ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Condition</span>
+                        <span className="uppercase min-w-max">{trans("condition")}</span>
                         <span className="font-medium">
                             {carDetails.condition ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Mileage</span>
+                        <span className="uppercase min-w-max">{trans("mileage")}</span>
                         <span className="font-medium">
                             {carDetails.mileage ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Exterior Color</span>
+                        <span className="uppercase min-w-max">{trans("exterior_color")}</span>
                         <span className="block w-5 h-5 aspect-square rounded-full"
                             style={{ background: carDetails.exterior_color }} />
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Interior Color</span>
+                        <span className="uppercase min-w-max">{trans("interior_color")}</span>
                         <span className="block w-5 h-5 aspect-square rounded-full"
-                            style={{ background: carDetails.color }} />                    </li>
+                            style={{ background: carDetails.color }} />
+                    </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Title Status</span>
+                        <span className="uppercase min-w-max">{trans("title_status")}</span>
                         <span className="font-medium">
                             {carDetails.title_status ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Car Fuel Type</span>
+                        <span className="uppercase min-w-max">{trans("car-fuel-type")}</span>
                         <span className="font-medium">
                             {carDetails.car_fuel_type ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">Vehicle Trim</span>
+                        <span className="uppercase min-w-max">
+                            {trans("vehicle_trim")}
+                        </span>
                         <span className="font-medium">
                             {carDetails.engine_size ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">City</span>
+                        <span className="uppercase min-w-max">
+                            {trans("city")}
+                        </span>
                         <span className="font-medium">
                             {carDetails.city ?? ''}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
-                        <span className="uppercase min-w-max">State</span>
+                        <span className="uppercase min-w-max">
+                            {trans("state")}
+                        </span>
                         <span className="font-medium">
                             {carDetails.state ?? ''}
                         </span>

@@ -4,8 +4,10 @@ import { Listbox, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
 import React from 'react'
 import { cn } from '../lib/utils'
+import { handleTranslation } from "../lib/i18n";
 
 export default function SelectEl({ label = "", children, items = null, value, onChange, isOptional = false }) {
+    const { trans } = handleTranslation();
     return (
         <div className="w-full">
             {
@@ -21,7 +23,7 @@ export default function SelectEl({ label = "", children, items = null, value, on
                 </label>
             }
             <select value={value} onChange={(e) => onChange(e.target.value)} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
-                <option value="">Select {label}</option>
+                <option value="">{trans("select")} {label}</option>
                 {
                     items && items !== null ?
                         items.map((item) => (
@@ -46,7 +48,7 @@ export function SelectBox({ label = "", options, value, onChange, isOptional = f
 
     return (
         <div className="relative w-full">
-            <Listbox value={selOpt} onChange={setSelOpt}>
+            <Listbox value={selOpt} onChange={onOptChange}>
                 <div className="relative mt-1">
                     <Listbox.Button className="relative w-full cursor-default rounded-lg text-gray-800 py-2 px-5 flex items-center justify-between gap-7 text-left font-medium text-base border border-gray-300">
                         <span className="block truncate">{selOpt.label}</span>

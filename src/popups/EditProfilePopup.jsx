@@ -10,10 +10,12 @@ import { useSearchParams } from 'react-router-dom';
 import LoaderEl from '../components/loader';
 import doUpdateProfile from '../api/update-profile';
 import AlertMessage from '../components/ThemeAlert';
+import { handleTranslation } from '../lib/i18n';
 
 
 
 export default function EditProfilePopup({ authUser }) {
+    const { trans } = handleTranslation()
     const [searchParams, setSearchParams] = useSearchParams();
     let [isOpen, setIsOpen] = useState(searchParams.get("p") === "editprofile" ? true : false)
 
@@ -103,7 +105,7 @@ export default function EditProfilePopup({ authUser }) {
     return (
         <>
             <button type='button' onClick={() => setIsOpen(true)} className='text-base font-medium bg-primary text-white px-8 py-2.5 hover:bg-primary/95 rounded-full'>
-                Edit Profile
+                {trans("edit_profile")}
             </button>
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={onPopupClose}>
@@ -172,7 +174,7 @@ export default function EditProfilePopup({ authUser }) {
                                                                     inputsStatus.name === "invalid" && "border-2 !border-red-500",
                                                                     // inputsStatus.name === "valid" && "border-2 !border-green-500",
                                                                 )}
-                                                                placeholder='First Name'
+                                                                placeholder={trans("first_name")}
                                                                 value={firstName} onChange={(val) => setFirstName(val)} />
                                                             <ThemeInput
                                                                 type='text'
@@ -180,7 +182,7 @@ export default function EditProfilePopup({ authUser }) {
                                                                     inputsStatus.name === "invalid" && "border-2 !border-red-500",
                                                                     // inputsStatus.name === "valid" && "border-2 !border-green-500",
                                                                 )}
-                                                                placeholder='Last Name'
+                                                                placeholder={trans("last_name")}
                                                                 value={lastName} onChange={(val) => setLastName(val)} />
                                                         </div>
 
@@ -190,7 +192,7 @@ export default function EditProfilePopup({ authUser }) {
                                                                 inputsStatus.email === "invalid" && "border-2 !border-red-500",
                                                                 // inputsStatus.email === "valid" && "border-2 !border-green-500",
                                                             )}
-                                                            placeholder='Email'
+                                                            placeholder={trans("email")}
                                                             value={email} onChange={(val) => setEmail(val)} />
                                                         <div className='flex items-center gap-3 mb-5'>
                                                             <CountryCodeDropdown
@@ -203,11 +205,11 @@ export default function EditProfilePopup({ authUser }) {
                                                                     inputsStatus.phoneNumber === "invalid" && "border-2 !border-red-500",
                                                                     // inputsStatus.phoneNumber === "valid" && "border-2 !border-green-500",
                                                                 )}
-                                                                placeholder='Phone Number'
+                                                                placeholder={trans("phone_number")}
                                                                 variant='phone'
                                                                 value={phoneNumber} onChange={(val) => setPhoneNumber(val)} />
                                                         </div>
-                                                        <ThemeTextArea placeholder="Bio" rows={4}
+                                                        <ThemeTextArea placeholder={trans("bio")} rows={4}
                                                             className={cn(
                                                                 inputsStatus.bio === "invalid" && "border-2 !border-red-500",
                                                             )}
@@ -220,11 +222,11 @@ export default function EditProfilePopup({ authUser }) {
                                                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                                         </svg>
-                                                                        <span>Processing...</span>
+                                                                        <span>trans{trans("processing...")}</span>
                                                                     </button>
                                                                     :
                                                                     <button type="button" onClick={handleUpdateProfile} className="btn-light w-full font-semibold">
-                                                                        Update Profile
+                                                                        {trans("update_profile")}
                                                                     </button>
                                                             }
 

@@ -8,6 +8,10 @@ import { MAX_DISTANCE } from "./pages/SearchPage"
 import { connectSocket, socket, SocketContext } from "./lib/socketio"
 import { initFirebaseMessaging } from "./lib/fcm"
 
+//I18N import
+import i18n from './lib/i18n'
+import { I18nextProvider } from "react-i18next"
+
 const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 const AccountPage = React.lazy(() => import("./pages/AccountPage"))
 const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
@@ -127,22 +131,24 @@ function App() {
 
 
   return (
-    <AuthUserContext.Provider value={{
-      accessToken: cookies.accessToken,
-      userProfile: userProfile,
-      logout: () => removeCookie("accessToken", { path: "/" })
-    }}>
-      <LocationContext.Provider value={{
-        location: location,
-        setLocation: setLocation,
-        filterDistance: filterDistance,
-        setFilterDistance: setFilterDistance
+    <I18nextProvider i18n={i18n}>
+      <AuthUserContext.Provider value={{
+        accessToken: cookies.accessToken,
+        userProfile: userProfile,
+        logout: () => removeCookie("accessToken", { path: "/" })
       }}>
-        <SocketContext.Provider value={socket}>
-          <RouterProvider router={router} />
-        </SocketContext.Provider>
-      </LocationContext.Provider>
-    </AuthUserContext.Provider>
+        <LocationContext.Provider value={{
+          location: location,
+          setLocation: setLocation,
+          filterDistance: filterDistance,
+          setFilterDistance: setFilterDistance
+        }}>
+          <SocketContext.Provider value={socket}>
+            <RouterProvider router={router} />
+          </SocketContext.Provider>
+        </LocationContext.Provider>
+      </AuthUserContext.Provider>
+    </I18nextProvider>
   )
 }
 

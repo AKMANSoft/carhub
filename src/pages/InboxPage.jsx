@@ -9,9 +9,11 @@ import useNotificationsFetcher from "../components/hooks/notificationsFetcher";
 import useAuthUser from "../components/hooks/useAuthUser";
 import LoaderEl from "../components/loader";
 import { cn } from "../lib/utils";
+import { handleTranslation } from "../lib/i18n";
 
 
 export default function InboxPage() {
+    const { trans } = handleTranslation();
     const authUser = useAuthUser();
     const { notifications } = useNotificationsFetcher(authUser.accessToken)
 
@@ -20,9 +22,13 @@ export default function InboxPage() {
             <div className={"max-w-screen-2xl mx-auto py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
                 <div className="mb-12">
                     <h2 className="text-2xl text-gray-900 font-bold inline-flex items-center">
-                        <a href="/" className="text-lg text-gray-600">Home</a>
+                        <a href="/" className="text-lg text-gray-600">
+                            {trans("home")}
+                        </a>
                         <FontAwesomeIcon icon={faChevronRight} className="mx-3 text-sm text-gray-500" />
-                        <a href="/inbox" className="text-lg text-gray-900">Inbox</a>
+                        <a href="/inbox" className="text-lg text-gray-900">
+                            {trans("inbox")}
+                        </a>
                     </h2>
                 </div>
 
@@ -31,14 +37,16 @@ export default function InboxPage() {
                     paramName="active"
                     tabs={[
                         {
-                            tabName: "Messages",
+                            tabName: trans("messages"),
+                            tabKey: "messages",
                             content: () => (
                                 authUser.userProfile !== null &&
                                 <MessagesPage authUser={authUser} />
                             )
                         },
                         {
-                            tabName: "Notifications",
+                            tabName: trans("notifications"),
+                            tabKey: "notifications",
                             content: () => (
                                 notifications ?
                                     notifications.length > 0 ?
@@ -68,7 +76,7 @@ export function NotificationItem({ notification, short = false, }) {
     console.log(notification);
     return (
         <div className={cn(
-            "border-b-2 last:border-none border-gray-100 transition-all bg-transparent hover:bg-gray-100 ",
+            "border-b-2 border-gray-100 transition-all bg-transparent hover:bg-gray-100",
             short ? "py-3 px-4" : "py-4 px-8",
             "flex items-center gap-5"
         )}>

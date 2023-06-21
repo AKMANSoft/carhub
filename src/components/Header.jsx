@@ -2,7 +2,7 @@ import React, { Fragment, Suspense, useEffect, useState } from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
 import InboxDropdown from "../dropdowns/InboxDropdown";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars, faChevronDown, faLocationDot, faMagnifyingGlass, faPlus, faRightFromBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faChevronDown, faMagnifyingGlass, faPlus, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { Menu, Transition } from "@headlessui/react";
 import { cn } from "../lib/utils";
 import { accountPageTabs } from "../pages/AccountPage";
@@ -10,9 +10,9 @@ import { apiConfig } from "../config/api";
 import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
 import { Link, useSearchParams } from "react-router-dom";
-import useCurrentLocation, { getCurrentLatLng, getLocationByLatLng, useLocationByLatLng } from "./hooks/useCurrentLocation";
 import { siteConfig } from "../config/site";
 import ChooseLocationPopup from "../popups/ChooseLocation";
+import { handleTranslation } from "../lib/i18n";
 
 const SignupPopup = React.lazy(() => import("../popups/Signup"));
 const SigninPopup = React.lazy(() => import("../popups/Signin"));
@@ -21,6 +21,7 @@ const ForgotPasswordPopup = React.lazy(() => import("../popups/ForgotPassword"))
 
 
 export default function Header({ isLoggedin = false, onLogout }) {
+    const { trans, apiTrans } = handleTranslation()
     const authUser = useAuthUser();
     const [headerActive, setHeaderActive] = React.useState(false);
     const [searchParams] = useSearchParams();
@@ -29,7 +30,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
 
 
     return (
-        <header className={"w-full fixed top-0 left-0 bg-white z-50" + MAIN_HORIZONTAL_PADDING}>
+        <header className={"w-full fixed max-w-screen-2xl mx-auto top-0 left-1/2 -translate-x-1/2 bg-white z-50" + MAIN_HORIZONTAL_PADDING}>
             <div className="py-5 border-b border-b-gray-300">
                 <div className="flex items-center justify-between">
                     <div className='flex items-center gap-4 lg:gap-10'>
@@ -67,17 +68,17 @@ export default function Header({ isLoggedin = false, onLogout }) {
                             isLoggedin ?
                                 <div className="ml-3">
                                     <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
-                                        Post Car
+                                        {trans("post_car")}
                                         <FontAwesomeIcon icon={faPlus} className="ms-3 lg:ms-5" />
                                     </a>
                                 </div>
                                 :
                                 <div>
                                     <Link to="?p=signin" reloadDocument className='sign-in-popup-btn text-sm md:text-base font-medium text-gray-500 px-2 md:px-5 hover:text-primary py-2 md:py-3 rounded-full'>
-                                        Sign In
+                                        {trans("signin")}
                                     </Link>
                                     <Link to="?p=signup" reloadDocument className='sign-up-popup-btn text-sm md:text-base font-medium bg-primary text-white px-5 md:px-8 py-2 md:py-3 hover:bg-primary/95 rounded-full'>
-                                        Sign Up
+                                        {trans("signup")}
                                     </Link>
                                 </div>
                         }
@@ -93,7 +94,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                 }
 
                 <div className="hidden lg:flex mt-4 items-center">
-                    <h3 className="text-lg min-w-max text-gray-900 font-bold ps-1 lg:pr-5 xl:pr-10 border-r border-gray-500">Find A Car</h3>
+                    <h3 className="text-lg min-w-max text-gray-900 font-bold ps-1 lg:pr-5 xl:pr-10 border-r border-gray-500">
+                        {trans("findcar")}
+                    </h3>
                     <div className="flex lg:ms-5 xl:ms-10 gap-x-1 items-center flex-wrap">
                         {
                             categories &&
@@ -102,7 +105,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                                     "text-base font-normal text-gray-800 px-4 py-1 rounded-lg transition-all",
                                     category === ctgry.id ? "bg-gray-100 text-primary" : "hover:bg-gray-100 hover:text-primary"
                                 )}>
-                                    {ctgry.title}
+                                    {apiTrans(ctgry, "title")}
                                 </a>
                             ))
                         }
@@ -132,11 +135,12 @@ export default function Header({ isLoggedin = false, onLogout }) {
 
 
 function AboutDropdown() {
+    const { trans } = handleTranslation();
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button className="inline-flex justify-center items-center rounded-md p-2 text-sm font-medium text-gray-800 hover:bg-gray-100 outline-none">
-                    About
+                    {trans("about")}
                     <FontAwesomeIcon icon={faChevronDown} className="ml-2 text-xs" />
                 </Menu.Button>
             </div>
@@ -156,7 +160,7 @@ function AboutDropdown() {
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
-                                About
+                                {trans("about")}
                             </a>
                         )}
                     </Menu.Item>
@@ -166,7 +170,7 @@ function AboutDropdown() {
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
-                                Terms of services
+                                {trans("tos")}
                             </a>
                         )}
                     </Menu.Item>
@@ -176,7 +180,7 @@ function AboutDropdown() {
                                 "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                 active && "text-primary bg-gray-100"
                             )}>
-                                Privacy
+                                {trans("privacy")}
                             </a>
                         )}
                     </Menu.Item>
@@ -190,12 +194,13 @@ function AboutDropdown() {
 
 
 function AccountDropdown({ onLogout }) {
+    const { trans } = handleTranslation()
 
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button className="inline-flex justify-center items-center rounded-md p-2 text-sm font-medium text-gray-800 hover:bg-gray-100 outline-none">
-                    Account
+                    {trans("account")}
                     <FontAwesomeIcon icon={faChevronDown} className="ml-2 text-xs" />
                 </Menu.Button>
             </div>
@@ -218,7 +223,7 @@ function AccountDropdown({ onLogout }) {
                                             "text-base font-normal text-gray-800 block py-2 px-5 transition-all",
                                             active && "text-primary bg-gray-100"
                                         )}>
-                                            {accTab.name}
+                                            {trans(accTab.name)}
                                         </a>
                                     )}
                                 </Menu.Item>
@@ -233,7 +238,7 @@ function AccountDropdown({ onLogout }) {
                                     active && "text-primary bg-gray-100",
                                     "inline-flex w-full items-center justify-between"
                                 )}>
-                                    <span>Logout</span>
+                                    <span>{trans("logout")}</span>
                                     <FontAwesomeIcon icon={faRightFromBracket} className="text-sm" />
                                 </button>
                             )}
@@ -254,14 +259,15 @@ function HeaderLocationEl({ userProfile }) {
 
 
 
-function HeaderSearchComponent({ className, category, categories = [] }) {
+function HeaderSearchComponent({ className, category }) {
+    const { trans } = handleTranslation()
     const [searchTerm, setSearchTerm] = useState("");
     const [searchCategory, setSearchCategory] = useState(category);
     return (
         <div className={"w-full xl:w-full relative text-gray-500 border border-gray-300 rounded-full overflow-hidden flex " + className}>
             <input className="ps-5 text-sm w-full min-h-full no-decor text-gray-600 appearance-none bg-transparent"
                 value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
-                type="search" name="search" placeholder="Search" />
+                type="search" name="search" placeholder={trans("search...")} />
             <span className="block w-0 min-h-full my-2 border-l border-gray-300"></span>
             {/* <select name="category" value={searchCategory} onChange={(e) => setSearchCategory(e.target.value)} className="w-36 md:w-auto bg-transparent no-decor transition-all duration-300 px-2 md:px-4 py-2 my-1">
                 {

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState } from 'react';
 import { CarConditionsList, FiltersSectionEl } from '../pages/SearchPage';
+import { handleTranslation } from '../lib/i18n';
 
 
 export default function FiltersPopup({
@@ -10,6 +11,7 @@ export default function FiltersPopup({
     onConditionChange, accessToken, setFilters,
     onClearFilters
 }) {
+    const { trans } = handleTranslation();
     const [isOpen, setIsOpen] = useState(false);
     const onPopupClose = () => {
         setIsOpen(false)
@@ -25,7 +27,7 @@ export default function FiltersPopup({
         <>
             <button type="button" onClick={() => setIsOpen(true)} className="text-base text-gray-900 font-normal py-2 px-5 rounded-full bg-gray-100 transition-all hover:bg-gray-200">
                 <FontAwesomeIcon icon={faSliders} className="text-sm mr-3" />
-                Filters
+                {trans("filters")}
             </button>
             <Transition appear show={isOpen} as={Fragment}>
                 <Dialog as="div" className="relative z-50" onClose={onPopupClose}>
@@ -59,8 +61,10 @@ export default function FiltersPopup({
                                             <button type='button' onClick={() => setIsOpen(false)} className='text-gray-900 text-xl rounded-full py-1 aspect-square bg-transparent'>
                                                 <FontAwesomeIcon icon={faXmark} />
                                             </button>
-                                            <h4 className="text-xl font-semibold">Filters</h4>
-                                            <button onClick={onClearFilters} className='text-base font-normal text-gray-900'>Clear</button>
+                                            <h4 className="text-xl font-semibold">{trans("filters")}</h4>
+                                            <button onClick={onClearFilters} className='text-base font-normal text-gray-900'>
+                                                {trans("clear")}
+                                            </button>
                                         </div>
                                         <div className="w-full px-4 py-5 pt-10 overflow-y-auto">
                                             <div className="py-3">
@@ -71,17 +75,20 @@ export default function FiltersPopup({
                                                     onMinPriceChange={onMinPriceChange}
                                                 />
                                                 <div className="pt-7">
-                                                    <h5 className="text-base font-medium">Condition</h5>
+                                                    <h5 className="text-base font-medium">
+                                                        {trans("condition")}
+                                                    </h5>
                                                     <ul className="mt-2 space-y-2">
                                                         {
                                                             CarConditionsList.map((condition) => (
                                                                 <li key={condition.id} className="flex items-center">
-                                                                    <input type="checkbox" checked={filters.condition.id === condition.id}
+                                                                    <input type="checkbox"
+                                                                        checked={filters.condition.id === condition.id}
                                                                         onChange={(e) => onConditionChange(condition)}
                                                                         className="text-primary border-gray-400 border-2 !ring-transparent rounded"
                                                                         id={condition.id} />
                                                                     <label htmlFor={condition.id} className="text-base text-gray-800 font-normal ms-4">
-                                                                        {condition.label}
+                                                                        {trans(condition.label)}
                                                                     </label>
                                                                 </li>
                                                             ))
@@ -90,7 +97,7 @@ export default function FiltersPopup({
                                                 </div>
                                             </div>
                                             <button type='button' onClick={onSeeListingClicked} className='rounded-full bg-primary text-white py-2 px-5 w-full text-base mt-10'>
-                                                See Listing
+                                                {trans("see_listing")}
                                             </button>
                                         </div>
                                     </div>

@@ -13,6 +13,7 @@ import { Suspense } from "react"
 import useFilterLocation from "../components/hooks/useLocation"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"
+import { handleTranslation } from "../lib/i18n"
 
 const FiltersPopup = React.lazy(() => import("../popups/FiltersPopup"));
 
@@ -58,31 +59,31 @@ export const SortingsList = [
 export const CarConditions = {
     ALL: {
         id: "all",
-        label: "All"
+        label: "all"
     },
     NEW: {
         id: "New",
-        label: "New"
+        label: "new"
     },
     EXCELENT: {
         id: "Excelent",
-        label: "Excelent",
+        label: "excelent",
     },
     VERY_GOOD: {
         id: "Very Good",
-        label: "Very Good",
+        label: "very_good",
     },
     GOOD: {
         id: "Good",
-        label: "Good",
+        label: "good",
     },
     FAIR: {
         id: "Fair",
-        label: "Fair"
+        label: "fair"
     },
     FOR_PARTS: {
         id: "For Parts",
-        label: "For Parts"
+        label: "for_parts"
     }
 }
 
@@ -124,6 +125,7 @@ export function joinStrs(...strs) {
 
 
 export default function SearchPage() {
+    const { trans, apiTrans } = handleTranslation()
     const authUser = useAuthUser();
     const location = useFilterLocation();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -209,7 +211,7 @@ export default function SearchPage() {
             filters.query !== "" && `&search_term=${filters.query}`,
             filters.price.min !== "" && `&min_price=${filters.price.min}`,
             filters.price.max !== "" && `&max_price=${filters.price.max}`,
-            filters.condition.id !== "all" && `&condition=${filters.condition.label}`,
+            filters.condition.id !== "all" && `&condition=${filters.condition.id}`,
             filters.category !== -1 && `&category_id=${filters.category}`,
             filters.year !== "" && `&year=${filters.year}`,
             filters.make !== "" && `&make=${filters.make}`,
@@ -241,14 +243,16 @@ export default function SearchPage() {
                                             "text-base text-gray-800 transition-all hover:font-semibold",
                                             filters.category === ctgry.id ? "font-semibold" : "font-normal"
                                         )}>
-                                            {ctgry.id === -1 ? "All Categories" : ctgry.title}
+                                            {ctgry.id === -1 ? trans("all_categories") : apiTrans(ctgry, "title")}
                                         </button>
                                     </li>
                                 ))
                             }
                         </ul>
                         <div className="py-3">
-                            <h4 className="text-lg font-semibold">Filters</h4>
+                            <h4 className="text-lg font-semibold">
+                                {trans("filters")}
+                            </h4>
                             <FiltersSectionEl
                                 accessToken={authUser.accessToken}
                                 filters={filters} onMaxPriceChange={onMaxPriceChange}
@@ -256,14 +260,20 @@ export default function SearchPage() {
                                 setFilterDistance={onFilterDistanceChange}
                                 onMinPriceChange={onMinPriceChange} />
                             <div className="pt-7">
-                                <h5 className="text-base font-medium">Condition</h5>
+                                <h5 className="text-base font-medium">
+                                    {trans("condition")}
+                                </h5>
                                 <ul className="mt-2 space-y-2">
                                     {
                                         CarConditionsList.map(condition => (
                                             <li key={condition.id} className="flex items-center">
-                                                <input type="checkbox" checked={filters.condition.id === condition.id} onChange={(e) => onConditionChange(condition)} className="text-primary border-gray-400 border-2 !ring-transparent rounded" id={condition.id} />
+                                                <input type="checkbox"
+                                                    checked={filters.condition.id === condition.id}
+                                                    onChange={(e) => onConditionChange(condition)}
+                                                    className="text-primary border-gray-400 border-2 !ring-transparent rounded"
+                                                    id={condition.id} />
                                                 <label htmlFor={condition.id} className="text-base text-gray-800 font-normal ms-4">
-                                                    {condition.label}
+                                                    {trans(condition.label)}
                                                 </label>
                                             </li>
                                         ))
@@ -279,21 +289,25 @@ export default function SearchPage() {
                                     {
                                         filters.query !== "" ?
                                             <span>
-                                                Search results for '{filters.query}'
+                                                {trans("search_results_for")} '{filters.query}'
                                             </span>
                                             :
                                             <span className="capitalize">
-                                                {filters.category === -1 ? "All Categories" : categories?.find((ctgry) => ctgry.id === filters.category)?.title}
+                                                {
+                                                    filters.category === -1 ?
+                                                        trans("all_categories")
+                                                        :
+                                                        apiTrans(categories?.find((ctgry) => ctgry.id === filters.category), "title")}
                                             </span>
                                     }
                                 </h3>
                                 <div className="hidden lg:block text-base text-gray-900 font-normal">
-                                    <label htmlFor="sortby" className="font-medium">Sort by: </label>
+                                    <label htmlFor="sortby" className="font-medium">{trans("Sort-by")}: </label>
                                     <select name="sort" id="sortby" value={filters.sortby.value} onChange={onSortingChange} className="no-decor">
                                         {
                                             SortingsList.map((sort) => (
                                                 <option key={sort.value} value={sort.value}>
-                                                    {sort.label}
+                                                    {trans(sort.value)}
                                                 </option>
                                             ))
                                         }
@@ -322,12 +336,12 @@ export default function SearchPage() {
                                         onClearFilters={onClearAllFilters} />
                                 </Suspense>
                                 <div className="text-base text-gray-900 font-normal rounded-full bg-gray-100 transition-all hover:bg-gray-200 pl-5 pr-2">
-                                    <label htmlFor="sortby" className="font-medium">Sort by: </label>
+                                    <label htmlFor="sortby" className="font-medium">{trans("Sort-by")}: </label>
                                     <select name="sort" value={filters.sortby} onChange={onSortingChange} id="sortby" className="no-decor bg-transparent">
                                         {
                                             SortingsList.map((sort) => (
                                                 <option key={sort.value} value={sort.value}>
-                                                    {sort.label}
+                                                    {trans(sort.value)}
                                                 </option>
                                             ))
                                         }
@@ -345,7 +359,7 @@ export default function SearchPage() {
                                         <div>
                                             <div className="flex justify-end w-full mb-2">
                                                 <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                                    Clear All Filters
+                                                    {trans("clear-all-filters")}
                                                 </button>
                                             </div>
                                             <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
@@ -368,10 +382,10 @@ export default function SearchPage() {
                                     :
                                     <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
                                         <h4 className="text-xl font-medium text-gray-800 text-center">
-                                            No cars found. Try changing filters.
+                                            {trans("no_cars_found")}
                                         </h4>
                                         <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                            Clear All Filters
+                                            {trans("clear-all-filters")}
                                         </button>
                                     </div>
                         }
@@ -479,6 +493,7 @@ export function FiltersSectionEl({
     onMaxPriceChange, setFilters,
     setFilterDistance
 }) {
+    const { trans } = handleTranslation();
     const { data: years } = useFiltersFetcher(accessToken, apiConfig.endpoints.getYears, [], sortYears);
     const { data: makes } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarMakes + `?year=${filters.year}`);
     const { data: models } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarModels + `?year=${filters.year}&make=${filters.make}`);
@@ -509,9 +524,9 @@ export function FiltersSectionEl({
         <div className="border-b py-6 space-y-4">
             <div>
                 <h5 className="text-sm font-semibold text-gray-800">
-                    Distance
+                    {trans("distance")}
                     <span className="font-normal ms-2">
-                        ({filters.distance} Miles)
+                        ({filters.distance} {trans("miles")})
                     </span>
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
@@ -524,12 +539,14 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Year</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("year")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
                     <select value={selectedYear} disabled={!years || years.length <= 0}
                         onChange={(e) => setSelectedYear(e.target.value)}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
-                        <option value="">Select Year</option>
+                        <option value="">{`${trans("select")} ${trans("year")}`}</option>
                         {
                             years &&
                             years?.map((year) => (
@@ -540,12 +557,14 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Make</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("make")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
                     <select value={selectedMake} disabled={!makes || makes.length <= 0}
                         onChange={(e) => setSelectedMake(e.target.value)}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
-                        <option value="">Select Make</option>
+                        <option value="">{`${trans("select")} ${trans("make")}`}</option>
                         {
                             makes &&
                             makes?.map((makeObj) => (
@@ -556,12 +575,14 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Model</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("model")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
                     <select value={selectedModel} disabled={!models || models.length <= 0}
                         onChange={(e) => setSelectedModel(e.target.value)}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
-                        <option value="">Select Model</option>
+                        <option value="">{`${trans("select")} ${trans("model")}`}</option>
                         {
                             models &&
                             models?.map((modelObj) => (
@@ -572,12 +593,14 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Vehicle Trim</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("vehicle_trim")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
                     <select value={selectedVTrim} disabled={!vehicleTrims || vehicleTrims.length <= 0}
                         onChange={(e) => setSelectedVTrim(e.target.value)}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
-                        <option value="">Select Vehicle Trim</option>
+                        <option value="">{`${trans("select")} ${trans("vehicle_trim")}`}</option>
                         {
                             vehicleTrims &&
                             vehicleTrims?.map((vTrimObj) => (
@@ -588,12 +611,14 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Mileage</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("mileage")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
                     <select value={selectedMileage}
                         onChange={(e) => setSelectedMileage(e.target.value)}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
-                        <option value="">Select Mileage</option>
+                        <option value="">{`${trans("select")} ${trans("mileage")}`}</option>
                         {
                             mileageList.map((mileage) => (
                                 <option key={mileage.value} value={mileage.value}>{mileage.label}</option>
@@ -603,11 +628,15 @@ export function FiltersSectionEl({
                 </div>
             </div>
             <div>
-                <h5 className="text-sm font-semibold text-gray-800">Price Range</h5>
+                <h5 className="text-sm font-semibold text-gray-800">
+                    {trans("price_range")}
+                </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <input type="number" placeholder="Min" value={filters.price.min} onChange={onMinPriceChange} className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md" />
-                    <p className="text-sm font-normal text-gray-800">to</p>
-                    <input type="number" placeholder="Max" value={filters.price.max} onChange={onMaxPriceChange} className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md" />
+                    <input type="number" placeholder={trans("min")} value={filters.price.min} onChange={onMinPriceChange} className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md" />
+                    <p className="text-sm font-normal text-gray-800">
+                        {trans("to")}
+                    </p>
+                    <input type="number" placeholder={trans("max")} value={filters.price.max} onChange={onMaxPriceChange} className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md" />
                 </div>
             </div>
 

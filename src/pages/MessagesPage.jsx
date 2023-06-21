@@ -9,9 +9,11 @@ import LoaderEl from "../components/loader";
 import axios from "axios";
 import { apiConfig } from "../config/api";
 import ChatPageCarsSliderPopup from "../popups/ChatPageCarsSliderPopup";
+import { handleTranslation } from "../lib/i18n";
 
 
 export default function MessagesPage({ authUser }) {
+    const { trans } = handleTranslation()
     const { data: chatsList } = useChatsList(authUser.accessToken)
     const [selectedChat, setSelectedChat] = React.useState(null);
     const socket = useSocketIO();
@@ -63,14 +65,6 @@ export default function MessagesPage({ authUser }) {
 
 
     return (
-        // <div className={"py-10 md:py-20" + MAIN_HORIZONTAL_PADDING}>
-        //     <div className="mb-12">
-        //         <h2 className="text-4xl text-gray-900 font-bold">
-        //             <a href="/" className="text-gray-400">Home</a>
-        //             <i className="mx-4 text-[70%] text-gray-500 fa-solid fa-chevron-right"></i>
-        //             <a href="/notifications">Messages</a>
-        //         </h2>
-        //     </div>
         <div className="flex w-full border-t-2 overflow-hidden h-[700px] max-h-full border-gray-200">
             {/* Chats Sidebar */}
             <ChatSidebar
@@ -91,7 +85,7 @@ export default function MessagesPage({ authUser }) {
                     :
                     <div className="hidden lg:flex items-center justify-center w-full h-96">
                         <h5 className="text-base text-gray-700">
-                            Select a chat to view messages.
+                            {trans("no_chat")}
                         </h5>
                     </div>
             }
@@ -103,14 +97,11 @@ export default function MessagesPage({ authUser }) {
 
 
 function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage }) {
+    const { trans } = handleTranslation();
     const [messageText, setMessageText] = React.useState("");
     const [messages, setMessages] = React.useState(null);
     const messagesContainerRef = React.useRef(null);
     const fileInputRef = React.useRef(null);
-    // const { data: messages, isLoading, error } = useMessagesFetcher(authUser.accessToken, {
-    //     userId: selectedChat.chatProfile.id,
-    //     carId: selectedChat.car_id
-    // })
 
 
     React.useEffect(async () => {
@@ -149,11 +140,11 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             })
         }, 15)
 
-        if (messages?.find((msg) => msg?.state === "sending")) {
-            setTimeout(() => {
-                setMessages(messages.map((msg) => ({ ...msg, state: "" })))
-            }, 2000)
-        }
+        // if (messages?.find((msg) => msg?.state === "sending")) {
+        //     setTimeout(() => {
+        //         setMessages(messages.map((msg) => ({ ...msg, state: "" })))
+        //     }, 2000)
+        // }
     }, [messages]);
 
 
@@ -278,7 +269,7 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
                     </button>
                     <input type="text"
                         className="no-decor bg-transparent w-full text-gray-600"
-                        placeholder="Type..."
+                        placeholder={trans("type...")}
                         value={messageText}
                         onChange={(e) => setMessageText(e.target.value)} />
                     <button type="button"
@@ -296,6 +287,7 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
 
 
 function ChatSidebar({ userProfile, chatsList, setSelectedChat, selectedChat = null, }) {
+    const {trans} = handleTranslation()
     const [filterTerm, setFilterTerm] = React.useState("");
     const [filteredChatList, setFilteredChatList] = React.useState(chatsList ?? []);
 
@@ -327,7 +319,7 @@ function ChatSidebar({ userProfile, chatsList, setSelectedChat, selectedChat = n
             <div className="flex items-center bg-transparent rounded-full border border-gray-200 m-4 px-2 py-1">
                 <input type="text"
                     className="no-decor bg-transparent w-full text-gray-600"
-                    placeholder="Search..."
+                    placeholder={trans("search...")}
                     value={filterTerm}
                     onChange={(e) => setFilterTerm(e.target.value)} />
                 {/* <button type="button"
@@ -418,11 +410,11 @@ function MessageItem({ message, primary = true }) {
                         {formatDateTimeForMsg(new Date(message.created_at))}
                     </span>
                     {
-                        message?.state === "sending" &&
+                        primary && message?.state === "sending" &&
                         <FontAwesomeIcon icon={faClock} className="text-gray-600 text-xs" />
                     }
                     {
-                        message?.is_seen === "1" &&
+                        primary && message?.is_seen === "1" &&
                         <FontAwesomeIcon icon={faCheckDouble} className="text-primary text-xs" />
                     }
                 </div>

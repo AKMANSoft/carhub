@@ -1,7 +1,10 @@
+import { handleTranslation } from "../lib/i18n";
 import { formatDate, formatPrice } from "../lib/utils";
 
 
 export default function CarGridItem({ car, className = "", type = "BUY" }) {
+    const { trans } = handleTranslation()
+    console.log(car)
     return (
         <div className={"w-full relative " + className}>
             <a href={`cars/${car.id}`}>
@@ -16,22 +19,22 @@ export default function CarGridItem({ car, className = "", type = "BUY" }) {
                     ${formatPrice(car.amount)}
                 </p>
                 <p className="text-sm font-normal text-gray-600">
-                    {car.user_count} views
+                    {car.user_count} {trans("views")}
                 </p>
                 {
                     type === "BUY" &&
                     <p className="text-sm font-normal text-gray-600">
-                        Zip Code: {car.zip_code}
+                        {trans("zip_code")}: {car.zip_code}
                     </p>
                 }
                 <p className="text-sm font-normal text-gray-600">
-                    Posted: {formatDate(new Date(car.created_at), "-")}
+                    {trans("posted")}: {formatDate(new Date(car.created_at), "-")}
                 </p>
                 {
                     type === "SELL" && car.find_me_buyer &&
                     <div>
                         <a href={`/find-me-buyer?car_id=${car.id}`} className="btn-primary block text-center text-sm w-full px-4 py-1 mt-2 hover:bg-primary">
-                            Find Me Buyer
+                            {trans("find_me_buyer")}
                         </a>
                     </div>
                 }

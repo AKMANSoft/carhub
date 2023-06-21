@@ -5,9 +5,11 @@ import useAuthUser from "../components/hooks/useAuthUser"
 import MainLayout from "../components/layout"
 import LoaderEl from "../components/loader"
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS"
+import { handleTranslation } from "../lib/i18n"
 
 
 export default function FindMeBuyerPage() {
+    const { trans } = handleTranslation()
     const authUser = useAuthUser();
     const [searchParams, _] = useSearchParams();
     const navigate = useNavigate();
@@ -34,7 +36,7 @@ export default function FindMeBuyerPage() {
                             :
                             <div className="w-full h-52 flex flex-col gap-1 items-center justify-center text-center">
                                 <p className="text-lg text-gray-700">
-                                    No customers have searched for this car yet.
+                                    {trans("no-search-appear")}
                                 </p>
                             </div>
                 }

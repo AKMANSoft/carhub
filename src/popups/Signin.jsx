@@ -13,11 +13,13 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import doSocialSignIn from '../api/socialSignIn';
+import { handleTranslation } from '../lib/i18n';
 
 
 
 
 export default function SigninPopup() {
+    const { trans } = handleTranslation();
     const [cookies, setCookies] = useCookies(["accessToken"]);
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -189,7 +191,7 @@ export default function SigninPopup() {
                                                     'mb-5',
                                                     inputsStatus.email === "invalid" && "border-2 !border-red-500",
                                                 )}
-                                                placeholder='Email'
+                                                placeholder={trans("email")}
                                                 value={email} onChange={(val) => setEmail(val)} />
                                             <ThemeInput
                                                 type='password'
@@ -197,7 +199,7 @@ export default function SigninPopup() {
                                                     'mb-5',
                                                     inputsStatus.password === "invalid" && "border-2 !border-red-500",
                                                 )}
-                                                placeholder='Password'
+                                                placeholder={trans("password")}
                                                 value={password} onChange={(val) => setPassword(val)} />
                                             <a href="?p=forgotpassword" className="ms-5 hover:underline transition-all">Forgot Password?</a>
                                             <div className='mt-10'>
@@ -208,11 +210,11 @@ export default function SigninPopup() {
                                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                             </svg>
-                                                            <span>Processing...</span>
+                                                            <span>trans{trans("processing...")}</span>
                                                         </button>
                                                         :
                                                         <button type="button" onClick={() => handleSignIn()} className="btn-light w-full">
-                                                            Continue
+                                                            {trans("continue")}
                                                         </button>
                                                 }
                                             </div>
@@ -220,12 +222,12 @@ export default function SigninPopup() {
                                         <div className="mt-16 space-y-3 w-full">
                                             <button type='button' onClick={signInWithGoogle} className="w-full btn-light justify-center flex gap-8 items-center">
                                                 <FontAwesomeIcon icon={faGoogle} className="text-2xl" />
-                                                <span>Continue with Google</span>
+                                                <span>{trans("continue_with_google")}</span>
                                             </button>
                                         </div>
                                         <div className='mt-10 w-full text-center'>
                                             <a href='?p=signup' className="cursor-pointer underline transition-all">
-                                                Not a member? Create an account.
+                                                {trans("no_account")}
                                             </a>
                                         </div>
 

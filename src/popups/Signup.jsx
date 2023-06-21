@@ -14,10 +14,12 @@ import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import doSocialSignIn from '../api/socialSignIn';
+import { handleTranslation } from '../lib/i18n';
 
 
 
 export default function SignupPopup() {
+    const { trans } = handleTranslation()
     const [cookies, setCookies] = useCookies(["accessToken"]);
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -284,28 +286,30 @@ export default function SignupPopup() {
                                                             <FontAwesomeIcon icon={profileImage !== null ? faPenToSquare : faPlus} />
                                                         </button>
                                                     </div>
-                                                    <ThemeTextArea placeholder="Bio" rows={4}
+                                                    <ThemeTextArea placeholder={trans("bio")} rows={4}
                                                         className={cn(
                                                             inputsStatus.bio === "invalid" && "border-2 !border-red-500",
                                                         )}
                                                         value={bio} onChange={(val) => setBio(val)} />
-                                                    <AddressInput placeholder='Address'
+                                                    <AddressInput placeholder={trans("address")}
                                                         className={cn(
                                                             inputsStatus.address === "invalid" && "border-2 !border-red-500",
                                                         )}
                                                         value={address.streetAddress} onChange={onAddressChange} />
 
                                                     <div className='flex gap-5'>
-                                                        <ThemeInput type='text' readOnly placeholder='City'
+                                                        <ThemeInput type='text' readOnly placeholder={trans("city")}
                                                             className={cn(
                                                                 inputsStatus.city === "invalid" && "border-2 !border-red-500",
                                                             )}
-                                                            value={address.city} onChange={(val) => setAddress({ ...address, state: val })} />
-                                                        <ThemeInput type='text' readOnly placeholder='State'
+                                                            value={address.city}
+                                                            onChange={(val) => setAddress({ ...address, state: val })} />
+                                                        <ThemeInput type='text' readOnly placeholder={trans("state")}
                                                             className={cn(
                                                                 inputsStatus.state === "invalid" && "border-2 !border-red-500",
                                                             )}
-                                                            value={address.state} onChange={(val) => setAddress({ ...address, state: val })} />
+                                                            value={address.state}
+                                                            onChange={(val) => setAddress({ ...address, state: val })} />
                                                     </div>
 
                                                     <div className='pt-10'>
@@ -316,11 +320,11 @@ export default function SignupPopup() {
                                                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                                     </svg>
-                                                                    <span>Processing...</span>
+                                                                    <span>trans{trans("processing...")}</span>
                                                                 </button>
                                                                 :
                                                                 <button type="button" onClick={() => onContinue("second")} className="btn-light w-full">
-                                                                    Continue
+                                                                    {trans("continue")}
                                                                 </button>
                                                         }
 
@@ -337,7 +341,7 @@ export default function SignupPopup() {
                                                                     inputsStatus.name === "invalid" && "border-2 !border-red-500",
                                                                     // inputsStatus.name === "valid" && "border-2 !border-green-500",
                                                                 )}
-                                                                placeholder='First Name'
+                                                                placeholder={trans("first_name")}
                                                                 value={firstName} onChange={(val) => setFirstName(val)} />
                                                             <ThemeInput
                                                                 type='text'
@@ -346,7 +350,7 @@ export default function SignupPopup() {
                                                                     inputsStatus.name === "invalid" && "border-2 !border-red-500",
                                                                     // inputsStatus.name === "valid" && "border-2 !border-green-500",
                                                                 )}
-                                                                placeholder='Last Name'
+                                                                placeholder={trans("last_name")}
                                                                 value={lastName} onChange={(val) => setLastName(val)} />
                                                         </div>
 
@@ -357,7 +361,7 @@ export default function SignupPopup() {
                                                                 inputsStatus.email === "invalid" && "border-2 !border-red-500",
                                                                 // inputsStatus.email === "valid" && "border-2 !border-green-500",
                                                             )}
-                                                            placeholder='Email'
+                                                            placeholder={trans("email")}
                                                             value={email} onChange={(val) => setEmail(val)} />
                                                         <ThemeInput
                                                             type='password'
@@ -366,7 +370,7 @@ export default function SignupPopup() {
                                                                 inputsStatus.password === "invalid" && "border-2 !border-red-500",
                                                                 // inputsStatus.password === "valid" && "border-2 !border-green-500",
                                                             )}
-                                                            placeholder='Password'
+                                                            placeholder={trans("password")}
                                                             value={password} onChange={(val) => setPassword(val)} />
                                                         <ThemeInput
                                                             type='password'
@@ -375,7 +379,7 @@ export default function SignupPopup() {
                                                                 inputsStatus.confPassword === "invalid" && "border-2 !border-red-500",
                                                                 // inputsStatus.confPassword === "valid" && "border-2 !border-green-500",
                                                             )}
-                                                            placeholder='Confirm Password'
+                                                            placeholder={trans("confirm_password")}
                                                             value={confPassword} onChange={(val) => setConfPassword(val)} />
                                                         <div className='flex items-center gap-3 mb-5 relative overflow-hidden rounded-full'>
                                                             <span className='absolute left-0 top-1/2 -translate-y-1/2 z-[1] border-r border-r-gray-400 bg-transparent text-white py-2 px-5 pr-3'>
@@ -388,17 +392,19 @@ export default function SignupPopup() {
                                                                 variant='phone'
                                                                 value={phoneNumber} onChange={(val) => setPhoneNumber(val)} />
                                                         </div>
-                                                        <button type="button" onClick={() => onContinue("first")} className="btn-light w-full mt-10">Continue</button>
+                                                        <button type="button" onClick={() => onContinue("first")} className="btn-light w-full mt-10">
+                                                            {trans("continue")}
+                                                        </button>
                                                     </div>
                                                     <div className="mt-16 space-y-3 w-full">
                                                         <button type="button" onClick={signInWithGoogle} className="w-full btn-light justify-center flex gap-8 items-center">
                                                             <FontAwesomeIcon icon={faGoogle} className="text-2xl" />
-                                                            <span>Continue with Google</span>
+                                                            <span>{trans("continue_with_google")}</span>
                                                         </button>
                                                     </div>
                                                     <div className='mt-10 w-full text-center'>
                                                         <a href='?p=signin' className="cursor-pointer border-b transition-all">
-                                                            Already a member? Sign in.
+                                                            {trans("already_member")}
                                                         </a>
                                                     </div>
                                                 </>

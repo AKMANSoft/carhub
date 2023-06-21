@@ -5,11 +5,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLocationDot, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { getCurrentLatLng, getLocationByLatLng } from '../components/hooks/useCurrentLocation';
 import useFilterLocation from '../components/hooks/useLocation';
+import { handleTranslation } from '../lib/i18n';
 
 
 
 
 export default function ChooseLocationPopup() {
+    const { trans } = handleTranslation()
     let [isOpen, setIsOpen] = useState(false);
     const location = useFilterLocation()
 
@@ -50,7 +52,7 @@ export default function ChooseLocationPopup() {
                 {
                     location && location !== null &&
                     <span className='ms-3 xl:ms-1 font-normal min-w-max items-center'>
-                        :{location.filterDistance} Miles
+                        :{location.filterDistance} {("miles")}
                     </span>
                 }
             </button>
@@ -94,7 +96,7 @@ export default function ChooseLocationPopup() {
                                                     placeholder='Enter Location'
                                                     onChange={(val) => onLocationChange(val)} />
                                                 <button type="button" onClick={() => setIsOpen(false)} className="btn-light w-full mt-3">
-                                                    Continue
+                                                    {trans("continue")}
                                                 </button>
                                             </div>
                                         </div>

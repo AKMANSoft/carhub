@@ -8,11 +8,12 @@ import doForgotPassword from '../api/forgotpassword';
 import AlertMessage from '../components/ThemeAlert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-
+import { handleTranslation } from '../lib/i18n'
 
 
 
 export default function ForgotPasswordPopup() {
+    const { trans } = handleTranslation()
     const [searchParams, setSearchParams] = useSearchParams();
     let [isOpen, setIsOpen] = useState(searchParams.get("p") === "forgotpassword" ? true : false)
 
@@ -106,7 +107,7 @@ export default function ForgotPasswordPopup() {
                                     <div>
                                         <h4 className="text-lg font-medium">Forgot Password?</h4>
                                         <p className='text-sm font-light text-gray-300 mt-2'>
-                                            Please provide the email you've signed up with to get a restore password email.
+                                            {trans("forgot_password_desc")}
                                         </p>
                                         <div>
                                             <AlertMessage
@@ -121,7 +122,7 @@ export default function ForgotPasswordPopup() {
                                                     'mb-5',
                                                     inputsStatus.email === "invalid" && "border-2 !border-red-500",
                                                 )}
-                                                placeholder='Email'
+                                                placeholder={trans("email")}
                                                 value={email} onChange={(val) => setEmail(val)} />
                                             {
                                                 taskState === "processing" ?
@@ -130,18 +131,18 @@ export default function ForgotPasswordPopup() {
                                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                         </svg>
-                                                        <span>Processing...</span>
+                                                        <span>trans{trans("processing...")}</span>
                                                     </button>
                                                     :
                                                     <button type="button" onClick={() => handleForgotPassword()} className="btn-light w-full mt-3">
-                                                        Continue
+                                                        {trans("continue")}
                                                     </button>
                                             }
                                         </div>
                                     </div>
                                     <div className='mt-10 w-full text-center'>
                                         <a href='?p=signup' className="cursor-pointer underline transition-all">
-                                            Not a member? Create an account.
+                                            {trans("no_account")}
                                         </a>
                                     </div>
                                 </div>

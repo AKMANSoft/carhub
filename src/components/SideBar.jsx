@@ -6,10 +6,12 @@ import useAuthUser from "./hooks/useAuthUser";
 import useFiltersFetcher from "./hooks/filtersFetchers";
 import { apiConfig } from "../config/api";
 import { siteConfig } from "../config/site";
+import { handleTranslation } from "../lib/i18n";
 
 
 
 export default function SiderBar({ onSidebarClose, onLogout }) {
+    const { trans, apiTrans } = handleTranslation()
     const authUser = useAuthUser();
     const { data: categories } = useFiltersFetcher(authUser.accessToken, apiConfig.endpoints.getCategories, []);
 
@@ -32,7 +34,7 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                     <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                 </div>
                 <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
-                    Post Car
+                    {trans("post_car")}
                     <FontAwesomeIcon icon={faPlus} className=' ms-3 lg:ms-5' />
                 </a>
             </div>
@@ -41,13 +43,13 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                     <li>
                         <a href="/inbox?active=messages" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faMessage} className=" text-base text-gray-700 mr-4" />
-                            Messages
+                            {trans("messages")}
                         </a>
                     </li>
                     <li>
                         <a href="/inbox?active=notifications" className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faBell} className=" text-base text-gray-700 mr-4" />
-                            Notifications
+                            {trans("notifications")}
                         </a>
                     </li>
                     {
@@ -55,7 +57,7 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                             <li>
                                 <a href={"/account?active=" + tab.id} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                                     <FontAwesomeIcon icon={tab.icon} className=" text-base text-gray-700 mr-4" />
-                                    {tab.name}
+                                    {trans(tab.name)}
                                 </a>
                             </li>
                         ))
@@ -64,26 +66,26 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                     <li>
                         <a href={siteConfig.links.aboutLink} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faCircleInfo} className=" text-base text-gray-700 mr-4" />
-                            About
+                            {trans("about")}
                         </a>
                     </li>
                     <li>
                         <a href={siteConfig.links.termsOfServices} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faList} className=" text-base text-gray-700 mr-4" />
-                            Terms of Services
+                            {trans("tos")}
                         </a>
                     </li>
                     <li>
                         <a href={siteConfig.links.privacyPolicy} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faLock} className=" text-base text-gray-700 mr-4" />
-                            Privacy
+                            {trans("privacy")}
                         </a>
                     </li>
                     <li className="border-t mt-6 pt-4"></li>
                     <li>
                         <button type="button" onClick={onLogout} className="text-lg font-normal text-black block py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
                             <FontAwesomeIcon icon={faRightFromBracket} className=" text-base text-gray-700 mr-4" />
-                            Logout
+                            {trans("logout")}
                         </button>
                     </li>
                 </ul>
@@ -95,7 +97,7 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
                         categories.map((ctgry) => (
                             <li key={ctgry.id}>
                                 <a href={"search?category=" + ctgry.id} className="text-lg font-normal text-black flex items-center justify-between py-2 px-4 transition-all hover:text-primary hover:bg-gray-100">
-                                    {ctgry.title}
+                                    {apiTrans(ctgry, "title")}
                                     <i className="fa-solid fa-arrow-right text-sm text-gray-700"></i>
                                 </a>
                             </li>

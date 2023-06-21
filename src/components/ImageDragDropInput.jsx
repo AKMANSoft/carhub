@@ -2,6 +2,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { useDropzone } from 'react-dropzone'
+import { handleTranslation } from '../lib/i18n';
 
 export default function ImageDragDropInput({
     className = "",
@@ -9,6 +10,7 @@ export default function ImageDragDropInput({
     onImagesChange = (images) => { },
     withPreview = false,
 }) {
+    const { trans } = handleTranslation()
     // const onDrop = React.useCallback(acceptedFiles => {
     //     onImagesChange([
     //         ...images,
@@ -57,7 +59,7 @@ export default function ImageDragDropInput({
                 {
                     isDragActive ?
                         <span>
-                            Drop files
+                            {trans("drop_files")}
                         </span>
                         :
                         <span className="flex items-center space-x-2">
@@ -67,29 +69,29 @@ export default function ImageDragDropInput({
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
                             <span className="font-medium text-gray-600">
-                                Drop files to Attach, or
-                                <span className="text-blue-600 underline ml-2">browse</span>
+                                {trans("drop_files_to_attach")}
+                                <span className="text-blue-600 underline ml-2">{trans("browse")}</span>
                             </span>
                         </span>
                 }
             </div>
             {
-                withPreview ?
-                    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-5">
-                        {
-                            images.map((img) => (
-                                <span key={img.id} className='relative group rounded overflow-hidden'>
-                                    <img src={img.src} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
-                                    <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
-                                        <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </button>
-                                    </span>
+                withPreview &&
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3 md:gap-5">
+                    {
+                        images.map((img) => (
+                            <span key={img.id} className='relative group rounded overflow-hidden'>
+                                <img src={img.src} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
+                                <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
+                                    <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </button>
                                 </span>
-                            ))
-                        }
-                    </div>
-                    : <></>
+                            </span>
+                        ))
+                    }
+                </div>
+
             }
         </>
     )

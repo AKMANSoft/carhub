@@ -1,11 +1,16 @@
 import React from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
-import SelectEl, { SelectBox } from "./selectel";
+import { SelectBox } from "./selectel";
+import { handleTranslation } from "../lib/i18n";
 
 
 
 export default function Footer() {
-    const [selLanguage, setSelLanguage] = React.useState("english");
+    const { i18n } = handleTranslation()
+    const handleChangeLanguage = (lang) => {
+        i18n.changeLanguage(lang.value);
+        localStorage.setItem("language", lang.value);
+    }
     return (
         <footer className={"bg-white z-50 mt-10" + MAIN_HORIZONTAL_PADDING}>
             <div className="flex items-center justify-between py-5 border-t border-gray-300">
@@ -19,16 +24,17 @@ export default function Footer() {
                 <div>
                     <div className="w-full">
                         <SelectBox
-                            value={selLanguage} onChange={setSelLanguage}
+                            value={i18n.language}
+                            onChange={handleChangeLanguage}
                             position="top"
                             options={[
                                 {
                                     label: "English",
-                                    value: "english",
+                                    value: "en",
                                 },
                                 {
-                                    label: "Spanish",
-                                    value: "spanish",
+                                    label: "Español",
+                                    value: "es",
                                 }
                             ]}
                         />

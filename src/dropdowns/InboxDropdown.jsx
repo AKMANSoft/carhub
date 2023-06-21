@@ -8,9 +8,11 @@ import axios from "axios";
 import useAuthUser from "../components/hooks/useAuthUser";
 import { apiConfig } from "../config/api";
 import useNotificationsFetcher from "../components/hooks/notificationsFetcher";
+import { handleTranslation } from "../lib/i18n";
 
 
 export default function InboxDropdown() {
+    const { trans } = handleTranslation();
     const authUser = useAuthUser();
     const [activeTab, setActiveTab] = React.useState("notifications");
     const { notifications } = useNotificationsFetcher(authUser.accessToken, true)
@@ -39,7 +41,7 @@ export default function InboxDropdown() {
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button className="inline-flex justify-center items-center rounded-md p-2 text-sm font-medium text-gray-800 hover:bg-gray-100 outline-none">
-                    Inbox
+                    {trans("inbox")}
                     <FontAwesomeIcon icon={faChevronDown} className="ml-2 text-xs" />
                 </Menu.Button>
             </div>
@@ -78,13 +80,11 @@ export default function InboxDropdown() {
                                     }
                                 </div>
                         }
-                        <div className="flex items-center justify-center border-t px-3 py-4 border-gray-100">
-                            {
-                                activeTab === "messages" ?
-                                    <a href="/inbox?active=messages" className="text-base font-semibold text-primary">View All Messages</a>
-                                    :
-                                    <a href="/inbox?active=notifications" className="text-sm font-semibold text-primary">View All Notifications</a>
-                            }
+                        <div className="flex flex-col items-center justify-center border-t px-3 py-2 gap-3 border-gray-100">
+                            <a href="/inbox?active=notifications" className="text-sm font-semibold text-primary">
+                                {trans("view_all_notifications")}
+                            </a>
+                            {/* <a href="/inbox?active=messages" className="text-sm font-semibold text-primary">View Messages</a> */}
                         </div>
                     </div>
                 </Menu.Items>

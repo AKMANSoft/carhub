@@ -13,43 +13,44 @@ import LoaderEl from "../components/loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
 import AlertMessage from "../components/ThemeAlert";
-import { Navigate, redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectEl from "../components/selectel";
+import { handleTranslation } from "../lib/i18n";
 
 
 const CarPostSections = {
-    Photos: "Photos",
-    Details: "Details",
-    Colors: "Colors",
-    Features: "Features",
-    Post: "Post",
-    Finish: "Finish",
+    Photos: "photos",
+    Details: "details",
+    Colors: "colors",
+    Features: "features",
+    Post: "post",
+    Finish: "finish",
 }
 
 
 const expandableSections = [
     {
-        name: "Photos",
+        name: "photos",
         content: (onValidated) => <PhotosSection onValidated={onValidated} />
     },
     {
-        name: "Details",
+        name: "details",
         content: (onValidated) => <DetailsSection onValidated={onValidated} />
     },
     {
-        name: "Colors",
+        name: "colors",
         content: (onValidated) => <DetailsSection onValidated={onValidated} />
     },
     {
-        name: "Features",
+        name: "features",
         content: (onValidated) => <FeaturesSection onValidated={onValidated} />
     },
     {
-        name: "Post",
+        name: "post",
         content: (onValidated) => <PostSection onValidated={onValidated} />
     },
     {
-        name: "Finish",
+        name: "finish",
         content: (onValidated) => <FinishSection onValidated={onValidated} />
     }
 ]
@@ -88,8 +89,8 @@ const defaultCarDetails = {
 }
 
 export default function PostCarPage() {
+    const { trans } = handleTranslation()
     const authUser = useAuthUser();
-    const navigate = useNavigate();
     const [expandedSection, setExpandedSection] = React.useState(expandableSections[0].name)
     const [validatedSections, setValidatedSections] = React.useState([]);
     const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
@@ -215,6 +216,7 @@ export default function PostCarPage() {
                             </a>
                             <a href="/account?active=my-cars" className="btn-primary text-base">
                                 View your cars
+                                {trans("view_your_cars")}
                             </a>
                         </div>
                         :
@@ -243,7 +245,9 @@ export default function PostCarPage() {
                                                                     {index + 1}
                                                                 </span>
                                                         }
-                                                        <h3 className="text-primary text-xl font-semibold">{name}</h3>
+                                                        <h3 className="text-primary text-xl font-semibold">
+                                                            {trans(name)}
+                                                        </h3>
                                                     </div>
 
                                                 );
@@ -323,9 +327,10 @@ export default function PostCarPage() {
 
 
 function PhotosSection({ onValidated, setImages, images }) {
+    const { trans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
-        text: "Please upload 5-15 images.",
+        text: trans('imagealert'),
         success: false
     });
 
@@ -351,7 +356,7 @@ function PhotosSection({ onValidated, setImages, images }) {
                         type="button" onClick={onValidated}
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                         disabled={!isValidated()}>
-                        Continue
+                        {trans('continue')}
                     </button>
                     <div>
                         <AlertMessage
@@ -382,9 +387,10 @@ const FuelTypes = [
 ]
 
 function DetailsSection({ onValidated, details, setDetails, accessToken }) {
+    const { trans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
-        text: "Please fill all fields to coninue.",
+        text: "",
         success: false
     });
     const { data: categories } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCategories);
@@ -413,7 +419,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                 <SelectEl
                     isOptional={true}
                     items={categories ? categories.map((ctgry) => ({ value: ctgry.id, label: ctgry.title })) : []}
-                    label="Category" value={details.category}
+                    label={trans("category")} value={details.category}
                     onChange={(value) => setDetails({ ...details, category: value })} />
                 <SelectEl
                     isOptional={true}
@@ -423,32 +429,32 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                             .map((condition) =>
                                 ({ value: condition.id, label: condition.label })
                             )}
-                    label="Condition" value={details.condition}
+                    label={trans("condition")} value={details.condition}
                     onChange={(value) => setDetails({ ...details, condition: value })} />
                 {/* Year/Model/Make Start */}
                 <SelectEl
                     items={years ? years.map((year) => ({ value: year, label: year })) : []}
-                    label="Year" value={details.year}
+                    label={trans("year")} value={details.year}
                     onChange={(value) => setDetails({ ...details, year: value })} />
                 <SelectEl
                     items={makes ? makes.map((makeObj) => ({ value: makeObj.make, label: makeObj.make })) : []}
-                    label="Make" value={details.make}
+                    label={trans("make")} value={details.make}
                     onChange={(value) => setDetails({ ...details, make: value })} />
                 <SelectEl
                     items={models ? models.map((modelObj) => ({ value: modelObj.model, label: modelObj.model })) : []}
-                    label="Model" value={details.model}
+                    label={trans("model")} value={details.model}
                     onChange={(value) => setDetails({ ...details, model: value })} />
                 {/* Year/Model/Make End */}
 
                 <SelectEl
                     isOptional={true}
                     items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim, label: vTrim.vehicle_trim })) : []}
-                    label="Vehicle Trim" value={details.vehicleTrim}
+                    label={trans("vehicletrim")} value={details.vehicleTrim}
                     onChange={(value) => setDetails({ ...details, vehicleTrim: value })} />
 
                 <InputEl
                     isOptional={true}
-                    label="Mileage" type="number"
+                    label={trans("mileage")} type="number"
                     value={details.mileage}
                     onChange={(value) => setDetails({ ...details, mileage: value })} />
 
@@ -497,7 +503,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
 
 function ColorsSection({ onValidated, colors, setColors }) {
-
+    const { trans } = handleTranslation()
     const onExteriorColorChange = (color) => {
         setColors({
             interior: colors.interior,
@@ -577,7 +583,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                     className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                     disabled={!colors || colors.interior === "" || colors.exterior === ""}
                 >
-                    Continue
+                    {trans("continue")}
                 </button>
             </div>
         </div >
@@ -630,7 +636,8 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
                     onClick={onValidated}
                     className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                 >
-                    Continue
+                    {trans("continue")}
+
                 </button>
             </div>
         </div >
@@ -689,7 +696,7 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
                 className="btn-primary mt-5 disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                 disabled={!postDetails || postDetails.price === ""}
             >
-                Continue
+                {trans("continue")}
             </button>
         </div >
     );
@@ -716,7 +723,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
                 </div>
                 <div className="w-full col-span-3">
                     <InputEl
-                        type="number" label="Zip Code"
+                        type="number" label={trans("zip_code")}
                         value={carLocation.zipCode}
                         onChange={(value) => setCarLocation({ ...carLocation, zipCode: value })}
                     />
@@ -728,7 +735,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                         disabled={!isValidated()}
                     >
-                        Post
+                        {trans("post")}
                     </button>
                 </div>
             </div>
