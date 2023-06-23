@@ -351,44 +351,46 @@ export default function SearchPage() {
                         </div>
 
                         {
-                            !error &&
-                                isLoading ?
-                                <LoaderEl containerClassName="w-full h-[400px]" />
+                            error ?
+                                <></>
                                 :
-                                cars?.length > 0 ?
-                                    <div className="flex flex-col justify-between w-full min-h-[700px]">
-                                        <div>
-                                            <div className="flex justify-end w-full mb-2">
-                                                <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                                    {trans("clear-all-filters")}
-                                                </button>
-                                            </div>
-                                            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
-                                                {
-                                                    cars &&
-                                                    cars.map((car) => (
-                                                        <CarGridItem key={car.id} car={car} />
-                                                    ))
-                                                }
-                                            </div>
-                                        </div>
-                                        <Pagination
-                                            activePage={filters.page}
-                                            setActivePage={(page) => setFilters({
-                                                ...filters,
-                                                page: page
-                                            })} />
-                                    </div>
-
+                                isLoading ?
+                                    <LoaderEl containerClassName="w-full h-[400px]" />
                                     :
-                                    <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
-                                        <h4 className="text-xl font-medium text-gray-800 text-center">
-                                            {trans("no_cars_found")}
-                                        </h4>
-                                        <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
-                                            {trans("clear-all-filters")}
-                                        </button>
-                                    </div>
+                                    cars?.length > 0 ?
+                                        <div className="flex flex-col justify-between w-full min-h-[700px]">
+                                            <div>
+                                                <div className="flex justify-end w-full mb-2">
+                                                    <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
+                                                        {trans("clear-all-filters")}
+                                                    </button>
+                                                </div>
+                                                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-5 md:gap-8">
+                                                    {
+                                                        cars &&
+                                                        cars.map((car) => (
+                                                            <CarGridItem key={car.id} car={car} />
+                                                        ))
+                                                    }
+                                                </div>
+                                            </div>
+                                            <Pagination
+                                                activePage={filters.page}
+                                                setActivePage={(page) => setFilters({
+                                                    ...filters,
+                                                    page: page
+                                                })} />
+                                        </div>
+
+                                        :
+                                        <div className="flex flex-col gap-4 items-center justify-center w-full h-96">
+                                            <h4 className="text-xl font-medium text-gray-800 text-center">
+                                                {trans("no_cars_found")}
+                                            </h4>
+                                            <button type="button" onClick={onClearAllFilters} className="text-primary outline-none transition-all hover:underline">
+                                                {trans("clear-all-filters")}
+                                            </button>
+                                        </div>
                         }
 
 

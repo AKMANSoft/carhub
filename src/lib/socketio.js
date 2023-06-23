@@ -3,14 +3,16 @@ import { apiConfig } from '../config/api';
 import React from 'react';
 
 
-export const SOCKET_EV_SEEN = "seen"
+export const SOCKET_EV_SEEN = "message_seen"
 export const SOCKET_EV_SEND_MESSAGE = "sendMessage"
-export const SOCKET_EV_JOIN = "sendMessage"
+export const SOCKET_EV_RECEIVE_MESSAGE = "receivedMessage"
+export const SOCKET_EV_ACKNOWLEDGEMENT = "acknowledge"
+export const SOCKET_EV_JOIN = "join"
 
 export const socket = IO(apiConfig.socketPath, {
     autoConnect: true,
     reconnection: true,
-    reconnectionAttempts: 30,
+    reconnectionAttempts: 10000000,
     // rejectUnauthorized: false,
     transports: ["websocket"],
 });

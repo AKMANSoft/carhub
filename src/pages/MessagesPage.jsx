@@ -2,9 +2,8 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faCheckDouble, faClock, faImage, faMagnifyingGlass, faPaperPlane, faPaperclip, faPlus } from "@fortawesome/free-solid-svg-icons";
 import useSocketIO from "../components/hooks/useSocketIO";
-import useChatsList from "../components/hooks/chatsListFetcher";
 import { blobToBase64, cn, formatDateTimeForMsg } from "../lib/utils";
-import { SOCKET_EV_SEEN, SOCKET_EV_SEND_MESSAGE } from "../lib/socketio";
+import { SOCKET_EV_ACKNOWLEDGEMENT, SOCKET_EV_JOIN, SOCKET_EV_RECEIVE_MESSAGE, SOCKET_EV_SEEN, SOCKET_EV_SEND_MESSAGE } from "../lib/socketio";
 import LoaderEl from "../components/loader";
 import axios from "axios";
 import { apiConfig } from "../config/api";
@@ -14,51 +13,59 @@ import { handleTranslation } from "../lib/i18n";
 
 export default function MessagesPage({ authUser }) {
     const { trans } = handleTranslation()
-    const { data: chatsList } = useChatsList(authUser.accessToken)
+    const [chatsList, setChatsList] = React.useState([])
     const [selectedChat, setSelectedChat] = React.useState(null);
-    const socket = useSocketIO();
-    React.useEffect(() => {
-        socket.emit(SOCKET_EV_SEEN);
-        return () => {
-            socket.off("receivedMessage");
-        };
-    }, [socket]);
 
 
-    const sendMessage = async (message) => {
-        socket.emit(
-            SOCKET_EV_SEND_MESSAGE,
-            message
-        )
-    }
+    React.useEffect(async () => {
+        try {
+            const res = await axios.post(
+                apiConfig.basePath + apiConfig.endpoints.getChatsList,
+                {},
+                {
+                    headers: {
+                        Authorization: "Bearer " + authUser.accessToken,
+                        "Content-Type": "multipart/form-data"
+                    }
+                });
+            setChatsList(res.data.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }, [])
 
 
-    const setMessageSeen = (messageId) => {
-        if (!selectedChat) return;
-        socket.emit(SOCKET_EV_SEEN, {
-            sender_id: selectedChat.sender_id,
-            receiver_id: selectedChat.receiver_id,
-            message_id: messageId,
+    const setMessagesSeen = () => {
+        axios.post(
+            apiConfig.basePath + apiConfig.endpoints.seenAllMessages,
+            {
+                user_id: newChat?.chatProfile.id,
+            },
+            {
+                headers: {
+                    "Authorization": "Bearer " + authUser.accessToken
+                }
+            }
+        ).then((res) => {
+            if (res.data.success === true) {
+                setChatsList(chatsList.map((chat) => {
+                    if (chat.id === newChat?.id) {
+                        return {
+                            ...chat,
+                            unseen_message_count: 0,
+                        }
+                    }
+                    return chat;
+                }))
+            }
+        }).catch((error) => {
+            console.log(error)
         })
     }
 
     const onSelectedChatChange = (newChat) => {
         if (newChat?.unseen_message_count > 0) {
-            axios.post(
-                apiConfig.basePath + apiConfig.endpoints.seenAllMessages,
-                {
-                    user_id: newChat?.chatProfile.id,
-                },
-                {
-                    headers: {
-                        "Authorization": "Bearer " + authUser.accessToken
-                    }
-                }
-            ).then((res) => {
-                console.log(res)
-            }).catch((error) => {
-                console.log(error)
-            })
+            setMessagesSeen()
         }
         setSelectedChat(newChat)
     }
@@ -79,8 +86,23 @@ export default function MessagesPage({ authUser }) {
                 selectedChat ?
                     <MessagesSection
                         authUser={authUser}
+                        setMessagesSeen={setMessagesSeen}
+                        onMessageReceived={(newChat) => {
+                            if (!newChat) return;
+                            setChatsList(
+                                chatsList.map((chat) => {
+                                    if (chat.id === newChat.id) {
+                                        return {
+                                            ...chat,
+                                            last_message: newChat.last_message,
+                                            unseen_message_count: 0,
+                                        }
+                                    }
+                                    return chat
+                                })
+                            )
+                        }}
                         selectedChat={selectedChat}
-                        onSendMessage={sendMessage}
                         onBackPressed={() => setSelectedChat(null)} />
                     :
                     <div className="hidden lg:flex items-center justify-center w-full h-96">
@@ -96,17 +118,23 @@ export default function MessagesPage({ authUser }) {
 
 
 
-function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage }) {
+function MessagesSection({
+    authUser, selectedChat,
+    onBackPressed, onMessageReceived,
+    setMessagesSeen
+}) {
     const { trans } = handleTranslation();
     const [messageText, setMessageText] = React.useState("");
-    const [messages, setMessages] = React.useState(null);
+    const [messages, setMessages] = React.useState([]);
+    const [isLoading, setIsloading] = React.useState(false);
     const messagesContainerRef = React.useRef(null);
     const fileInputRef = React.useRef(null);
+    const socket = useSocketIO();
 
 
     React.useEffect(async () => {
-        if (messages === null)
-            setMessages(null);
+        setMessages([])
+        setIsloading(true);
         try {
             const res = await axios.post(
                 apiConfig.basePath + apiConfig.endpoints.getChatMessages,
@@ -128,8 +156,9 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             }, 10)
         } catch (error) {
             console.log(error);
-            setMessages(null)
+            // setMessages(null)
         }
+        setIsloading(false)
     }, [selectedChat])
 
     React.useEffect(() => {
@@ -149,6 +178,54 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
 
 
 
+    React.useEffect(() => {
+        socket.emit(SOCKET_EV_JOIN, `${selectedChat.sender_id}${selectedChat.receiver_id}`);
+        socket.on(SOCKET_EV_ACKNOWLEDGEMENT, () => {
+            console.log("Socket io ack event");
+        })
+        socket.on(SOCKET_EV_RECEIVE_MESSAGE, (chat) => {
+            setMessages((prevMessages) => [...prevMessages, chat.last_message]);
+            onMessageReceived(chat);
+            setMessageSeen(chat.last_message.id)
+        })
+        socket.emit(SOCKET_EV_SEEN, {
+            "message_id": selectedChat?.last_message?.id,
+            "sender_id": selectedChat?.sender_id,
+            "receiver_id": selectedChat?.receiver_id
+        })
+        socket.on("disconnect", () => {
+            console.log("Socket Disconnected.")
+        })
+        return () => {
+            socket.off(SOCKET_EV_ACKNOWLEDGEMENT);
+            socket.off(SOCKET_EV_RECEIVE_MESSAGE);
+        };
+    }, [socket]);
+
+
+    console.log(socket.connected)
+
+
+
+    const sendMessage = async (message) => {
+        socket.emit(
+            SOCKET_EV_SEND_MESSAGE,
+            message
+        )
+    }
+
+
+    const setMessageSeen = (messageId) => {
+        if (!selectedChat) return;
+        socket.emit(SOCKET_EV_SEEN, {
+            sender_id: selectedChat.sender_id,
+            receiver_id: selectedChat.receiver_id,
+            message_id: messageId,
+        })
+    }
+
+
+
     const handleSendMessage = () => {
         if (messageText === "" || !messages) return;
         const senderId = authUser.userProfile.id;
@@ -157,15 +234,15 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             "car_id": selectedChat.car_id,
             "sent_by": senderId,
             "receiver_id": receiverId,
-            "chatId": receiverId + senderId,
+            "chatId": senderId + "" + receiverId,
             "type": "text",
             "is_seen": "0",
             "message": messageText,
             "sender_id": senderId
         }
-        onSendMessage(message)
-        setMessages([
-            ...(messages ? messages : []),
+        sendMessage(message);
+        setMessages((prevMessages) => [
+            ...prevMessages,
             {
                 id: Math.round((new Date()).getTime() * Math.random()),
                 ...message,
@@ -181,7 +258,7 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             "car_id": selectedChat.car_id,
             "sent_by": senderId,
             "receiver_id": receiverId,
-            "chatId": receiverId + senderId,
+            "chatId": `${senderId}${receiverId}`,
             "type": "file",
             "file_type": "image",
             "file": window.URL.createObjectURL(imageBlob),
@@ -190,22 +267,20 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
             "sender_id": senderId
         }
         blobToBase64(imageBlob).then((imageB64) => {
-            onSendMessage({
+            sendMessage({
                 ...message,
                 file: imageB64,
-                message: imageB64,
-                base64data: imageB64
             })
         })
-        setMessages([
-            ...(messages.map((msg) => ({ ...msg, state: "" }))),
-            {
-                id: Math.round((new Date()).getTime() * Math.random()),
-                ...message,
-                state: "sending",
-                created_at: (new Date()).toUTCString()
-            }
-        ])
+        // setMessages((prevMessages) => [
+        //     ...(prevMessages.map((msg) => ({ ...msg, state: "" }))),
+        //     {
+        //         id: Math.round((new Date()).getTime() * Math.random()),
+        //         ...message,
+        //         state: "sending",
+        //         created_at: (new Date()).toUTCString()
+        //     }
+        // ])
     }
 
 
@@ -215,7 +290,6 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
         const images = e.target.files;
         if (images.length <= 0) return;
         if (!messages) {
-            console.log("messages null")
             return;
         }
         const imageBlob = images[0];
@@ -236,7 +310,7 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
                 //         <p>Got some issue loading messages. <br /> Try refreshing page.</p>
                 //     </div>
                 //     :
-                !messages ?
+                isLoading || !messages ?
                     <LoaderEl containerClassName="h-full" />
                     :
                     <div ref={messagesContainerRef} className="max-h-full h-full overflow-y-auto">
@@ -287,14 +361,13 @@ function MessagesSection({ authUser, selectedChat, onBackPressed, onSendMessage 
 
 
 function ChatSidebar({ userProfile, chatsList, setSelectedChat, selectedChat = null, }) {
-    const {trans} = handleTranslation()
+    const { trans } = handleTranslation()
     const [filterTerm, setFilterTerm] = React.useState("");
     const [filteredChatList, setFilteredChatList] = React.useState(chatsList ?? []);
 
 
     React.useEffect(() => {
         if (chatsList) {
-            console.log(filterTerm)
             setFilteredChatList(
                 chatsList
                     .map((chat) => {
