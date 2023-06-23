@@ -179,7 +179,7 @@ export default function SigninPopup() {
                                             {/* <h1 className="uppercase text-6xl font-bold">Carhub</h1>
                                             <p className="text-base italic font-light">Your Car Destination</p> */}
                                             <div className='flex items-center justify-center'>
-                                                <img src="/icons/logo.png" height={150} className="h-40 rounded-2xl" alt="" />
+                                                <img src="/images/logo.png" height={150} className="h-40 rounded-2xl" alt="" />
                                             </div>
                                             <AlertMessage
                                                 success={alertMessage.success}

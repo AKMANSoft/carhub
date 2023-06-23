@@ -263,7 +263,7 @@ export default function SignupPopup() {
                                     <div className="w-full text-white px-5 md:px-20 min-h-[70vh]">
                                         <div className="mb-16 text-center">
                                             <div className='flex items-center justify-center'>
-                                                <img src="/icons/logo.png" height={150} className="h-40 rounded-2xl" alt="" />
+                                                <img src="/images/logo.png" height={150} className="h-40 rounded-2xl" alt="" />
                                             </div>
                                             <AlertMessage
                                                 success={alertMessage.success}
@@ -389,7 +389,7 @@ export default function SignupPopup() {
                                                             <ThemeInput
                                                                 type='number'
                                                                 className="ps-16"
-                                                                placeholder='Phone Number'
+                                                                placeholder={trans("cell")}
                                                                 variant='phone'
                                                                 value={phoneNumber} onChange={(val) => setPhoneNumber(val)} />
                                                         </div>

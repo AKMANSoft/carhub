@@ -38,7 +38,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                             <FontAwesomeIcon icon={faBars} />
                         </button>
                         <a href="/" className="rounded-2xl">
-                            <img src="/icons/logo.png" height={60} className="h-[80px] rounded-2xl" alt="" />
+                            <img src="/images/logo.png" height={60} className="h-20 w-20 rounded-2xl" alt="" />
                         </a>
                         <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
