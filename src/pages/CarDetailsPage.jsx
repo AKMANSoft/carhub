@@ -26,6 +26,9 @@ export default function CarDetailsPage() {
     }) : []
 
 
+    console.log(carDetails)
+
+
     return (
         <MainLayout>
             {
@@ -101,7 +104,8 @@ export default function CarDetailsPage() {
 
 function CarDetailsSection({ className, carDetails, userProfile }) {
     const { trans } = handleTranslation()
-    console.log(userProfile)
+
+    console.log(carDetails);
     return (
         <div className={className}>
             <div className="md:px-5">
@@ -125,6 +129,9 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                         </>
                         :
                         <>
+                            <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
+                                {trans("contact_seller")}
+                            </button>
                             <button type='button' className='text-base font-medium bg-gray-200 text-gray-800 px-8 py-2.5 hover:bg-gray-300 rounded-full'>
                                 {trans("contact_seller")}
                             </button>
@@ -160,7 +167,7 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">{trans("condition")}</span>
                         <span className="font-medium">
-                            {carDetails.condition ?? ''}
+                            {trans(carDetails.condition?.toLowerCase() ?? '')}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
@@ -182,13 +189,13 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">{trans("title_status")}</span>
                         <span className="font-medium">
-                            {carDetails.title_status ?? ''}
+                            {trans(carDetails.title_status?.toLowerCase() ?? '')}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">{trans("car-fuel-type")}</span>
                         <span className="font-medium">
-                            {carDetails.car_fuel_type ?? ''}
+                            {trans(carDetails.car_fuel_type?.toLowerCase()?.replace(" ", "_") ?? '')}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">

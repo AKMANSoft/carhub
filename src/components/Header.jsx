@@ -37,7 +37,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         <button type="button" onClick={() => setHeaderActive(true)} className="text-2xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
                             <FontAwesomeIcon icon={faBars} />
                         </button>
-                        <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
+                        <a href="/" className="rounded-2xl">
+                            <img src="/icons/logo.png" height={60} className="h-[80px] rounded-2xl" alt="" />
+                        </a>
                         <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
                             {

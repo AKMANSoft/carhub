@@ -66,8 +66,8 @@ export const CarConditions = {
         label: "new"
     },
     EXCELENT: {
-        id: "Excelent",
-        label: "excelent",
+        id: "Excellent",
+        label: "excellent",
     },
     VERY_GOOD: {
         id: "Very Good",
@@ -351,7 +351,8 @@ export default function SearchPage() {
                         </div>
 
                         {
-                            isLoading || error ?
+                            !error &&
+                                isLoading ?
                                 <LoaderEl containerClassName="w-full h-[400px]" />
                                 :
                                 cars?.length > 0 ?
@@ -500,26 +501,6 @@ export function FiltersSectionEl({
     const { data: vehicleTrims } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarTrims + `?year=${filters.year}&make=${filters.make}&model=${filters.model}`);
 
 
-    const [selectedYear, setSelectedYear] = useState(filters.year);
-    const [selectedMake, setSelectedMake] = useState(filters.make);
-    const [selectedModel, setSelectedModel] = useState(filters.model);
-    const [selectedVTrim, setSelectedVTrim] = useState(filters.vehicleTrim);
-    const [selectedMileage, setSelectedMileage] = useState(filters.mileage);
-
-
-    useEffect(() => {
-        setFilters({
-            ...filters,
-            year: selectedYear,
-            make: selectedMake,
-            model: selectedModel,
-            mileage: selectedMileage,
-            vehicleTrim: selectedVTrim
-        })
-    }, [selectedYear, selectedMake, selectedModel, selectedVTrim, selectedMileage])
-
-
-
     return (
         <div className="border-b py-6 space-y-4">
             <div>
@@ -543,8 +524,12 @@ export function FiltersSectionEl({
                     {trans("year")}
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <select value={selectedYear} disabled={!years || years.length <= 0}
-                        onChange={(e) => setSelectedYear(e.target.value)}
+                    <select value={filters.year}
+                        disabled={!years || years.length <= 0}
+                        onChange={(e) => setFilters({
+                            ...filters,
+                            year: e.target.value
+                        })}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
                         <option value="">{`${trans("select")} ${trans("year")}`}</option>
                         {
@@ -561,8 +546,12 @@ export function FiltersSectionEl({
                     {trans("make")}
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <select value={selectedMake} disabled={!makes || makes.length <= 0}
-                        onChange={(e) => setSelectedMake(e.target.value)}
+                    <select value={filters.make}
+                        disabled={!makes || makes.length <= 0}
+                        onChange={(e) => setFilters({
+                            ...filters,
+                            make: e.target.value
+                        })}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
                         <option value="">{`${trans("select")} ${trans("make")}`}</option>
                         {
@@ -579,8 +568,12 @@ export function FiltersSectionEl({
                     {trans("model")}
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <select value={selectedModel} disabled={!models || models.length <= 0}
-                        onChange={(e) => setSelectedModel(e.target.value)}
+                    <select value={filters.model}
+                        disabled={!models || models.length <= 0}
+                        onChange={(e) => setFilters({
+                            ...filters,
+                            model: e.target.value
+                        })}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
                         <option value="">{`${trans("select")} ${trans("model")}`}</option>
                         {
@@ -597,8 +590,11 @@ export function FiltersSectionEl({
                     {trans("vehicle_trim")}
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <select value={selectedVTrim} disabled={!vehicleTrims || vehicleTrims.length <= 0}
-                        onChange={(e) => setSelectedVTrim(e.target.value)}
+                    <select value={filters.vehicleTrim} disabled={!vehicleTrims || vehicleTrims.length <= 0}
+                        onChange={(e) => setFilters({
+                            ...filters,
+                            vehicleTrim: e.target.value
+                        })}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
                         <option value="">{`${trans("select")} ${trans("vehicle_trim")}`}</option>
                         {
@@ -615,8 +611,11 @@ export function FiltersSectionEl({
                     {trans("mileage")}
                 </h5>
                 <div className="flex items-center gap-3 mt-2">
-                    <select value={selectedMileage}
-                        onChange={(e) => setSelectedMileage(e.target.value)}
+                    <select value={filters.mileage}
+                        onChange={(e) => setFilters({
+                            ...filters,
+                            mileage: e.target.value
+                        })}
                         className="w-full outline-none text-sm text-gray-800 placeholder:text-gray-600 border border-gray-200 py-1.5 px-3 rounded-md">
                         <option value="">{`${trans("select")} ${trans("mileage")}`}</option>
                         {

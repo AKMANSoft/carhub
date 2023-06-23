@@ -86,6 +86,16 @@ body::after {
 }
 
 
+
+button, a {
+    @apply outline-none;
+    @apply focus-visible:ring-1 ring-gray-600 focus-visible:ring-offset-2 ring-offset-transparent;
+}
+
+
+
+
+
 .slick-arrow::before {
     display: none;
 }

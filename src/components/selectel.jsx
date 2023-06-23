@@ -1,4 +1,4 @@
-import { faCheck, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Listbox, Transition } from "@headlessui/react";
 import { Fragment } from "preact";
@@ -6,7 +6,7 @@ import React from 'react'
 import { cn } from '../lib/utils'
 import { handleTranslation } from "../lib/i18n";
 
-export default function SelectEl({ label = "", children, items = null, value, onChange, isOptional = false }) {
+export default function SelectEl({ label = "", children, items = null, value, onChange, isOptional = false, disabled = false }) {
     const { trans } = handleTranslation();
     return (
         <div className="w-full">
@@ -22,7 +22,10 @@ export default function SelectEl({ label = "", children, items = null, value, on
                     }
                 </label>
             }
-            <select value={value} onChange={(e) => onChange(e.target.value)} className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
+            <select
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                className="rounded w-full py-3 text-gray-900 text-base font-medium mt-1">
                 <option value="">{trans("select")} {label}</option>
                 {
                     items && items !== null ?

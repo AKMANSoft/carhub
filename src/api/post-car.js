@@ -26,6 +26,7 @@ export default async function doPostCar(carDetails, accessToken) {
     data.set("state", carDetails.carLocation.state);
     data.set("lat", carDetails.carLocation.latitude);
     data.set("lng", carDetails.carLocation.longitude);
+    data.set("zip_code", carDetails.carLocation.zipCode);
     carDetails.images.forEach((img) => {
         data.append("file[]", img.blob);
     })

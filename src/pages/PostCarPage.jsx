@@ -58,7 +58,7 @@ const expandableSections = [
 const defaultCarDetails = {
     images: [],
     details: {
-        category: 0,
+        category: "",
         condition: "",
         year: "",
         make: "",
@@ -98,36 +98,7 @@ export default function PostCarPage() {
 
 
     const [carDetails, setCarDetails] = useState({
-        images: [],
-        details: {
-            category: 0,
-            condition: "",
-            year: "",
-            make: "",
-            model: "",
-            vehicleTrim: "",
-            mileage: "",
-            fuelType: "",
-            titleStatus: ""
-        },
-        colors: {
-            interior: "",
-            exterior: "",
-        },
-        features: [],
-        postDetails: {
-            price: "",
-            description: "",
-            findMeBuyer: false
-        },
-        carLocation: {
-            city: "",
-            state: "",
-            country: "",
-            latitude: 0,
-            longitude: 0,
-            zipCode: null,
-        },
+        ...defaultCarDetails
     });
 
 
@@ -347,6 +318,11 @@ function PhotosSection({ onValidated, setImages, images }) {
                 ...alertMessage,
                 visible: true,
             })
+        } else {
+            setAlertMessage({
+                ...alertMessage,
+                visible: false,
+            })
         }
     }, [images])
 
@@ -382,15 +358,15 @@ function PhotosSection({ onValidated, setImages, images }) {
 
 
 const FuelTypes = [
-    "Gas",
-    "Diesel",
-    "Hybrid",
-    "Electric",
-    "Flex"
+    "gas",
+    "petrol",
+    "hybrid",
+    "electric",
+    "flexible_fuel"
 ]
 
 function DetailsSection({ onValidated, details, setDetails, accessToken }) {
-    const { trans } = handleTranslation()
+    const { trans, apiTrans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
         text: "",
@@ -421,7 +397,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <SelectEl
                     isOptional={true}
-                    items={categories ? categories.map((ctgry) => ({ value: ctgry.id, label: ctgry.title })) : []}
+                    items={categories ? categories.map((ctgry) => ({ value: ctgry.id, label: apiTrans(ctgry, "title") })) : []}
                     label={trans("category")} value={details.category}
                     onChange={(value) => setDetails({ ...details, category: value })} />
                 <SelectEl
@@ -463,7 +439,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
                 <SelectEl
                     isOptional={true}
-                    items={FuelTypes.map((fuel) => ({ value: fuel, label: fuel }))}
+                    items={FuelTypes.map((fuel) => ({ value: fuel, label: trans(fuel) }))}
                     label={trans("car-fuel-type")} value={details.fuelType}
                     onChange={(value) => setDetails({ ...details, fuelType: value })} />
                 <SelectEl
@@ -528,7 +504,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
                         {trans("exterior-color")}:
                         <span className="font-normal text-base ms-2">
-                            {exteriorColorsList.find((clr) => colors.exterior === clr.hex)?.label ?? ""}
+                            {trans(exteriorColorsList.find((clr) => colors.exterior === clr.hex)?.label ?? "")}
                         </span>
                     </h3>
                     <div className="w-full grid grid-cols-5 items-start gap-7" >
@@ -544,7 +520,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                                         style={{ background: color.hex }} >
                                     </button>
                                     <span className="block text-sm font-semibold text-gray-800 text-center">
-                                        {color.label}
+                                        {trans(color.label)}
                                     </span>
                                 </div>
                             ))
@@ -555,7 +531,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
                         {trans("interior-color")}:
                         <span className="font-normal text-base ms-2">
-                            {interiorColorsList.find((clr) => colors.interior === clr.hex)?.label ?? ""}
+                            {trans(interiorColorsList.find((clr) => colors.interior === clr.hex)?.label ?? "")}
                         </span>
                     </h3>
                     <div className="w-full grid grid-cols-5 items-start gap-7" >
@@ -571,7 +547,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
                                         style={{ background: color.hex }} >
                                     </button>
                                     <span className="block text-sm font-semibold text-gray-800 text-center">
-                                        {color.label}
+                                        {trans(color.label)}
                                     </span>
                                 </div>
                             ))

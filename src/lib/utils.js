@@ -14,9 +14,9 @@ export function formatDate(date, seperator = "-") {
 
 export function blobToBase64(blob) {
   return new Promise((resolve, _) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.readAsDataURL(blob);
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.readAsDataURL(blob);
   });
 }
 
@@ -26,29 +26,34 @@ export function formatNumberto0(num) {
 
 
 export function formatPrice(price) {
+  const symbols = ["", "K", "M", "B", "T", "Q", "Qu"]; // Magnitude symbols
+  const magnitude = Math.floor(Math.log10(price) / 3); // Calculate magnitude
+  let convertedPrice = price / Math.pow(10, magnitude * 3);
+  convertedPrice = Math.round(convertedPrice * 100) / 100;
+  return `${convertedPrice}${symbols[magnitude]}`
   // Convert the price to a string
-  let priceStr = price.toString();
+  // let priceStr = parseFloat(price).toString();
 
-  // Check if the price contains a decimal point
-  let decimalIndex = priceStr.indexOf(".");
-  let decimalPart = "";
-  if (decimalIndex !== -1) {
-    // Extract the decimal part of the price
-    decimalPart = priceStr.slice(decimalIndex);
-    priceStr = priceStr.slice(0, decimalIndex);
-  }
+  // // Check if the price contains a decimal point
+  // let decimalIndex = priceStr.indexOf(".");
+  // let decimalPart = "";
+  // if (decimalIndex !== -1) {
+  //   // Extract the decimal part of the price
+  //   decimalPart = priceStr.slice(decimalIndex);
+  //   priceStr = priceStr.slice(0, decimalIndex);
+  // }
 
-  // Add commas every three digits from the right
-  let formattedPrice = "";
-  for (let i = priceStr.length - 1, count = 0; i >= 0; i--, count++) {
-    if (count && count % 3 === 0) {
-      formattedPrice = "," + formattedPrice;
-    }
-    formattedPrice = priceStr[i] + formattedPrice;
-  }
+  // // Add commas every three digits from the right
+  // let formattedPrice = "";
+  // for (let i = priceStr.length - 1, count = 0; i >= 0; i--, count++) {
+  //   if (count && count % 3 === 0) {
+  //     formattedPrice = "," + formattedPrice;
+  //   }
+  //   formattedPrice = priceStr[i] + formattedPrice;
+  // }
 
-  // Append the decimal part and return the formatted price
-  return formattedPrice + decimalPart;
+  // // Append the decimal part and return the formatted price
+  // return formattedPrice + decimalPart;
 }
 
 
