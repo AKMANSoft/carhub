@@ -35,7 +35,7 @@ export default function MessagesPage({ authUser }) {
     }, [])
 
 
-    const setMessagesSeen = () => {
+    const setMessagesSeen = (newChat) => {
         axios.post(
             apiConfig.basePath + apiConfig.endpoints.seenAllMessages,
             {
@@ -65,7 +65,7 @@ export default function MessagesPage({ authUser }) {
 
     const onSelectedChatChange = (newChat) => {
         if (newChat?.unseen_message_count > 0) {
-            setMessagesSeen()
+            setMessagesSeen(newChat)
         }
         setSelectedChat(newChat)
     }
@@ -267,6 +267,7 @@ function MessagesSection({
             "sender_id": senderId
         }
         blobToBase64(imageBlob).then((imageB64) => {
+            console.log(imageB64)
             sendMessage({
                 ...message,
                 file: imageB64,
