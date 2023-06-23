@@ -160,7 +160,7 @@ function MyCarsSection({ authUser }) {
                             {
                                 myCars &&
                                 myCars.map((car) => (
-                                    <CarGridItem car={car} type="SELL" />
+                                    <CarGridItem car={car} type="SELL" accessToken={authUser.accessToken} />
                                 ))
                             }
                         </div>
