@@ -2,7 +2,8 @@
 
 export const apiConfig = {
     basePath: "https://pro.gocarhub.app/api",
-    socketPath: "ws://3.130.87.79:3000",
+    // socketPath: "ws://3.130.87.79:3000",
+    socketPath: "https://pro.gocarhub.app:3000",
     endpoints: {
         //Auth and User Endpoints
         signup: "/signup",
