@@ -27,16 +27,20 @@ export default function SiderBar({ onSidebarClose, onLogout }) {
     return (
         <div className="fixed top-0 left-0 w-full h-screen max-h-screen overflow-y-auto bg-white shadow-lg z-50 px-4 md:px-10">
             <div className="flex items-center justify-between py-5">
-                <div className="inline-flex items-center gap-4">
+                <div className="">
+                    <a href="/" className="rounded-2xl">
+                        <img src="/images/logo.png" height={60} className="w-[50px] h-[50px] rounded-xl lg:h-20 lg:w-20 lg:rounded-2xl" alt="" />
+                    </a>
+                </div>
+                <div className="flex items-center gap-3">
+                    <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
+                        {trans("post_car")}
+                        <FontAwesomeIcon icon={faPlus} className=' ms-3 lg:ms-5' />
+                    </a>
                     <button type="button" onClick={onSidebarClose} className="text-3xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
                         <FontAwesomeIcon icon={faXmark} />
                     </button>
-                    <a href="/" className="text-3xl md:text-4xl font-extrabold text-primary">CARHUB</a>
                 </div>
-                <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
-                    {trans("post_car")}
-                    <FontAwesomeIcon icon={faPlus} className=' ms-3 lg:ms-5' />
-                </a>
             </div>
             <div className="mt-10">
                 <ul className="py-2">

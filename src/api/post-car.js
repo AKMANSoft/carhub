@@ -15,11 +15,11 @@ export default async function doPostCar(carDetails, accessToken) {
     data.set("mileage", carDetails.details.mileage);
     data.set("car_fuel_type", carDetails.details.fuelType);
     data.set("title_status", carDetails.details.titleStatus);
-    data.set("color", carDetails.colors.interior);
-    data.set("exterior_color", carDetails.colors.exterior);
+    data.set("color", carDetails.colors.interior.hex);
+    data.set("exterior_color", carDetails.colors.exterior.hex);
     data.set("features", carDetails.features.join(","));
     data.set("amount", carDetails.postDetails.price);
-    data.set("find_me_buyer", carDetails.postDetails.findMeBuyer ? 1 : 0);
+    data.set("find_me_buyer", carDetails.postDetails.findMeBuyer ? "1" : "0");
     data.set("description", carDetails.postDetails.description);
     data.set("car_address", `${carDetails.carLocation.city},${carDetails.carLocation.state},${carDetails.carLocation.country}`);
     data.set("city", carDetails.carLocation.city);

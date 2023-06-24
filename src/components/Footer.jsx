@@ -33,7 +33,7 @@ export default function Footer() {
                                     value: "en",
                                 },
                                 {
-                                    label: "Español",
+                                    label: "Spanish",
                                     value: "es",
                                 }
                             ]}

@@ -9,7 +9,7 @@ import { cn } from "../lib/utils";
 import { apiConfig } from "../config/api";
 import useFiltersFetcher, { sortYears } from "./hooks/filtersFetchers";
 import LoaderEl from "./loader";
-import { exteriorColorsList, interiorColorsList } from "../data/colors";
+import { carColorsList, exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
 import AlertMessage from "./ThemeAlert";
 import SelectEl from "./selectel";
@@ -88,7 +88,7 @@ const defaultCarDetails = {
 
 export default function AddEditCarComponent({ editMode = false, authUser, editCarDetails, updateCarDetails, showLoadingBtn = false }) {
     const { trans } = handleTranslation()
-    const [expandedSection, setExpandedSection] = React.useState("")
+    const [expandedSection, setExpandedSection] = React.useState(editMode ? "" : CarPostSections.Photos)
     const [validatedSections, setValidatedSections] = React.useState(
         editMode && editCarDetails ? expandableSections.map((expSec) => expSec.name) : []
     );
@@ -116,8 +116,8 @@ export default function AddEditCarComponent({ editMode = false, authUser, editCa
             titleStatus: editCarDetails.title_status
         },
         colors: {
-            interior: editCarDetails.color,
-            exterior: editCarDetails.exterior_color,
+            interior: carColorsList.find((clr) => clr.hex === editCarDetails.color),
+            exterior: carColorsList.find((clr) => clr.hex === editCarDetails.exterior_color),
         },
         features: editCarDetails.vehicle_new?.reduce((childrenArray, obj) => {
             return childrenArray.concat(obj.children.map((f) => f.id));
@@ -125,7 +125,7 @@ export default function AddEditCarComponent({ editMode = false, authUser, editCa
         postDetails: {
             price: editCarDetails.amount,
             description: editCarDetails.description,
-            findMeBuyer: editCarDetails.find_me_buyer === "1"
+            findMeBuyer: editCarDetails.find_me_buyer || editCarDetails.find_me_buyer === "1"
         },
         carLocation: {
             city: editCarDetails.city,
@@ -283,9 +283,12 @@ export default function AddEditCarComponent({ editMode = false, authUser, editCa
                                                                     {trans(name)}
                                                                 </h3>
                                                             </div>
-                                                            <span className="bg-white p-2 text-base rounded-full">
-                                                                <FontAwesomeIcon icon={faChevronDown} className={expandedSection === name ? "transition-all -rotate-180" : ""} />
-                                                            </span>
+                                                            {
+                                                                editMode &&
+                                                                <span className="bg-white p-2 text-base rounded-full">
+                                                                    <FontAwesomeIcon icon={faChevronDown} className={expandedSection === name ? "transition-all -rotate-180" : ""} />
+                                                                </span>
+                                                            }
                                                         </div>
                                                         {
                                                             name === CarPostSections.Photos && expandedSection === CarPostSections.Photos &&
@@ -613,12 +616,12 @@ function ColorsSection({ onValidated, colors, setColors, editMode, showLoadingBt
     const onExteriorColorChange = (color) => {
         setColors({
             interior: colors.interior,
-            exterior: color.hex
+            exterior: color
         })
     }
     const onInteriorColorChange = (color) => {
         setColors({
-            interior: color.hex,
+            interior: color,
             exterior: colors.exterior
         })
     }
@@ -630,25 +633,25 @@ function ColorsSection({ onValidated, colors, setColors, editMode, showLoadingBt
                 <div className="py-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
                         {trans("exterior-color")}:
-                        <span className="font-normal text-base ms-2">
-                            {trans(exteriorColorsList.find((clr) => colors.exterior === clr.hex)?.label ?? "")}
-                        </span>
+                        {/* <span className="font-normal text-base ms-2">
+                            {trans(colors)}
+                        </span> */}
                     </h3>
                     <div className="w-full grid grid-cols-5 items-start gap-7" >
                         {
-                            exteriorColorsList.map((color) => (
-                                <div key={color.hex} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
+                            carColorsList.map((color) => (
+                                <div key={color.name} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
                                     <button type="button" className={cn(
                                         "block w-14 h-auto rounded-full overflow-hidden aspect-square transition-all ring-4 cursor-pointer",
-                                        colors.exterior === color.hex ? "ring-primary" : "ring-transparent hover:ring-primary"
+                                        colors.exterior.name === color.name ? "ring-primary" : "ring-transparent hover:ring-primary"
                                     )}
                                         onFocus={() => onExteriorColorChange(color)}
                                         onClick={() => onExteriorColorChange(color)}
                                         style={{ background: color.hex }} >
                                     </button>
-                                    <span className="block text-sm font-semibold text-gray-800 text-center">
+                                    {/* <span className="block text-sm font-semibold text-gray-800 text-center">
                                         {trans(color.label)}
-                                    </span>
+                                    </span> */}
                                 </div>
                             ))
                         }
@@ -657,17 +660,17 @@ function ColorsSection({ onValidated, colors, setColors, editMode, showLoadingBt
                 <div className="py-8">
                     <h3 className="text-lg font-semibold text-gray-900 mb-8">
                         {trans("interior-color")}:
-                        <span className="font-normal text-base ms-2">
+                        {/* <span className="font-normal text-base ms-2">
                             {trans(interiorColorsList.find((clr) => colors.interior === clr.hex)?.label ?? "")}
-                        </span>
+                        </span> */}
                     </h3>
                     <div className="w-full grid grid-cols-5 items-start gap-7" >
                         {
-                            interiorColorsList.map((color) => (
-                                <div key={color.hex} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
+                            carColorsList.map((color) => (
+                                <div key={color.name} className="flex flex-col items-center justify-center gap-x-4 gap-y-7">
                                     <button type="button" className={cn(
                                         "block w-14 h-auto rounded-full overflow-hidden aspect-square transition-all ring-4 cursor-pointer",
-                                        colors.interior === color.hex ? "ring-primary" : "ring-transparent hover:ring-primary"
+                                        colors.interior.name === color.name ? "ring-primary" : "ring-transparent hover:ring-primary"
                                     )}
                                         onFocus={() => onInteriorColorChange(color)}
                                         onClick={() => onInteriorColorChange(color)}
@@ -717,7 +720,7 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures,
 
     const onFeaturesChange = (feature, value) => {
         if (features.includes(feature.id) && value === false) {
-            setFeatures(features.filter((f) => f.id !== feature.id))
+            setFeatures(features.filter((f) => f !== feature.id))
         }
         else {
             setFeatures([...features, feature.id])
@@ -744,7 +747,6 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures,
                                             <CheckBoxEl
                                                 key={feature.id}
                                                 label={apiTrans(feature, "title")}
-                                                value={features.includes(feature.id)}
                                                 checked={features.includes(feature.id)}
                                                 onChange={(val) => onFeaturesChange(feature, val)} />
                                         ))
@@ -806,6 +808,7 @@ function OtherDetailsSection({ onValidated, postDetails, setPostDetails, editMod
         })
     }
 
+
     return (
         <div className=" w-full shadow border rounded-md bg-white p-5 pb-8">
             <div className="w-full grid grid-cols-3 place-items-center pt-5  gap-7" >
@@ -825,7 +828,7 @@ function OtherDetailsSection({ onValidated, postDetails, setPostDetails, editMod
                 </div>
                 <div className="w-full col-span-3">
                     <CheckBoxEl label={trans("find_me_buyer")}
-                        value={postDetails.findMeBuyer}
+                        checked={postDetails.findMeBuyer}
                         onChange={onFindMeBuyerChange} />
                 </div>
             </div>
@@ -871,8 +874,10 @@ function CarLocationSection({ onValidated, carLocation, setCarLocation, editMode
             <div className="w-full grid grid-cols-3 place-items-center p-5 pb-8 gap-7" >
                 <div className="w-full col-span-3">
                     <LocationInputEl
-                        label={trans("car_location")} icon={faLocationDot}
-                        defaultValue={carLocation.address ?? ""} onChange={setCarLocation} />
+                        label={trans("car_location")}
+                        icon={faLocationDot}
+                        location={carLocation}
+                        onChange={setCarLocation} />
                 </div>
                 <div className="w-full col-span-3">
                     <InputEl
@@ -957,16 +962,19 @@ const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text
 
 
 export function LocationInputEl({
-    onChange, className, label, defaultValue
+    location,
+    onChange,
+    className,
+    label,
 }) {
     const autoCompleteRef = useRef();
-    const inputRef = useRef();
+    const inputRef = useRef(null);
     // const [text, setText] = useState(value);
     const options = {
         // componentRestrictions: { country: "ng" },
-        fields: ["address_components", "geometry", "name"],
+        fields: ["address_components", "geometry", "name", "formatted_address"],
         // types: addressType === AddressInputTypes.DEFAULT ? [] : [addressType]
-        types: ["address"]
+        // types: ["address"]
     };
     useEffect(() => {
         autoCompleteRef.current = new window.google.maps.places.Autocomplete(
@@ -999,7 +1007,8 @@ export function LocationInputEl({
                 country: countryName,
                 latitude: place.geometry.location.lat(),
                 longitude: place.geometry.location.lng(),
-                zipCode: postalCode
+                zipCode: postalCode,
+                address: place.formatted_address
             })
         });
     }, []);
@@ -1009,7 +1018,7 @@ export function LocationInputEl({
             className={className}
             label={label}
             icon={faLocationDot}
-            defaultValue={defaultValue}
+            value={location.address}
             onChange={null} />
     );
 }
@@ -1043,13 +1052,12 @@ function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange
 }
 
 
-function CheckBoxEl({ label = "", onChange, value, checked }) {
+function CheckBoxEl({ label = "", onChange, checked }) {
     return (
         <div className="w-full inline-flex items-center">
             <input type="checkbox"
                 name={label.toLowerCase().replace(" ", "_")}
                 id={label.toLowerCase().replace(" ", "_")}
-                value={value}
                 checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
                 className="rounded p-2.5 text-primary text-base font-medium" />

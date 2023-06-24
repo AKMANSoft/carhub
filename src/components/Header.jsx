@@ -34,11 +34,8 @@ export default function Header({ isLoggedin = false, onLogout }) {
             <div className="py-5 border-b border-b-gray-300">
                 <div className="flex items-center justify-between">
                     <div className='flex items-center gap-4 lg:gap-10'>
-                        <button type="button" onClick={() => setHeaderActive(true)} className="text-2xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
-                            <FontAwesomeIcon icon={faBars} />
-                        </button>
                         <a href="/" className="rounded-2xl">
-                            <img src="/images/logo.png" height={60} className="h-20 w-20 rounded-2xl" alt="" />
+                            <img src="/images/logo.png" height={60} className="w-[50px] h-[50px] rounded-xl lg:h-20 lg:w-20 lg:rounded-2xl" alt="" />
                         </a>
                         <div className="hidden xl:flex items-center gap-2" >
                             <HeaderSearchComponent category={category} categories={categories} />
@@ -69,7 +66,7 @@ export default function Header({ isLoggedin = false, onLogout }) {
                         {
                             isLoggedin ?
                                 <div className="ml-3">
-                                    <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-1.5 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
+                                    <a href="/post-car" className='text-sm md:text-base font-medium border border-primary text-gray-800 px-4 lg:px-8 py-2 lg:py-3 hover:bg-primary/95 hover:text-white transition-all rounded-full'>
                                         {trans("post_car")}
                                         <FontAwesomeIcon icon={faPlus} className="ms-3 lg:ms-5" />
                                     </a>
@@ -84,6 +81,9 @@ export default function Header({ isLoggedin = false, onLogout }) {
                                     </Link>
                                 </div>
                         }
+                        <button type="button" onClick={() => setHeaderActive(true)} className="ml-3 text-3xl lg:hidden inline-flex items-center justify-center rounded text-gray-800 bg-transparent border-gray-100 transition-all hover:text-primary">
+                            <FontAwesomeIcon icon={faBars} />
+                        </button>
                     </div>
                 </div>
                 <div className="mt-5 xl:hidden">
