@@ -22,6 +22,8 @@ export default function EditCarPage() {
     const { toast } = useToast();
 
 
+    console.log(carDetails)
+
     const fetchCarDetails = async () => {
         setIsLoading(true);
         try {
@@ -54,8 +56,18 @@ export default function EditCarPage() {
     const updateCarDetails = async (details) => {
         setProcessing(true);
         const response = await doUpdateCar(details, carDetails.id, authUser.accessToken);
+        let toastMessage = ""
+        let success = false;
+        if (response !== null) {
+            toastMessage = response.success ? "Car updated successfully. Refresh page to see changes." : response.message
+            success = response.success;
+        } else {
+            toastMessage = "Got some error while processing your request.";
+            success = false;
+        }
         toast({
-            description: response.success ? "Car updated successfully. Refresh page to see changes." : response.message,
+            description: toastMessage,
+            ...(!success && { variant: "destructive" })
         })
         // await fetchCarDetails()
         setProcessing(false);
