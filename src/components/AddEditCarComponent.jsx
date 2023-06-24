@@ -421,7 +421,7 @@ function PhotosSection({ onValidated, setImages, images, editMode, showLoadingBt
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
             <div className="w-full flex flex-wrap items-center p-5 pb-8 gap-6" >
-                <ImageDragDropInput images={images} withPreview onImagesChange={setImages} />
+                <ImageDragDropInput imagesRemovable={!editMode} images={images} withPreview onImagesChange={setImages} />
                 <div className="w-full mt-2 flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         {/* <button

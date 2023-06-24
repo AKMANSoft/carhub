@@ -9,6 +9,7 @@ export default function ImageDragDropInput({
     images = [],
     onImagesChange = (images) => { },
     withPreview = false,
+    imagesRemovable = true,
 }) {
     const { trans } = handleTranslation()
     // const onDrop = React.useCallback(acceptedFiles => {
@@ -82,11 +83,14 @@ export default function ImageDragDropInput({
                         images.map((img) => (
                             <span key={img.id} className='relative group rounded overflow-hidden bg-gray-200'>
                                 <img src={img.image} width={300} height={300} className="w-80 h-auto aspect-square object-cover object-center rounded overflow-hidden border-2 border-gray-100 transition-all hover:border-primary hover:scale-105" alt="" />
-                                <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
-                                    <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </button>
-                                </span>
+                                {
+                                    imagesRemovable &&
+                                    <span className='scale-0 group-hover:scale-100 w-full h-full bg-gray-500/70 absolute top-0 left-0 z-[1] flex items-center justify-center'>
+                                        <button type='button' onClick={() => removeImage(img.id)} className='cursor-pointer text-3xl text-white'>
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </button>
+                                    </span>
+                                }
                             </span>
                         ))
                     }

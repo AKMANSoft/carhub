@@ -63,7 +63,7 @@ export default function CarGridItem({ car, className = "", type = "BUY", accessT
         <div className={"w-full relative " + className}>
             {
                 type === "SELL" && accessToken !== null && accessToken !== "" &&
-                <CarOptionsDropMenu deleteCar={handleDeleteCar} markAsSold={handleMarkAsSoldCar} />
+                <CarOptionsDropMenu carId={car.id} deleteCar={handleDeleteCar} markAsSold={handleMarkAsSoldCar} />
             }
             {
                 showLoading &&
@@ -110,7 +110,7 @@ export default function CarGridItem({ car, className = "", type = "BUY", accessT
 
 
 
-function CarOptionsDropMenu({ markAsSold, deleteCar }) {
+function CarOptionsDropMenu({ carId, markAsSold, deleteCar }) {
     return (
         <div className="absolute top-2 right-5 w-4">
             <Menu as="div" className="relative inline-block text-left">
@@ -145,6 +145,18 @@ function CarOptionsDropMenu({ markAsSold, deleteCar }) {
                             </Menu.Item>
                         </div> */}
 
+                        <div className="px-1 py-1">
+                            <Menu.Item>
+                                <a
+                                    href={`/cars/${carId}/edit`}
+                                    className={cn(
+                                        "group flex w-full items-center rounded px-2 py-2 text-sm text-gray-900",
+                                        'ui-active:bg-primary ui-active:text-white',
+                                    )}>
+                                    Edit
+                                </a>
+                            </Menu.Item>
+                        </div>
                         <div className="px-1 py-1">
                             <Menu.Item>
                                 {({ active }) => (
