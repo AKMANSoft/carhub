@@ -15,6 +15,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import doSocialSignIn from '../api/socialSignIn';
 import { handleTranslation } from '../lib/i18n';
+import { CheckBoxEl } from '../components/AddEditCarComponent';
 
 
 
@@ -28,6 +29,7 @@ export default function SignupPopup() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [tosConfirmed, setTosConfirmed] = useState(false);
     const [password, setPassword] = useState("");
     const [confPassword, setConfPassword] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
@@ -163,6 +165,7 @@ export default function SignupPopup() {
                     email.match(siteConfig.emailPattern) && password !== "" &&
                     confPassword !== "" && password === confPassword &&
                     firstName !== "" && lastName !== "" && phoneNumber !== ""
+                    && tosConfirmed
                 ) {
                     setCurrentStep("second");
                 }
@@ -392,6 +395,21 @@ export default function SignupPopup() {
                                                                 placeholder={trans("cell")}
                                                                 variant='phone'
                                                                 value={phoneNumber} onChange={(val) => setPhoneNumber(val)} />
+                                                        </div>
+                                                        <div className='flex items-center gap-3 py-3 relative'>
+                                                            <CheckBoxEl
+                                                                id={"signup_confirmation"}
+                                                                checked={tosConfirmed}
+                                                                onChange={(value) => setTosConfirmed(value)}
+                                                                label={
+                                                                    <p className='text-white'>
+                                                                        {trans("signup_checkbox")}
+                                                                        <a href={siteConfig.links.termsOfServices} className='px-2 inline underline'>
+                                                                            {trans("tos").toLowerCase()}.
+                                                                        </a>
+                                                                    </p>
+                                                                } />
+
                                                         </div>
                                                         <button type="button" onClick={() => onContinue("first")} className="btn-light w-full mt-10">
                                                             {trans("continue")}

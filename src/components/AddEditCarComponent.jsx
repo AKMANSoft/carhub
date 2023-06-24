@@ -1052,16 +1052,15 @@ function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange
 }
 
 
-function CheckBoxEl({ label = "", onChange, checked }) {
+export function CheckBoxEl({ label = "", id = null, onChange, checked }) {
     return (
         <div className="w-full inline-flex items-center">
             <input type="checkbox"
-                name={label.toLowerCase().replace(" ", "_")}
-                id={label.toLowerCase().replace(" ", "_")}
+                id={id ?? label.toLowerCase().replace(" ", "_")}
                 checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
                 className="rounded p-2.5 text-primary text-base font-medium" />
-            <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-base font-medium ml-3 text-gray-800">
+            <label htmlFor={id ?? label.toLowerCase().replace(" ", "_")} className="text-base font-medium ml-3 text-gray-800">
                 {label}
             </label>
         </div>
