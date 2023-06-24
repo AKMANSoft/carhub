@@ -11,12 +11,14 @@ import { initFirebaseMessaging } from "./lib/fcm"
 //I18N import
 import i18n from './lib/i18n'
 import { I18nextProvider } from "react-i18next"
+import { Toaster } from "./components/shadcn/toaster"
 
 const SearchPage = React.lazy(() => import("./pages/SearchPage"))
 const AccountPage = React.lazy(() => import("./pages/AccountPage"))
 const PublicProfilePage = React.lazy(() => import("./pages/PublicProfilePage"))
 const InboxPage = React.lazy(() => import("./pages/InboxPage"))
 const CarDetailsPage = React.lazy(() => import("./pages/CarDetailsPage"))
+const EditCarPage = React.lazy(() => import("./pages/EditCarPage"))
 const FindMeBuyerPage = React.lazy(() => import("./pages/FindMeBuyerPage"))
 const PostCarPage = React.lazy(() => import("./pages/PostCarPage"))
 
@@ -54,6 +56,14 @@ function App() {
       element: (
         <Suspense>
           <CarDetailsPage />
+        </Suspense>
+      )
+    },
+    {
+      path: "/cars/:carId/edit",
+      element: (
+        <Suspense>
+          <EditCarPage />
         </Suspense>
       )
     },
@@ -145,6 +155,7 @@ function App() {
         }}>
           <SocketContext.Provider value={socket}>
             <RouterProvider router={router} />
+            <Toaster />
           </SocketContext.Provider>
         </LocationContext.Provider>
       </AuthUserContext.Provider>

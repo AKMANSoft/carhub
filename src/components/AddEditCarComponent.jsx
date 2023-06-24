@@ -1,20 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { MAIN_HORIZONTAL_PADDING } from "../styles/StaticCSS";
-import ImageDragDropInput from "../components/ImageDragDropInput";
-import MainLayout from "../components/layout";
+import ImageDragDropInput from "./ImageDragDropInput";
+import MainLayout from "./layout";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faChevronRight, faDollar, faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import { CarConditionsList } from "./SearchPage";
+import { faCheck, faChevronDown, faChevronRight, faDollar, faEdit, faLocationDot, faPencil } from "@fortawesome/free-solid-svg-icons";
+import { CarConditionsList } from "../pages/SearchPage";
 import { cn } from "../lib/utils";
 import { apiConfig } from "../config/api";
-import useFiltersFetcher, { sortYears } from "../components/hooks/filtersFetchers";
-import useAuthUser from "../components/hooks/useAuthUser";
-import LoaderEl from "../components/loader";
+import useFiltersFetcher, { sortYears } from "./hooks/filtersFetchers";
+import LoaderEl from "./loader";
 import { exteriorColorsList, interiorColorsList } from "../data/colors";
 import doPostCar from "../api/post-car";
-import AlertMessage from "../components/ThemeAlert";
-import { useNavigate } from "react-router-dom";
-import SelectEl from "../components/selectel";
+import AlertMessage from "./ThemeAlert";
+import SelectEl from "./selectel";
 import { handleTranslation } from "../lib/i18n";
 
 
@@ -23,8 +21,8 @@ const CarPostSections = {
     Details: "details",
     Colors: "colors",
     Features: "features",
-    Post: "post",
-    Finish: "finish",
+    OtherDetails: "other_details",
+    CarLocation: "car_location",
 }
 
 
@@ -35,23 +33,23 @@ const expandableSections = [
     },
     {
         name: "details",
-        content: (onValidated) => <DetailsSection onValidated={onValidated} />
+        // content: (onValidated) => <DetailsSection onValidated={onValidated} />
     },
     {
         name: "colors",
-        content: (onValidated) => <DetailsSection onValidated={onValidated} />
+        // content: (onValidated) => <DetailsSection onValidated={onValidated} />
     },
     {
         name: "features",
-        content: (onValidated) => <FeaturesSection onValidated={onValidated} />
+        // content: (onValidated) => <FeaturesSection onValidated={onValidated} />
     },
     {
-        name: "post",
-        content: (onValidated) => <PostSection onValidated={onValidated} />
+        name: "other_details",
+        // content: (onValidated) => <OtherDetailsSection onValidated={onValidated} />
     },
     {
-        name: "finish",
-        content: (onValidated) => <FinishSection onValidated={onValidated} />
+        name: "car_location",
+        // content: (onValidated) => <CarLocationSection onValidated={onValidated} />
     }
 ]
 
@@ -88,18 +86,57 @@ const defaultCarDetails = {
     },
 }
 
-export default function EditCarDetailsPage() {
+export default function AddEditCarComponent({ editMode = false, authUser, editCarDetails, updateCarDetails, showLoadingBtn = false }) {
     const { trans } = handleTranslation()
-    const authUser = useAuthUser();
-    const [expandedSection, setExpandedSection] = React.useState(expandableSections[0].name)
-    const [validatedSections, setValidatedSections] = React.useState([]);
+    const [expandedSection, setExpandedSection] = React.useState("")
+    const [validatedSections, setValidatedSections] = React.useState(
+        editMode && editCarDetails ? expandableSections.map((expSec) => expSec.name) : []
+    );
     const [alertMessage, setAlertMessage] = useState({ visible: false, text: "", success: false });
     const [taskState, setTaskState] = useState("idle");
 
 
-    const [carDetails, setCarDetails] = useState({
-        ...defaultCarDetails
-    });
+    const [carDetails, setCarDetails] = useState(editMode && editCarDetails ? {
+        images: editCarDetails.cars_images.map((img) => {
+            return {
+                id: img.id,
+                image: img.image,
+                blob: null
+            }
+        }),
+        details: {
+            category: editCarDetails.category_id,
+            condition: editCarDetails.condition,
+            year: editCarDetails.year,
+            make: editCarDetails.make,
+            model: editCarDetails.model,
+            vehicleTrim: editCarDetails.engine_size,
+            mileage: editCarDetails.mileage,
+            fuelType: editCarDetails.car_fuel_type,
+            titleStatus: editCarDetails.title_status
+        },
+        colors: {
+            interior: editCarDetails.color,
+            exterior: editCarDetails.exterior_color,
+        },
+        features: editCarDetails.vehicle_new?.reduce((childrenArray, obj) => {
+            return childrenArray.concat(obj.children.map((f) => f.id));
+        }, []),
+        postDetails: {
+            price: editCarDetails.amount,
+            description: editCarDetails.description,
+            findMeBuyer: editCarDetails.find_me_buyer === "1"
+        },
+        carLocation: {
+            city: editCarDetails.city,
+            state: editCarDetails.state,
+            country: "",
+            latitude: editCarDetails.lat,
+            longitude: editCarDetails.lng,
+            zipCode: editCarDetails.zip_code,
+            address: editCarDetails.car_address
+        },
+    } : defaultCarDetails);
 
 
 
@@ -163,6 +200,12 @@ export default function EditCarDetailsPage() {
         }
     }
 
+    React.useEffect(() => {
+        window.scrollTo({
+            top: 0
+        })
+    }, [expandedSection])
+
 
     return (
         <MainLayout>
@@ -174,7 +217,11 @@ export default function EditCarDetailsPage() {
                         </a>
                         <FontAwesomeIcon icon={faChevronRight} className="mx-3 text-sm text-gray-500" />
                         <a href="/post-car" className="text-lg text-gray-900">
-                            {trans("post_car")}
+                            {
+                                editMode ?
+                                    trans("edit_car_details")
+                                    : trans("post_car")
+                            }
                         </a>
                     </h2>
                 </div>
@@ -198,98 +245,143 @@ export default function EditCarDetailsPage() {
                             <LoaderEl className="" />
                             :
                             <div className="space-y-6 relative">
-                                <div className="absolute top-5 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
+                                <div className="absolute top-6 left-9 w-0 min-h-[calc(100%_-_30px)] border z-[-1] border-primary"></div>
                                 <div>
                                     {
-                                        expandableSections.map(({ name, content }, index) => {
+                                        expandableSections.map(({ name }, index) => {
                                             if (index === 0 || validatedSections.includes(expandableSections[index - 1].name)) {
                                                 return (
-                                                    <div key={name} role="button" onClick={() => setExpandedSection(name)}
-                                                        className={cn(
-                                                            "flex items-center gap-4 translate-y-1/2 z-[2] max-w-fit bg-white ml-5 cursor-pointer",
-                                                            !(expandedSection === name) && "mb-6"
-                                                        )}>
+                                                    <div>
+                                                        <div key={name} role="button"
+                                                            onClick={() => setExpandedSection(expandedSection === name ? "" : name)}
+                                                            className={cn(
+                                                                "flex items-center justify-between translate-y-1/2 z-[2] w-full px-5 cursor-pointer",
+                                                                !(expandedSection === name) && "mb-6"
+                                                            )}>
+                                                            <div className="flex items-center gap-4 bg-white">
+                                                                {
+                                                                    editMode ?
+                                                                        validatedSections.includes(name) && expandedSection !== name ?
+                                                                            <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
+                                                                                {index + 1}
+                                                                            </span>
+                                                                            :
+                                                                            <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
+                                                                                <FontAwesomeIcon icon={faPencil} />
+                                                                            </span>
+                                                                        :
+                                                                        validatedSections.includes(name) && expandedSection !== name ?
+                                                                            <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
+                                                                                <FontAwesomeIcon icon={faCheck} />
+                                                                            </span>
+                                                                            :
+                                                                            <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
+                                                                                {index + 1}
+                                                                            </span>
+                                                                }
+                                                                <h3 className="text-primary text-xl font-semibold">
+                                                                    {trans(name)}
+                                                                </h3>
+                                                            </div>
+                                                            <span className="bg-white p-2 text-base rounded-full">
+                                                                <FontAwesomeIcon icon={faChevronDown} className={expandedSection === name ? "transition-all -rotate-180" : ""} />
+                                                            </span>
+                                                        </div>
                                                         {
-                                                            validatedSections.includes(name) && expandedSection !== name ?
-                                                                <span className="flex items-center justify-center text-lg font-semibold text-primary aspect-square px-1.5 rounded-full border-2 border-primary">
-                                                                    <FontAwesomeIcon icon={faCheck} />
-                                                                </span>
-                                                                :
-                                                                <span className="flex items-center justify-center text-sm font-semibold text-white aspect-square px-3 rounded-full bg-primary">
-                                                                    {index + 1}
-                                                                </span>
+                                                            name === CarPostSections.Photos && expandedSection === CarPostSections.Photos &&
+                                                            <PhotosSection
+                                                                showLoadingBtn={showLoadingBtn}
+                                                                editMode={editMode}
+                                                                images={carDetails.images}
+                                                                setImages={onImagesChange}
+                                                                onValidated={(next = true) => {
+                                                                    if (carDetails.images.length <= 0) return;
+                                                                    if (!validatedSections.includes(CarPostSections.Photos))
+                                                                        setValidatedSections([...validatedSections, CarPostSections.Photos]);
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else setExpandedSection(CarPostSections.Details);
+                                                                }} />
                                                         }
-                                                        <h3 className="text-primary text-xl font-semibold">
-                                                            {trans(name)}
-                                                        </h3>
-                                                    </div>
+                                                        {
+                                                            name === CarPostSections.Details && expandedSection === CarPostSections.Details &&
+                                                            <DetailsSection
+                                                                showLoadingBtn={showLoadingBtn}
 
+                                                                editMode={editMode}
+                                                                details={carDetails.details}
+                                                                setDetails={onDetailsChange}
+                                                                accessToken={authUser.accessToken}
+                                                                onValidated={(next = true) => {
+                                                                    if (!validatedSections.includes(CarPostSections.Details))
+                                                                        setValidatedSections([...validatedSections, CarPostSections.Details]);
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else setExpandedSection(CarPostSections.Colors)
+                                                                }} />
+                                                        }
+                                                        {
+                                                            name === CarPostSections.Colors && expandedSection === CarPostSections.Colors &&
+                                                            <ColorsSection
+                                                                showLoadingBtn={showLoadingBtn}
+
+                                                                editMode={editMode}
+                                                                colors={carDetails.colors}
+                                                                setColors={onColorsChange}
+                                                                onValidated={(next = true) => {
+                                                                    if (!validatedSections.includes(CarPostSections.Colors))
+                                                                        setValidatedSections([...validatedSections, CarPostSections.Colors]);
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else setExpandedSection(CarPostSections.Features)
+                                                                }} />
+                                                        }
+                                                        {
+                                                            name === CarPostSections.Features && expandedSection === CarPostSections.Features &&
+                                                            <FeaturesSection
+                                                                showLoadingBtn={showLoadingBtn}
+
+                                                                editMode={editMode}
+                                                                features={carDetails.features}
+                                                                setFeatures={onFeaturesChange}
+                                                                accessToken={authUser.accessToken}
+                                                                onValidated={(next = true) => {
+                                                                    if (!validatedSections.includes(CarPostSections.Features))
+                                                                        setValidatedSections([...validatedSections, CarPostSections.Features]);
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else setExpandedSection(CarPostSections.OtherDetails)
+                                                                }} />
+                                                        }
+                                                        {
+                                                            name === CarPostSections.OtherDetails && expandedSection === CarPostSections.OtherDetails &&
+                                                            <OtherDetailsSection
+                                                                showLoadingBtn={showLoadingBtn}
+
+                                                                editMode={editMode}
+                                                                postDetails={carDetails.postDetails}
+                                                                setPostDetails={onPostDetailsChange}
+                                                                onValidated={(next = true) => {
+                                                                    if (!validatedSections.includes(CarPostSections.OtherDetails))
+                                                                        setValidatedSections([...validatedSections, CarPostSections.OtherDetails]);
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else setExpandedSection(CarPostSections.CarLocation)
+                                                                }} />
+                                                        }
+                                                        {
+                                                            name === CarPostSections.CarLocation && expandedSection === CarPostSections.CarLocation &&
+                                                            <CarLocationSection
+                                                                showLoadingBtn={showLoadingBtn}
+                                                                editMode={editMode}
+                                                                carLocation={carDetails.carLocation}
+                                                                setCarLocation={onCarLocationChange}
+                                                                onValidated={(next = false) => {
+                                                                    if (!next) updateCarDetails(carDetails)
+                                                                    else handlePostingCar()
+                                                                }} />
+                                                        }
+                                                    </div>
                                                 );
                                             }
                                         })
                                     }
-                                    {
-                                        expandedSection === CarPostSections.Photos &&
-                                        <PhotosSection
-                                            images={carDetails.images}
-                                            setImages={onImagesChange}
-                                            onValidated={() => {
-                                                if (carDetails.images.length <= 0) return;
-                                                setValidatedSections([...validatedSections, CarPostSections.Photos]);
-                                                setExpandedSection(CarPostSections.Details)
-                                            }} />
-                                    }
-                                    {
-                                        expandedSection === CarPostSections.Details &&
-                                        <DetailsSection
-                                            details={carDetails.details}
-                                            setDetails={onDetailsChange}
-                                            accessToken={authUser.accessToken}
-                                            onValidated={() => {
-                                                setValidatedSections([...validatedSections, CarPostSections.Details]);
-                                                setExpandedSection(CarPostSections.Colors)
-                                            }} />
-                                    }
-                                    {
-                                        expandedSection === CarPostSections.Colors &&
-                                        <ColorsSection
-                                            colors={carDetails.colors}
-                                            setColors={onColorsChange}
-                                            onValidated={() => {
-                                                setValidatedSections([...validatedSections, CarPostSections.Colors]);
-                                                setExpandedSection(CarPostSections.Features)
-                                            }} />
-                                    }
-                                    {
-                                        expandedSection === CarPostSections.Features &&
-                                        <FeaturesSection
-                                            features={carDetails.features}
-                                            setFeatures={onFeaturesChange}
-                                            accessToken={authUser.accessToken}
-                                            onValidated={() => {
-                                                setValidatedSections([...validatedSections, CarPostSections.Features]);
-                                                setExpandedSection(CarPostSections.Post)
-                                            }} />
-                                    }
-                                    {
-                                        expandedSection === CarPostSections.Post &&
-                                        <PostSection
-                                            postDetails={carDetails.postDetails}
-                                            setPostDetails={onPostDetailsChange}
-                                            onValidated={() => {
-                                                setValidatedSections([...validatedSections, CarPostSections.Post]);
-                                                setExpandedSection(CarPostSections.Finish)
-                                            }} />
-                                    }
-                                    {
-                                        expandedSection === CarPostSections.Finish &&
-                                        <FinishSection
-                                            carLocation={carDetails.carLocation}
-                                            setCarLocation={onCarLocationChange}
-                                            onValidated={() => {
-                                                handlePostingCar()
-                                            }} />
-                                    }
+
                                 </div>
                             </div>
                 }
@@ -300,7 +392,7 @@ export default function EditCarDetailsPage() {
 
 
 
-function PhotosSection({ onValidated, setImages, images }) {
+function PhotosSection({ onValidated, setImages, images, editMode, showLoadingBtn }) {
     const { trans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
@@ -331,12 +423,33 @@ function PhotosSection({ onValidated, setImages, images }) {
             <div className="w-full flex flex-wrap items-center p-5 pb-8 gap-6" >
                 <ImageDragDropInput images={images} withPreview onImagesChange={setImages} />
                 <div className="w-full mt-2 flex items-center justify-between">
-                    <button
-                        type="button" onClick={onValidated}
-                        className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                        disabled={!isValidated()}>
-                        {trans('continue')}
-                    </button>
+                    <div className="flex items-center gap-4">
+                        {/* <button
+                            type="button" onClick={onValidated}
+                            className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                            disabled={!isValidated()}>
+                            {trans('next')}
+                        </button> */}
+
+                        <button
+                            type="button" onClick={() => onValidated(!editMode)}
+                            className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
+                            disabled={showLoadingBtn || !isValidated()}>
+                            {
+                                showLoadingBtn ?
+                                    <span>
+                                        <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    </span>
+                                    :
+                                    editMode ?
+                                        trans("update_details")
+                                        : trans('next')
+                            }
+                        </button>
+                    </div>
                     <div>
                         <AlertMessage
                             success={alertMessage.success}
@@ -358,14 +471,14 @@ function PhotosSection({ onValidated, setImages, images }) {
 
 
 const FuelTypes = [
-    "gas",
-    "petrol",
-    "hybrid",
-    "electric",
-    "flexible_fuel"
+    "Gas",
+    "Petrol",
+    "Hybrid",
+    "Electric",
+    "Flexible Fuel"
 ]
 
-function DetailsSection({ onValidated, details, setDetails, accessToken }) {
+function DetailsSection({ onValidated, details, setDetails, accessToken, editMode, showLoadingBtn }) {
     const { trans, apiTrans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
@@ -383,7 +496,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
     }
 
     const validateAndContinue = () => {
-        if (isValidated()) onValidated();
+        if (isValidated()) onValidated(!editMode);
         else {
             setAlertMessage({
                 ...alertMessage,
@@ -391,6 +504,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
             })
         }
     }
+
 
     return (
         <div className="pt-5 w-full shadow border rounded-md bg-white">
@@ -427,7 +541,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
                 <SelectEl
                     isOptional={true}
-                    items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim, label: vTrim.vehicle_trim })) : []}
+                    items={vehicleTrims ? vehicleTrims.map((vTrim) => ({ value: vTrim.vehicle_trim.trim(), label: vTrim.vehicle_trim })) : []}
                     label={trans("vehicle_trim")} value={details.vehicleTrim}
                     onChange={(value) => setDetails({ ...details, vehicleTrim: value })} />
 
@@ -439,16 +553,16 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
                 <SelectEl
                     isOptional={true}
-                    items={FuelTypes.map((fuel) => ({ value: fuel, label: trans(fuel) }))}
+                    items={FuelTypes.map((fuel) => ({ value: fuel, label: trans(fuel.toLowerCase().replace(" ", "_")) }))}
                     label={trans("car-fuel-type")} value={details.fuelType}
                     onChange={(value) => setDetails({ ...details, fuelType: value })} />
                 <SelectEl
                     isOptional={true}
                     label={trans("title_status")} value={details.titleStatus}
                     onChange={(value) => setDetails({ ...details, titleStatus: value })}>
-                    <option value="clean">{trans("clean")}</option>
-                    <option value="rebuilt">{trans("rebuilt")}</option>
-                    <option value="salvage">{trans("salvage")}</option>
+                    <option value="Clean">{trans("clean")}</option>
+                    <option value="Rebuilt">{trans("rebuilt")}</option>
+                    <option value="Salvage">{trans("salvage")}</option>
                 </SelectEl>
 
                 <div className="col-span-full flex items-center justify-between w-full">
@@ -456,9 +570,22 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
                         type="button"
                         onClick={validateAndContinue}
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                        disabled={!isValidated()}
+                        disabled={showLoadingBtn || !isValidated()}
                     >
-                        {trans("continue")}
+                        {
+                            showLoadingBtn ?
+                                <span>
+                                    <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                                :
+                                editMode ?
+                                    trans("update_details")
+                                    :
+                                    trans("next")
+                        }
                     </button>
                     <div>
                         <AlertMessage
@@ -481,7 +608,7 @@ function DetailsSection({ onValidated, details, setDetails, accessToken }) {
 
 
 
-function ColorsSection({ onValidated, colors, setColors }) {
+function ColorsSection({ onValidated, colors, setColors, editMode, showLoadingBtn }) {
     const { trans } = handleTranslation()
     const onExteriorColorChange = (color) => {
         setColors({
@@ -558,11 +685,24 @@ function ColorsSection({ onValidated, colors, setColors }) {
             <div className="w-full mt-5">
                 <button
                     type="button"
-                    onClick={onValidated}
+                    onClick={() => onValidated(!editMode)}
                     className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                    disabled={!colors || colors.interior === "" || colors.exterior === ""}
+                    disabled={showLoadingBtn || !colors || colors.interior === "" || colors.exterior === ""}
                 >
-                    {trans("continue")}
+                    {
+                        showLoadingBtn ?
+                            <span>
+                                <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </span>
+                            :
+                            editMode ?
+                                trans("update_details")
+                                :
+                                trans("next")
+                    }
                 </button>
             </div>
         </div >
@@ -571,7 +711,7 @@ function ColorsSection({ onValidated, colors, setColors }) {
 
 
 
-function FeaturesSection({ onValidated, accessToken, features = [], setFeatures }) {
+function FeaturesSection({ onValidated, accessToken, features = [], setFeatures, editMode, showLoadingBtn }) {
     const { trans, apiTrans } = handleTranslation()
     const { data: featuresCategories, isLoading, error } = useFiltersFetcher(accessToken, apiConfig.endpoints.getCarFeatures);
 
@@ -583,6 +723,7 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
             setFeatures([...features, feature.id])
         }
     }
+
 
     return (
         <div className="w-full shadow border rounded-md bg-white p-5 pb-8">
@@ -604,6 +745,7 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
                                                 key={feature.id}
                                                 label={apiTrans(feature, "title")}
                                                 value={features.includes(feature.id)}
+                                                checked={features.includes(feature.id)}
                                                 onChange={(val) => onFeaturesChange(feature, val)} />
                                         ))
                                     }
@@ -615,10 +757,24 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
             <div className="w-full mt-5">
                 <button
                     type="button"
-                    onClick={onValidated}
+                    onClick={() => onValidated(!editMode)}
+                    disabled={showLoadingBtn}
                     className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
                 >
-                    {trans("continue")}
+                    {
+                        showLoadingBtn ?
+                            <span>
+                                <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                            </span>
+                            :
+                            editMode ?
+                                trans("update_details")
+                                :
+                                trans("next")
+                    }
 
                 </button>
             </div>
@@ -628,7 +784,7 @@ function FeaturesSection({ onValidated, accessToken, features = [], setFeatures 
 
 
 
-function PostSection({ onValidated, postDetails, setPostDetails }) {
+function OtherDetailsSection({ onValidated, postDetails, setPostDetails, editMode, showLoadingBtn }) {
     const { trans } = handleTranslation();
 
     const onPriceChange = (price) => {
@@ -675,11 +831,24 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
             </div>
             <button
                 type="button"
-                onClick={onValidated}
+                onClick={() => onValidated(!editMode)}
                 className="btn-primary mt-5 disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                disabled={!postDetails || postDetails.price === ""}
+                disabled={showLoadingBtn || !postDetails || postDetails.price === ""}
             >
-                {trans("continue")}
+                {
+                    showLoadingBtn ?
+                        <span>
+                            <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </span>
+                        :
+                        editMode ?
+                            trans("update_details")
+                            :
+                            trans("next")
+                }
             </button>
         </div >
     );
@@ -689,7 +858,7 @@ function PostSection({ onValidated, postDetails, setPostDetails }) {
 
 
 
-function FinishSection({ onValidated, carLocation, setCarLocation }) {
+function CarLocationSection({ onValidated, carLocation, setCarLocation, editMode, showLoadingBtn }) {
     const { trans } = handleTranslation()
     const isValidated = () => {
         return (
@@ -703,7 +872,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
                 <div className="w-full col-span-3">
                     <LocationInputEl
                         label={trans("car_location")} icon={faLocationDot}
-                        value={carLocation} onChange={setCarLocation} />
+                        defaultValue={carLocation.address ?? ""} onChange={setCarLocation} />
                 </div>
                 <div className="w-full col-span-3">
                     <InputEl
@@ -715,11 +884,24 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
                 <div className="col-span-3 w-full">
                     <button
                         type="button"
-                        onClick={onValidated}
+                        onClick={() => onValidated(!editMode)}
                         className="btn-primary disabled:!bg-primary disabled:text-gray-300 disabled:pointer-events-none"
-                        disabled={!isValidated()}
+                        disabled={showLoadingBtn || !isValidated()}
                     >
-                        {trans("post")}
+                        {
+                            showLoadingBtn ?
+                                <span>
+                                    <svg className="animate-spin mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </span>
+                                :
+                                editMode ?
+                                    trans("update_details")
+                                    :
+                                    trans("post")
+                        }
                     </button>
                 </div>
             </div>
@@ -736,7 +918,7 @@ function FinishSection({ onValidated, carLocation, setCarLocation }) {
 
 
 
-const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text", placeholder = "", icon = null, value, onChange = () => { } }, ref) => {
+const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text", defaultValue = "", placeholder = "", icon = null, value, onChange = () => { } }, ref) => {
     const { trans } = handleTranslation()
 
     return (
@@ -754,6 +936,7 @@ const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text
                 <input ref={ref} type={type}
                     name={label.toLowerCase().replace(" ", "_")}
                     id={label.toLowerCase().replace(" ", "_")}
+                    defaultValue={defaultValue}
                     value={value}
                     onChange={(e) => onChange !== null && onChange(e.target.value)}
                     placeholder={placeholder}
@@ -774,7 +957,7 @@ const InputEl = React.forwardRef(({ label = "", isOptional = false, type = "text
 
 
 export function LocationInputEl({
-    onChange, className, label
+    onChange, className, label, defaultValue
 }) {
     const autoCompleteRef = useRef();
     const inputRef = useRef();
@@ -826,7 +1009,7 @@ export function LocationInputEl({
             className={className}
             label={label}
             icon={faLocationDot}
-            value={null}
+            defaultValue={defaultValue}
             onChange={null} />
     );
 }
@@ -860,13 +1043,14 @@ function TextAreaEl({ label = "", isOptional = false, placeholder = "", onChange
 }
 
 
-function CheckBoxEl({ label = "", onChange, value }) {
+function CheckBoxEl({ label = "", onChange, value, checked }) {
     return (
         <div className="w-full inline-flex items-center">
             <input type="checkbox"
                 name={label.toLowerCase().replace(" ", "_")}
                 id={label.toLowerCase().replace(" ", "_")}
                 value={value}
+                checked={checked}
                 onChange={(e) => onChange(e.target.checked)}
                 className="rounded p-2.5 text-primary text-base font-medium" />
             <label htmlFor={label.toLowerCase().replace(" ", "_")} className="text-base font-medium ml-3 text-gray-800">

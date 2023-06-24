@@ -2,6 +2,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import useAuthUser from "./hooks/useAuthUser";
 import { Navigate, useNavigate } from "react-router-dom";
+import { Toaster } from "./shadcn/toaster";
 
 
 export default function MainLayout({ children, secureRoute = true }) {

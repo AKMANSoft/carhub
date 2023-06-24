@@ -107,7 +107,7 @@
     "rebuilt": "Rebuilt",
     "salvage": "Salvage",
     "exterior-color": "Exterior Color",
-    "Interior-Color": "Interior Color",
+    "interior-color": "Interior Color",
     "acc": "Accounts",
     "transition": "Transactions",
     "balance": "Balance",
@@ -162,5 +162,9 @@
     "choose_location": "CHOOSE LOCATION",
     "enter_location": "Enter Location",
     "signin": "Signin",
-    "signup": "Signup"
+    "signup": "Signup",
+    "update_details": "Update Details",
+    "next": "Next",
+    "other_details": "Other Details",
+    "edit_car_details": "Edit Car Details"
 }

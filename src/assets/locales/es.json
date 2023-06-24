@@ -105,7 +105,7 @@
     "rebuilt": "Reconstruido",
     "salvage": "Siniestro",
     "exterior-color": "Color exterior:",
-    "interior-Color": "Color interior:",
+    "interior-color": "Color interior:",
     "acc": "Cuentas",
     "transition": "Transacciones",
     "balance": "Saldo",
@@ -161,5 +161,9 @@
     "choose_location": "SELECCIONA LA UBICACIÓN",
     "enter_location": "Ingresa la ubicación",
     "signin": "Iniciar sesión",
-    "signup": "Registrarse"
+    "signup": "Registrarse",
+    "update_details": "Modificar Detalles",
+    "next": "Próximo",
+    "other_details": "Precio y descripción",
+    "edit_car_details": "Modificar detalles del vehículo"
 }

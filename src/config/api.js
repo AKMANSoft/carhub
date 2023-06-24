@@ -30,6 +30,7 @@ export const apiConfig = {
         getCarFeatures: "/car-featureslist",
         getAllCars: "/get-car-old",
         postCar: "/add-car",
+        updateCar: "/update-car",
         deleteCar: "/delete-car",
         markSoldCar: "/sold-car",
         getCarDetails: "/car-details",

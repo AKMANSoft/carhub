@@ -29,6 +29,7 @@ export default function CarGridItem({ car, className = "", type = "BUY", accessT
             )
             console.log(res.data)
             if (res.data.success === true) {
+                window.location.reload();
             }
         } catch (error) {
             console.log(error)
@@ -52,9 +53,6 @@ export default function CarGridItem({ car, className = "", type = "BUY", accessT
                 }
             )
             console.log(res.data)
-            if (res.data.success === true) {
-                window.location.reload();
-            }
         } catch (error) {
             console.log(error)
         }
