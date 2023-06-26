@@ -7,7 +7,7 @@ import { SOCKET_EV_ACKNOWLEDGEMENT, SOCKET_EV_JOIN, SOCKET_EV_RECEIVE_MESSAGE, S
 import LoaderEl from "../components/loader";
 import axios from "axios";
 import { apiConfig } from "../config/api";
-import ChatPageCarsSliderPopup from "../popups/ChatPageCarsSliderPopup";
+import ChatPageCarsSliderPopup, { MessageImageViewPopup } from "../popups/ChatPageCarsSliderPopup";
 import { handleTranslation } from "../lib/i18n";
 
 
@@ -458,19 +458,23 @@ function MessageItem({ message, primary = true }) {
                 {
                     message.type === "file" ?
                         message.file_type === "image" &&
-                        <img src={message?.file} alt=""
-                            width={350} height={220}
-                            loading="lazy"
-                            className={cn(
-                                "rounded-3xl w-[300px] h-[250px] object-cover object-center",
-                                primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none"
-                            )}
-                            style={{
-                                backgroundImage: primary ? "url(/images/spinner-light.svg)" : "url(/images/spinner-dark.svg)",
-                                backgroundSize: "40%",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat"
-                            }} />
+                        <MessageImageViewPopup
+                            image={message?.file}
+                            trigger={
+                                <img src={message?.file} alt=""
+                                    width={350} height={220}
+                                    loading="lazy"
+                                    className={cn(
+                                        "rounded-3xl w-[300px] h-[250px] object-cover object-center",
+                                        primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none"
+                                    )}
+                                    style={{
+                                        backgroundImage: primary ? "url(/images/spinner-light.svg)" : "url(/images/spinner-dark.svg)",
+                                        backgroundSize: "40%",
+                                        backgroundPosition: "center",
+                                        backgroundRepeat: "no-repeat"
+                                    }} />
+                            } />
                         :
                         <div className={cn(
                             "rounded-3xl py-3 px-4",

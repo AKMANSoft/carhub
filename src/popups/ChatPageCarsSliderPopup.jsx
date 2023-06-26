@@ -110,3 +110,73 @@ export default function ChatPageCarsSliderPopup({
         </>
     )
 }
+
+
+export function MessageImageViewPopup({
+    image, className, trigger
+}) {
+    const [isOpen, setIsOpen] = useState(false);
+    const onPopupClose = () => {
+        setIsOpen(false)
+    }
+
+    return (
+        <>
+            <button type="button" onClick={() => setIsOpen(true)} className="rounded-md overflow-hidden">
+                {trigger}
+            </button>
+            <Transition appear show={isOpen} as={Fragment}>
+                <Dialog as="div" className="relative z-50" onClose={onPopupClose}>
+                    <Transition.Child
+                        as={Fragment}
+                        enter="ease-out duration-300"
+                        enterFrom="opacity-0"
+                        enterTo="opacity-100"
+                        leave="ease-in duration-200"
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                    >
+                        <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm" />
+                    </Transition.Child>
+
+                    <div className="fixed inset-0 overflow-y-auto">
+                        <div className="flex h-full items-center justify-center text-center">
+                            <Transition.Child
+                                as={Fragment}
+                                enter="ease-out duration-300"
+                                enterFrom="opacity-0 scale-95"
+                                enterTo="opacity-100 scale-100"
+                                leave="ease-in duration-200"
+                                leaveFrom="opacity-100 scale-100"
+                                leaveTo="opacity-0 scale-95"
+                            >
+                                <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl text-left align-middle shadow-xl transition-all">
+                                    {/* Popup Content  */}
+                                    <div className='bg-white rounded-t-lg'>
+                                        <div className='flex items-center justify-between pt-1.5 px-5'>
+                                            <span></span>
+                                            <button type='button' onClick={() => setIsOpen(false)} className='text-gray-900 text-xl rounded-full py-1 aspect-square bg-transparent'>
+                                                <FontAwesomeIcon icon={faXmark} />
+                                            </button>
+                                        </div>
+                                        <div key={image} className="w-full flex items-center bg-gray-200 justify-center min-h-[600px] overflow-hidden max-h-[600px] outline-none px-0.5 relative">
+                                            <img
+                                                src={image} alt="" loading="lazy"
+                                                className="mx-auto object-cover w-full h-auto"
+                                                style={{
+                                                    backgroundImage: "url(/images/spinner-dark.svg)",
+                                                    backgroundSize: "30%",
+                                                    backgroundPosition: "center",
+                                                    backgroundRepeat: "no-repeat"
+                                                }} />
+                                        </div>
+                                    </div>
+                                </Dialog.Panel>
+                            </Transition.Child>
+                        </div>
+                    </div>
+                </Dialog>
+            </Transition>
+        </>
+    )
+}
