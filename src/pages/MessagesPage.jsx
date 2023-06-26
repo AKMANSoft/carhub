@@ -267,10 +267,10 @@ function MessagesSection({
             "sender_id": senderId
         }
         blobToBase64(imageBlob).then((imageB64) => {
-            console.log(imageB64)
+            let formatedB64Data = imageB64.replace(/^data:image\/[^;]+;base64,/, "");
             sendMessage({
                 ...message,
-                file: imageB64,
+                file: formatedB64Data,
             })
         })
         // setMessages((prevMessages) => [
@@ -460,10 +460,17 @@ function MessageItem({ message, primary = true }) {
                         message.file_type === "image" &&
                         <img src={message?.file} alt=""
                             width={350} height={220}
+                            loading="lazy"
                             className={cn(
                                 "rounded-3xl w-[300px] h-[250px] object-cover object-center",
                                 primary ? "bg-primary rounded-br-none" : "bg-white rounded-bl-none"
-                            )} />
+                            )}
+                            style={{
+                                backgroundImage: primary ? "url(/images/spinner-light.svg)" : "url(/images/spinner-dark.svg)",
+                                backgroundSize: "40%",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat"
+                            }} />
                         :
                         <div className={cn(
                             "rounded-3xl py-3 px-4",
