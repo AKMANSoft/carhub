@@ -399,7 +399,7 @@ function PhotosSection({ onValidated, setImages, images, editMode, showLoadingBt
     const { trans } = handleTranslation()
     const [alertMessage, setAlertMessage] = useState({
         visible: false,
-        text: trans('imagealert'),
+        text: 'imagealert',
         success: false
     });
 

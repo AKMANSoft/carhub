@@ -53,7 +53,7 @@ export default function ForgotPasswordPopup() {
         })
         if (response === null) {
             setAlertMessage({
-                text: "Got some error while processing your request. Please try again.",
+                text: "got_some_error",
                 success: false,
                 visible: true,
             })

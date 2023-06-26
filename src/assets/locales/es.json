@@ -174,5 +174,6 @@
     "signup_checkbox": "Entiendo las reglas & Accepto los",
     "profile_offer": "ofertas",
     "other_details": "Otros detalles",
-    "edit_car_details": "Modificar detalles del vehículo"
+    "edit_car_details": "Modificar detalles del vehículo",
+    "got_some_error": "Se produjo un error al procesar tu solicitud. Por favor, inténtalo nuevamente."
 }

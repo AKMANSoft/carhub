@@ -1,6 +1,6 @@
 import { Menu, Transition } from "@headlessui/react";
 import { handleTranslation } from "../lib/i18n";
-import { cn, formatDate, formatPrice } from "../lib/utils";
+import { cn, formatDate, formateNumbersToComma } from "../lib/utils";
 import { Fragment, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisVertical } from "@fortawesome/free-solid-svg-icons";
@@ -81,7 +81,7 @@ export default function CarGridItem({ car, className = "", type = "BUY", accessT
                     {car.make} {car.model}
                 </h3>
                 <p className="text-base font-semibold text-primary">
-                    ${formatPrice(car.amount)}
+                    ${formateNumbersToComma(car.amount)}
                 </p>
                 <p className="text-sm font-normal text-gray-600">
                     {car.user_count} {trans("views")}

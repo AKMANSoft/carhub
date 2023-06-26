@@ -8,11 +8,13 @@ import doUpdateCar from "../api/update-car";
 import { useToast } from "../components/shadcn/use-toast";
 import axios from "axios";
 import { apiConfig } from "../config/api";
+import { handleTranslation } from "../lib/i18n";
 
 
 
 
 export default function EditCarPage() {
+    const { trans } = handleTranslation();
     const navigate = useNavigate();
     const authUser = useAuthUser();
     const { carId } = useParams();
@@ -21,8 +23,6 @@ export default function EditCarPage() {
     const [processing, setProcessing] = React.useState(false);
     const { toast } = useToast();
 
-
-    console.log(carDetails)
 
     const fetchCarDetails = async () => {
         setIsLoading(true);
@@ -62,7 +62,7 @@ export default function EditCarPage() {
             toastMessage = response.success ? "Car updated successfully. Refresh page to see changes." : response.message
             success = response.success;
         } else {
-            toastMessage = "Got some error while processing your request.";
+            toastMessage = trans("got_some_error");
             success = false;
         }
         toast({

@@ -133,7 +133,7 @@ export default function SignupPopup() {
         })
         if (response === null) {
             setAlertMessage({
-                text: "Got some error while processing your request. Please try again.",
+                text: "got_some_error",
                 success: false,
                 visible: true,
             })
@@ -217,7 +217,7 @@ export default function SignupPopup() {
 
             } catch (error) {
                 setAlertMessage({
-                    text: "Got some error while processing your request. Please try again.",
+                    text: "got_some_error",
                     success: false,
                     visible: true,
                 })
@@ -225,7 +225,7 @@ export default function SignupPopup() {
         },
         onError: (error) => {
             setAlertMessage({
-                text: "Got some error while processing your request. Please try again.",
+                text: "got_some_error",
                 success: false,
                 visible: true,
             })

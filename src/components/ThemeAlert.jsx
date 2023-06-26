@@ -1,9 +1,11 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { cn } from "../lib/utils"
+import { handleTranslation } from "../lib/i18n"
 
 
 export default function AlertMessage({ visible = false, success = false, text = "", onDissmissAlert, className }) {
+    const { trans } = handleTranslation()
     return (
         visible &&
         <div className={cn(
@@ -13,7 +15,7 @@ export default function AlertMessage({ visible = false, success = false, text = 
             className
         )}>
             <p className='text-sm font-normal text-start'>
-                {text}
+                {trans(text)}
             </p>
             <button onClick={onDissmissAlert} type='button' className='text-white text-lg rounded-full px-3 aspect-square bg-transparent'>
                 <FontAwesomeIcon icon={faXmark} />

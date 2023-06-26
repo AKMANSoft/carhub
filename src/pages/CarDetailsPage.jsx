@@ -9,7 +9,7 @@ import useCarDetails from "../components/hooks/carDetailsFetcher";
 import useAuthUser from "../components/hooks/useAuthUser";
 import { useRef } from "react";
 import { useState } from "react";
-import { cn, formatPrice } from "../lib/utils";
+import { cn, formateNumbersToComma } from "../lib/utils";
 import { handleTranslation } from "../lib/i18n";
 
 
@@ -111,7 +111,7 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     {carDetails.make} {carDetails.model}
                 </h3>
                 <p className="text-xl md:text-2xl text-gray-800 font-semibold mt-1">
-                    ${formatPrice(carDetails.amount)}
+                    ${formateNumbersToComma(carDetails.amount)}
                 </p>
                 <p className="text-sm md:text-base text-gray-700 font-medium mt-1">
                     {trans("zip_code")}: {carDetails.zip_code}
@@ -172,7 +172,7 @@ function CarDetailsSection({ className, carDetails, userProfile }) {
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">
                         <span className="uppercase min-w-max">{trans("mileage")}</span>
                         <span className="font-medium">
-                            {carDetails.mileage ?? ''}
+                            {formateNumbersToComma(carDetails.mileage ?? '')}
                         </span>
                     </li>
                     <li className="gap-x-5 gap-y-2 flex-wrap text-base text-gray-600 font-normal py-3 border-b-2 border-white last:border-none flex items-center justify-between">

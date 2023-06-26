@@ -58,6 +58,32 @@ export function formatPrice(price) {
 
 
 
+export function formateNumbersToComma(number) {
+  let numberStr = parseFloat(number).toString();
+  // Check if the price contains a decimal point
+  let decimalIndex = numberStr.indexOf(".");
+  let decimalPart = "";
+  if (decimalIndex !== -1) {
+    // Extract the decimal part of the price
+    decimalPart = numberStr.slice(decimalIndex);
+    numberStr = numberStr.slice(0, decimalIndex);
+  }
+
+  
+  // Add commas every three digits from the right
+  let formattedPrice = "";
+  for (let i = numberStr.length - 1, count = 0; i >= 0; i--, count++) {
+    if (count && count % 3 === 0) {
+      formattedPrice = "," + formattedPrice;
+    }
+    formattedPrice = numberStr[i] + formattedPrice;
+  }
+
+  // Append the decimal part and return the formatted price
+  return formattedPrice + decimalPart;
+}
+
+
 
 export function formatDateTimeForMsg(date) {
   if (date instanceof Date) {

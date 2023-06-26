@@ -173,5 +173,6 @@
     "add_card": "Add Card",
     "signup_checkbox": "I understand the rule & I accept the",
     "profile_offer": "offers",
-    "edit_car_details": "Edit Car Details"
+    "edit_car_details": "Edit Car Details",
+    "got_some_error": "Got some error while processing your request. Please try again."
 }

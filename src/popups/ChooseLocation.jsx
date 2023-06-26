@@ -52,7 +52,7 @@ export default function ChooseLocationPopup() {
                 {
                     location && location !== null &&
                     <span className='ms-3 xl:ms-1 font-normal min-w-max items-center'>
-                        :{location.filterDistance} {("miles")}
+                        :{location.filterDistance} {trans("miles").toLowerCase()}
                     </span>
                 }
             </button>
